@@ -21,7 +21,7 @@ export default function BusinessPortal() {
 
   return (
     <SiteShell>
-      <section className="relative overflow-hidden bg-primary">
+      <section className="relative overflow-hidden bg-gradient-to-b from-white via-white/90 to-primary">
         <div className="mx-auto max-w-7xl px-4 sm:px-6">
           <div className="relative min-h-[440px] sm:min-h-[500px]">
             <Image
