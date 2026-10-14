@@ -42,7 +42,7 @@ const NAV_GROUPS = [
 ];
 
 export default function SiteHeader() {
-  const { t, lang, setLang } = useI18n();
+  const { t, lang, setLang, languages } = useI18n();
   const { country, setCountry } = useCountry();
   const [open, setOpen] = useState(false);
   const location = useLocation();
@@ -85,7 +85,7 @@ export default function SiteHeader() {
           <div className="flex items-center gap-2">
             <Globe className="h-3.5 w-3.5 text-accent" />
             <div className="flex items-center gap-0.5 rounded-full border border-primary-foreground/20 p-0.5">
-              {['en', 'fr'].map((code) => (
+              {languages.map(({ code }) => (
                 <button
                   key={code}
                   type="button"

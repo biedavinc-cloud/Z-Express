@@ -16,7 +16,7 @@ function monthStart() {
 }
 
 export default function MerchantDashboard() {
-  const { t, lang, setLang } = useI18n();
+  const { t, lang, setLang, languages } = useI18n();
   const [session, setSession] = useState(null);
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -105,7 +105,7 @@ export default function MerchantDashboard() {
           </Link>
           <div className="flex items-center gap-3">
             <span className="hidden text-xs text-primary-foreground/60 sm:block">{session.user.email}</span>
-            {['en', 'fr'].map((code) => (
+            {languages.map(({ code }) => (
               <button
                 key={code}
                 type="button"

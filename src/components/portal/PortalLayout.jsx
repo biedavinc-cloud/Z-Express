@@ -63,7 +63,7 @@ const NAV = [
 ];
 
 export default function PortalLayout() {
-  const { t, lang, setLang } = useI18n();
+  const { t, lang, setLang, languages } = useI18n();
   const navigate = useNavigate();
   const [session, setSession] = useState(null);
   const [open, setOpen] = useState(false);
@@ -247,7 +247,7 @@ export default function PortalLayout() {
             <span className="hidden items-center gap-1.5 text-xs text-muted-foreground sm:flex">
               <Globe className="h-3.5 w-3.5" />
             </span>
-            {['en', 'fr'].map((code) => (
+            {languages.map(({ code }) => (
               <button
                 key={code}
                 type="button"

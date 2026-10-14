@@ -9,7 +9,7 @@ import useStaffScope from '@/hooks/useStaffScope';
 // brand header, language switch, page heading and the workspace guard.
 export default function StaffPage({ title, subtitle, children }) {
   const scope = useStaffScope();
-  const { t, lang, setLang } = useI18n();
+  const { t, lang, setLang, languages } = useI18n();
 
   if (!scope) {
     return (
@@ -34,7 +34,7 @@ export default function StaffPage({ title, subtitle, children }) {
             <span className="hidden text-xs text-primary-foreground/60 sm:block">
               {scope.tenant.name}
             </span>
-            {['en', 'fr'].map((code) => (
+            {languages.map(({ code }) => (
               <button
                 key={code}
                 type="button"

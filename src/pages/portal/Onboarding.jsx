@@ -37,7 +37,7 @@ const STEPS = [
 ];
 
 export default function Onboarding() {
-  const { t, lang, setLang } = useI18n();
+  const { t, lang, setLang, languages } = useI18n();
   const { country } = useCountry();
   const navigate = useNavigate();
   const [params] = useSearchParams();
@@ -175,7 +175,7 @@ export default function Onboarding() {
             <BrandMark />
           </Link>
           <div className="flex items-center gap-1.5">
-            {['en', 'fr'].map((code) => (
+            {languages.map(({ code }) => (
               <button
                 key={code}
                 type="button"
