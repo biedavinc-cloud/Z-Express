@@ -28,17 +28,24 @@ export default function PortalMarketplaces() {
   const [busy, setBusy] = useState(false);
   const [show, setShow] = useState(false);
   const [copied, setCopied] = useState('');
+  const [error, setError] = useState('');
   const [form, setForm] = useState(emptyForm);
 
   const origin = APP_DOMAIN;
 
   const load = async () => {
-    const list = await base44.entities.MarketplaceConnection.filter(
-      { tenant_id: tenant.id },
-      { sort: '-created_date', limit: 50 }
-    );
-    setConnections(list.items || []);
-    setLoading(false);
+    setError('');
+    try {
+      const page = await base44.entities.MarketplaceConnection.filter(
+        { tenant_id: tenant.id },
+        { sort: '-created_date', limit: 50 }
+      );
+      setConnections(page.items || []);
+    } catch (e) {
+      setError(e.message || t('common.error'));
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -48,30 +55,46 @@ export default function PortalMarketplaces() {
 
   const create = async () => {
     setBusy(true);
-    await base44.entities.MarketplaceConnection.create({
-      ...form,
-      label: form.label || '',
-      inbound_token: generateInboundToken(),
-      status: 'connected',
-      orders_count: 0,
-      ...(await scopeForEntity(tenant, 'MarketplaceConnection', session?.user?.email)),
-    });
-    setForm(emptyForm);
-    setShow(false);
-    setBusy(false);
-    load();
+    setError('');
+    try {
+      await base44.entities.MarketplaceConnection.create({
+        ...form,
+        label: form.label || '',
+        inbound_token: generateInboundToken(),
+        status: 'connected',
+        orders_count: 0,
+        ...(await scopeForEntity(tenant, 'MarketplaceConnection', session?.user?.email)),
+      });
+      setForm(emptyForm);
+      setShow(false);
+      await load();
+    } catch (e) {
+      setError(e.message || t('common.error'));
+    } finally {
+      setBusy(false);
+    }
   };
 
   const toggle = async (connection) => {
-    await base44.entities.MarketplaceConnection.update(connection.id, {
-      status: connection.status === 'connected' ? 'disabled' : 'connected',
-    });
-    load();
+    setError('');
+    try {
+      await base44.entities.MarketplaceConnection.update(connection.id, {
+        status: connection.status === 'connected' ? 'disabled' : 'connected',
+      });
+      await load();
+    } catch (e) {
+      setError(e.message || t('common.error'));
+    }
   };
 
   const remove = async (connection) => {
-    await base44.entities.MarketplaceConnection.delete(connection.id);
-    load();
+    setError('');
+    try {
+      await base44.entities.MarketplaceConnection.delete(connection.id);
+      await load();
+    } catch (e) {
+      setError(e.message || t('common.error'));
+    }
   };
 
   const copy = (value) => {
@@ -100,6 +123,12 @@ export default function PortalMarketplaces() {
           {t('mkt.connect')}
         </Button>
       </div>
+
+      {error && (
+        <p className="rounded-2xl border border-destructive/30 bg-destructive/10 px-5 py-3 text-sm text-destructive">
+          {error}
+        </p>
+      )}
 
       {show && (
         <MarketplaceForm
