@@ -21,43 +21,42 @@ export default function BusinessPortal() {
 
   return (
     <SiteShell>
-      <section className="relative overflow-hidden bg-gradient-to-b from-white via-white/90 to-primary">
+      {/* Transparent hero: the PNG wordmark carries its own alpha, so the page
+          background shows through the negative space — no dark fill behind it. */}
+      <section className="relative overflow-hidden">
         <div className="mx-auto max-w-7xl px-4 sm:px-6">
-          <div className="relative sm:min-h-[500px]">
-            {/* Mobile: wide banner on top (10% zoom). Desktop: banner fills the hero, copy overlaid at the bottom. */}
-            <div className="relative aspect-[3/1] w-full overflow-hidden sm:absolute sm:inset-0 sm:aspect-auto">
-              <Image
-                src={BUSINESS_HERO_IMAGE}
-                alt="Z. Express — express, freight, warehousing and last-mile logistics"
-                className="h-full w-full scale-110"
-                fittingType="fit"
-              />
-            </div>
-            <div className="relative bg-primary px-6 pb-7 pt-8 sm:absolute sm:inset-x-0 sm:bottom-0 sm:bg-gradient-to-t sm:from-primary sm:via-primary/80 sm:to-transparent sm:px-10 sm:pb-10 sm:pt-24">
-              <div className="mx-auto max-w-2xl">
-                <span className="inline-flex items-center gap-2 rounded-full border border-primary-foreground/20 px-3.5 py-1.5 text-xs font-medium uppercase tracking-wider text-accent">
-                  <Building2 className="h-3.5 w-3.5" />
-                  {t('biz.title')}
-                </span>
-                <h1 className="mt-4 font-heading text-xl font-semibold leading-snug tracking-tight text-primary-foreground sm:text-3xl">
-                  {t('biz.subtitle')}
-                </h1>
-                <div className="mt-6 flex flex-wrap gap-3">
-                  <Button asChild size="lg" className="rounded-2xl bg-accent text-accent-foreground hover:bg-accent/90">
-                    <Link to="/register?returnTo=/portal/onboarding">
-                      {t('biz.ctaCreate')}
-                      <ArrowRight className="ml-2 h-4 w-4" />
-                    </Link>
-                  </Button>
-                  <Button
-                    asChild
-                    size="lg"
-                    variant="outline"
-                    className="rounded-2xl border-primary-foreground/25 bg-transparent text-primary-foreground hover:bg-primary-foreground/10"
-                  >
-                    <Link to="/login?returnTo=/portal">{t('biz.ctaLogin')}</Link>
-                  </Button>
-                </div>
+          <div className="relative aspect-[3.11/1] w-full">
+            <Image
+              src={BUSINESS_HERO_IMAGE}
+              alt="Z. Express — express, freight, warehousing and last-mile logistics"
+              className="h-full w-full"
+              fittingType="fit"
+            />
+          </div>
+          <div className="px-1 pb-12 pt-4 sm:px-2 sm:pb-16 sm:pt-6">
+            <div className="mx-auto max-w-2xl">
+              <span className="inline-flex items-center gap-2 rounded-full border border-primary/15 px-3.5 py-1.5 text-xs font-medium uppercase tracking-wider text-accent">
+                <Building2 className="h-3.5 w-3.5" />
+                {t('biz.title')}
+              </span>
+              <h1 className="mt-4 font-heading text-xl font-semibold leading-snug tracking-tight text-primary sm:text-3xl">
+                {t('biz.subtitle')}
+              </h1>
+              <div className="mt-6 flex flex-wrap gap-3">
+                <Button asChild size="lg" className="rounded-2xl bg-accent text-accent-foreground hover:bg-accent/90">
+                  <Link to="/register?returnTo=/portal/onboarding">
+                    {t('biz.ctaCreate')}
+                    <ArrowRight className="ml-2 h-4 w-4" />
+                  </Link>
+                </Button>
+                <Button
+                  asChild
+                  size="lg"
+                  variant="outline"
+                  className="rounded-2xl border-primary/20 text-primary hover:bg-primary/5"
+                >
+                  <Link to="/login?returnTo=/portal">{t('biz.ctaLogin')}</Link>
+                </Button>
               </div>
             </div>
           </div>
