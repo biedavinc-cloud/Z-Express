@@ -22,38 +22,40 @@ export default function BusinessPortal() {
   return (
     <SiteShell>
       <section className="relative overflow-hidden bg-primary">
-        <div className="absolute inset-0">
-          <Image
-            src={BUSINESS_HERO_IMAGE}
-            alt="Z. Express — express, freight, warehousing and last-mile logistics"
-            className="h-full w-full"
-            fittingType="fill"
-          />
-        </div>
-        <div className="relative mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-24">
-          <div className="max-w-xl rounded-3xl bg-primary/90 p-8 ring-1 ring-primary-foreground/15 backdrop-blur-sm sm:p-10">
-            <span className="inline-flex items-center gap-2 rounded-full border border-primary-foreground/20 px-3.5 py-1.5 text-xs font-medium uppercase tracking-wider text-accent">
-              <Building2 className="h-3.5 w-3.5" />
-              {t('biz.title')}
-            </span>
-            <h1 className="mt-6 font-heading text-3xl font-semibold leading-tight tracking-tight sm:text-5xl">
-              {t('biz.subtitle')}
-            </h1>
-            <div className="mt-9 flex flex-wrap gap-3">
-              <Button asChild size="lg" className="rounded-2xl bg-accent text-accent-foreground hover:bg-accent/90">
-                <Link to="/register?returnTo=/portal/onboarding">
-                  {t('biz.ctaCreate')}
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </Link>
-              </Button>
-              <Button
-                asChild
-                size="lg"
-                variant="outline"
-                className="rounded-2xl border-primary-foreground/25 bg-transparent text-primary-foreground hover:bg-primary-foreground/10"
-              >
-                <Link to="/login?returnTo=/portal">{t('biz.ctaLogin')}</Link>
-              </Button>
+        <div className="mx-auto max-w-7xl px-4 sm:px-6">
+          <div className="relative min-h-[440px] sm:min-h-[500px]">
+            <Image
+              src={BUSINESS_HERO_IMAGE}
+              alt="Z. Express — express, freight, warehousing and last-mile logistics"
+              className="absolute inset-0 h-full w-full"
+              fittingType="fit"
+            />
+            <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-primary via-primary/80 to-transparent px-6 pb-7 pt-24 sm:px-10 sm:pb-10">
+              <div className="max-w-2xl">
+                <span className="inline-flex items-center gap-2 rounded-full border border-primary-foreground/20 px-3.5 py-1.5 text-xs font-medium uppercase tracking-wider text-accent">
+                  <Building2 className="h-3.5 w-3.5" />
+                  {t('biz.title')}
+                </span>
+                <h1 className="mt-4 font-heading text-xl font-semibold leading-snug tracking-tight text-primary-foreground sm:text-3xl">
+                  {t('biz.subtitle')}
+                </h1>
+                <div className="mt-6 flex flex-wrap gap-3">
+                  <Button asChild size="lg" className="rounded-2xl bg-accent text-accent-foreground hover:bg-accent/90">
+                    <Link to="/register?returnTo=/portal/onboarding">
+                      {t('biz.ctaCreate')}
+                      <ArrowRight className="ml-2 h-4 w-4" />
+                    </Link>
+                  </Button>
+                  <Button
+                    asChild
+                    size="lg"
+                    variant="outline"
+                    className="rounded-2xl border-primary-foreground/25 bg-transparent text-primary-foreground hover:bg-primary-foreground/10"
+                  >
+                    <Link to="/login?returnTo=/portal">{t('biz.ctaLogin')}</Link>
+                  </Button>
+                </div>
+              </div>
             </div>
           </div>
         </div>
