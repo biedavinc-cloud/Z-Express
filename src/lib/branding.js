@@ -1,7 +1,7 @@
 // Single source for the Z. Express mark so the header, the portal and the
 // onboarding stay in sync.
 export const BRAND_LOGO =
-  'https://media.base44.com/images/public/6acf30b6a32b68be46e718aa/062868c74_Favi.png';
+  'https://media.base44.com/images/public/6acf30b6a32b68be46e718aa/21f84e4ec_Express.jpg';
 
 // Wordmark shown next to the logo lockup.
 export const BRAND_NAME = 'Express';
