@@ -54,7 +54,7 @@ export default function PricingCalculator({ initial = {}, onContinue, className 
                     {t(`biz.plan.${plan.id}`)}
                   </span>
                   <span className="mt-1 block text-[11px] text-muted-foreground">
-                    {formatMoney(plan.monthly)} {t('pricing.perMonth')}
+                    {formatMoney(plan.monthly, plan.currency)} {t('pricing.perMonth')}
                   </span>
                 </button>
               ))}
@@ -121,7 +121,7 @@ export default function PricingCalculator({ initial = {}, onContinue, className 
             <p className="mt-2 text-xs text-muted-foreground">
               {t('calc.extraSeatsHint', {
                 count: priced.plan.seats,
-                price: formatMoney(EXTRA_SEAT_MONTHLY),
+                price: formatMoney(EXTRA_SEAT_MONTHLY, priced.currency),
               })}
             </p>
           </div>
@@ -140,43 +140,54 @@ export default function PricingCalculator({ initial = {}, onContinue, className 
                   cycle: t(`pricing.${cycle}`),
                 })}
               </dt>
-              <dd className="font-medium">{formatMoney(priced.monthlyList)}</dd>
+              <dd className="font-medium">{formatMoney(priced.monthlyList, priced.currency)}</dd>
             </div>
             {priced.extraSeats > 0 && (
               <div className="flex items-baseline justify-between gap-4">
                 <dt className="text-primary-foreground/80">{t('calc.lineExtra', { count: priced.extraSeats })}</dt>
-                <dd className="font-medium">{formatMoney(priced.extraSeats * EXTRA_SEAT_MONTHLY)}</dd>
+                <dd className="font-medium">
+                  {formatMoney(priced.extraSeats * EXTRA_SEAT_MONTHLY, priced.currency)}
+                </dd>
               </div>
             )}
             <div className="flex items-baseline justify-between gap-4 border-t border-primary-foreground/15 pt-3">
               <dt className="text-primary-foreground/80">{t('calc.lineSubtotal')}</dt>
-              <dd className="font-medium">{formatMoney(priced.subtotal)}</dd>
+              <dd className="font-medium">{formatMoney(priced.subtotal, priced.currency)}</dd>
             </div>
             {priced.discount > 0 && (
               <div className="flex items-baseline justify-between gap-4 text-emerald-300">
                 <dt>{t('calc.lineDiscount')}</dt>
-                <dd className="font-medium">−{formatMoney(priced.discount)}</dd>
+                <dd className="font-medium">−{formatMoney(priced.discount, priced.currency)}</dd>
               </div>
             )}
           </dl>
 
           <div className="mt-6 rounded-2xl bg-primary-foreground/10 p-4">
             <p className="text-[11px] uppercase tracking-wider text-primary-foreground/60">{t('calc.total')}</p>
-            <p className="mt-1 font-heading text-3xl font-semibold text-accent">{formatMoney(priced.total)}</p>
+            <p className="mt-1 font-heading text-3xl font-semibold text-accent">
+              {formatMoney(priced.total, priced.currency)}
+            </p>
             {cycle === 'yearly' && (
               <p className="mt-1.5 text-xs text-primary-foreground/80">
-                {t('calc.monthlyEquivalent')}: {formatMoney(priced.monthlyEquivalent)} {t('pricing.perMonth')}
+                {t('calc.monthlyEquivalent')}: {formatMoney(priced.monthlyEquivalent, priced.currency)}{' '}
+                {t('pricing.perMonth')}
               </p>
             )}
             {priced.discount > 0 && (
               <p className="mt-1 text-xs text-emerald-300">
-                {t('calc.saving', { amount: formatMoney(priced.discount) })}
+                {t('calc.saving', { amount: formatMoney(priced.discount, priced.currency) })}
               </p>
             )}
           </div>
 
           <p className="mt-4 text-xs leading-relaxed text-primary-foreground/75">
-            {t('calc.trialNote', { amount: formatMoney(priced.total), date: formatDate(trialEnd(), false) })}
+            {t('calc.trialNote', {
+              amount: formatMoney(priced.total, priced.currency),
+              date: formatDate(trialEnd(), false),
+            })}
+          </p>
+          <p className="mt-2 text-xs leading-relaxed text-primary-foreground/60">
+            {t('pricing.currencyNote')}
           </p>
 
           {onContinue && (

@@ -78,7 +78,7 @@ export default function PricingTable({
 
               <div className="mt-5 flex items-end gap-2">
                 <span className="font-heading text-4xl font-semibold tracking-tight text-primary">
-                  {formatMoney(price)}
+                  {formatMoney(price, plan.currency)}
                 </span>
                 <span className="pb-1.5 text-sm text-muted-foreground">
                   {t(yearly ? 'pricing.perYear' : 'pricing.perMonth')}
@@ -87,9 +87,9 @@ export default function PricingTable({
 
               {yearly ? (
                 <p className="mt-2 text-xs text-muted-foreground">
-                  {t('pricing.billedYearly', { amount: formatMoney(price) })} ·{' '}
+                  {t('pricing.billedYearly', { amount: formatMoney(price, plan.currency) })} ·{' '}
                   <span className="font-semibold text-accent">
-                    {t('pricing.equiv', { amount: formatMoney(price / 12) })}
+                    {t('pricing.equiv', { amount: formatMoney(price / 12, plan.currency) })}
                   </span>
                 </p>
               ) : (
@@ -98,7 +98,7 @@ export default function PricingTable({
 
               {yearly && (
                 <span className="mt-3 inline-flex w-fit rounded-full bg-emerald-100 px-2.5 py-1 text-[11px] font-semibold text-emerald-800">
-                  {t('pricing.youSave', { amount: formatMoney(saving) })}
+                  {t('pricing.youSave', { amount: formatMoney(saving, plan.currency) })}
                 </span>
               )}
 
@@ -141,7 +141,8 @@ export default function PricingTable({
 
       <div className="mt-6 flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-border bg-secondary/40 px-5 py-4">
         <p className="max-w-xl text-xs leading-relaxed text-muted-foreground">
-          {t('pricing.trialNote', { days: TRIAL_DAYS })} {t('pricing.noFees')}
+          {t('pricing.trialNote', { days: TRIAL_DAYS })} {t('pricing.noFees')}{' '}
+          {t('pricing.currencyNote')}
         </p>
         <div className="flex flex-wrap items-center gap-2.5">
           <span className="text-[11px] uppercase tracking-wider text-muted-foreground">{t('pricing.payWith')}</span>

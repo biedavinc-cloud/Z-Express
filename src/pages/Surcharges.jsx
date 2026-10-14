@@ -74,6 +74,7 @@ export default function Surcharges() {
         <div className="mt-14 rounded-3xl border border-accent/40 bg-accent/5 p-8">
           <h2 className="font-heading text-lg font-semibold text-primary">{t('sur.exampleTitle')}</h2>
           <p className="mt-1 text-sm text-muted-foreground">{t('sur.exampleNote')}</p>
+          <p className="mt-1 text-xs leading-relaxed text-muted-foreground">{t('sur.exampleCurrency')}</p>
           <dl className="mt-6 divide-y divide-border/70">
             {RATE_EXAMPLE_LINES.map((line) => (
               <div key={line.id} className="flex items-center justify-between gap-6 py-3 text-sm">

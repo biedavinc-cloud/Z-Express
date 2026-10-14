@@ -41,7 +41,7 @@ export default function PlanStep({ form, setForm, cycle, setCycle }) {
           <div>
             <dt className="text-[11px] text-muted-foreground">{t('onboard.plan')}</dt>
             <dd className="text-sm font-medium text-primary">
-              {t(`biz.plan.${plan.id}`)} · {formatMoney(price)}{' '}
+              {t(`biz.plan.${plan.id}`)} · {formatMoney(price, plan.currency)}{' '}
               {t(cycle === 'yearly' ? 'pricing.perYear' : 'pricing.perMonth')}
             </dd>
           </div>

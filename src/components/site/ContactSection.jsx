@@ -2,7 +2,14 @@ import React, { useState } from 'react';
 import { base44 } from '@/api/base44Client';
 import { CheckCircle2, Loader2, Mail, MapPin, Phone, Send } from 'lucide-react';
 import { useI18n } from '@/components/LanguageProvider';
-import { SUPPORT_ADDRESS, SUPPORT_EMAIL, SUPPORT_MAILTO, SUPPORT_PHONE } from '@/lib/support';
+import {
+  PLATFORM_EMAIL,
+  PLATFORM_MAILTO,
+  SUPPORT_ADDRESS,
+  SUPPORT_EMAIL,
+  SUPPORT_MAILTO,
+  SUPPORT_PHONE,
+} from '@/lib/support';
 import { Button } from '@/components/ui/button';
 import { COUNTRIES } from '@/lib/logistics';
 
@@ -70,6 +77,9 @@ export default function ContactSection() {
           </h2>
           <p className="mt-3 max-w-md text-base text-muted-foreground">{t('contact.subtitle')}</p>
           <div className="mt-8 space-y-3 text-sm text-muted-foreground">
+            <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/70">
+              {t('contact.cat.customer_support')}
+            </p>
             <a href={SUPPORT_MAILTO} className="flex items-center gap-2.5 transition hover:text-accent">
               <Mail className="h-4 w-4 text-accent" />
               {SUPPORT_EMAIL}
@@ -78,6 +88,13 @@ export default function ContactSection() {
               <Phone className="h-4 w-4 text-accent" />
               {SUPPORT_PHONE}
             </p>
+            <p className="pt-2 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/70">
+              {t('support.platformLabel')}
+            </p>
+            <a href={PLATFORM_MAILTO} className="flex items-center gap-2.5 transition hover:text-accent">
+              <Mail className="h-4 w-4 text-accent" />
+              {PLATFORM_EMAIL}
+            </a>
             <p className="flex items-center gap-2.5">
               <MapPin className="h-4 w-4 text-accent" />
               {SUPPORT_ADDRESS}

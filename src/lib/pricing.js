@@ -9,14 +9,19 @@ export const YEARLY_DISCOUNT = 0.15; // paying a full year up front saves 15%
 export const TRIAL_DAYS = 30; // one month free, no card charged up front
 export const EXTRA_SEAT_MONTHLY = 4; // per additional user, on top of plan seats
 
+// The platform's own currency. Subscriptions and every price the platform
+// advertises are published in US dollars, whatever currency an agency bills its
+// own shipments in — those rate cards stay in the agency's local currency.
+export const BILLING_CURRENCY = 'USD';
+
 export function yearlyPrice(monthly) {
   return Math.round(Number(monthly || 0) * 12 * (1 - YEARLY_DISCOUNT));
 }
 
 export const PLANS = [
-  { id: 'starter', monthly: 49, seats: 10, currency: 'USD' },
-  { id: 'pro', monthly: 89, seats: 50, currency: 'USD', popular: true },
-  { id: 'enterprise', monthly: 199, seats: 500, currency: 'USD' },
+  { id: 'starter', monthly: 49, seats: 10, currency: BILLING_CURRENCY },
+  { id: 'pro', monthly: 89, seats: 50, currency: BILLING_CURRENCY, popular: true },
+  { id: 'enterprise', monthly: 199, seats: 500, currency: BILLING_CURRENCY },
 ].map((plan) => ({ ...plan, yearly: yearlyPrice(plan.monthly) }));
 
 export const PLAN_IDS = PLANS.map((plan) => plan.id);

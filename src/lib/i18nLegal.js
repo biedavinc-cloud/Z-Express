@@ -51,6 +51,10 @@ export const legalEn = {
   'legal.contactTitle': 'A question about this page?',
   'legal.contactBody': 'Our team answers policy and data-protection questions within one business day.',
   'legal.contactCta': 'Contact our team',
+
+  'support.platformLabel': 'Platform support',
+  'sur.exampleCurrency':
+    'The amounts are shown in US dollars — the platform prices in USD, while each agency publishes its rate card in its own currency.',
 };
 
 export const legalFr = {
@@ -103,4 +107,8 @@ export const legalFr = {
   'legal.contactBody':
     'Notre équipe répond aux questions de politique et de protection des données sous un jour ouvré.',
   'legal.contactCta': 'Contacter notre équipe',
+
+  'support.platformLabel': 'Support plateforme',
+  'sur.exampleCurrency':
+    'Les montants sont affichés en dollars américains — la plateforme facture en USD, chaque agence publiant sa grille dans sa propre devise.',
 };

@@ -326,7 +326,7 @@ export default function CheckoutForm({ tenant, session, initial = {}, onDone, on
             {priced.discount > 0 && (
               <div className="flex items-baseline justify-between gap-4 text-emerald-300">
                 <dt>{t('calc.lineDiscount')}</dt>
-                <dd className="font-medium">−{formatMoney(priced.discount)}</dd>
+                <dd className="font-medium">−{formatMoney(priced.discount, priced.currency)}</dd>
               </div>
             )}
           </dl>
@@ -335,8 +335,11 @@ export default function CheckoutForm({ tenant, session, initial = {}, onDone, on
             <p className="text-[11px] uppercase tracking-wider text-primary-foreground/60">
               {t('checkout.lineTotal')}
             </p>
-            <p className="mt-1 font-heading text-3xl font-semibold text-accent">{formatMoney(priced.total)}</p>
+            <p className="mt-1 font-heading text-3xl font-semibold text-accent">
+              {formatMoney(priced.total, priced.currency)}
+            </p>
             <p className="mt-1.5 text-xs text-primary-foreground/75">{t('pricing.noFees')}</p>
+            <p className="mt-1 text-xs text-primary-foreground/60">{t('pricing.currencyNote')}</p>
           </div>
 
           <label className="mt-5 flex items-start gap-2.5 text-xs leading-relaxed text-primary-foreground/85">

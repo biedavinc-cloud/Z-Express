@@ -1,5 +1,8 @@
 // How a delivery price is built on the platform: the surcharge families each
 // agency can switch on, the calculation order, and a worked example.
+//
+// The example is written in USD, like every price the platform advertises; an
+// agency still publishes its own rate card in the currency it bills in.
 
 export const SURCHARGE_RULES = [
   {
@@ -90,18 +93,18 @@ export const RATE_EXAMPLE_LINES = [
   {
     id: 'base',
     label: { en: 'Zone base rate, Douala → Yaoundé', fr: 'Tarif de base de zone, Douala → Yaoundé' },
-    value: '3 500 XAF',
+    value: '$6.00',
   },
   {
     id: 'fuel',
     label: { en: 'Fuel surcharge, 8 % of base', fr: 'Supplément carburant, 8 % du base' },
-    value: '280 XAF',
+    value: '$0.48',
   },
   {
     id: 'remote',
     label: { en: 'Remote area surcharge, flat', fr: 'Supplément zone enclavée, forfaitaire' },
-    value: '1 500 XAF',
+    value: '$2.50',
   },
 ];
 
-export const RATE_EXAMPLE_TOTAL = '5 280 XAF';
+export const RATE_EXAMPLE_TOTAL = '$8.98';

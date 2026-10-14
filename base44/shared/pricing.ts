@@ -7,14 +7,18 @@ export const YEARLY_DISCOUNT = 0.15;
 export const TRIAL_DAYS = 30;
 export const EXTRA_SEAT_MONTHLY = 4;
 
+// The platform bills in US dollars; an agency still prices its own shipments in
+// its local currency.
+export const BILLING_CURRENCY = 'USD';
+
 export function yearlyPrice(monthly) {
   return Math.round(Number(monthly || 0) * 12 * (1 - YEARLY_DISCOUNT));
 }
 
 export const PLANS = [
-  { id: 'starter', monthly: 49, seats: 10, currency: 'USD' },
-  { id: 'pro', monthly: 89, seats: 50, currency: 'USD' },
-  { id: 'enterprise', monthly: 199, seats: 500, currency: 'USD' },
+  { id: 'starter', monthly: 49, seats: 10, currency: BILLING_CURRENCY },
+  { id: 'pro', monthly: 89, seats: 50, currency: BILLING_CURRENCY },
+  { id: 'enterprise', monthly: 199, seats: 500, currency: BILLING_CURRENCY },
 ].map((plan) => ({ ...plan, yearly: yearlyPrice(plan.monthly) }));
 
 export const PLAN_IDS = PLANS.map((plan) => plan.id);

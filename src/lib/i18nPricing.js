@@ -19,6 +19,7 @@ export const pricingEn = {
   'pricing.trialBadge': '1 month free',
   'pricing.trialNote': 'Every plan starts with {days} days free.',
   'pricing.noFees': 'You are billed the plan price — no extra charges.',
+  'pricing.currencyNote': 'All platform prices are in US dollars (USD).',
   'pricing.cancelAnytime': 'No commitment, cancel any time',
   'pricing.payWith': 'Accepted payment methods',
 
@@ -106,6 +107,7 @@ export const pricingFr = {
   'pricing.trialBadge': '1 mois offert',
   'pricing.trialNote': 'Chaque formule commence par {days} jours offerts.',
   'pricing.noFees': 'Vous êtes facturé au prix de la formule — sans frais supplémentaires.',
+  'pricing.currencyNote': 'Tous les prix de la plateforme sont en dollars américains (USD).',
   'pricing.cancelAnytime': 'Sans engagement, résiliable à tout moment',
   'pricing.payWith': 'Moyens de paiement acceptés',
 

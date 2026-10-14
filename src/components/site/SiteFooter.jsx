@@ -3,7 +3,13 @@ import { Link } from 'react-router-dom';
 import { Linkedin, Twitter, Facebook, Instagram, Mail, Phone } from 'lucide-react';
 import { useI18n } from '@/components/LanguageProvider';
 import BrandMark from '@/components/site/BrandMark';
-import { SUPPORT_EMAIL, SUPPORT_MAILTO, SUPPORT_PHONE } from '@/lib/support';
+import {
+  PLATFORM_EMAIL,
+  PLATFORM_MAILTO,
+  SUPPORT_EMAIL,
+  SUPPORT_MAILTO,
+  SUPPORT_PHONE,
+} from '@/lib/support';
 
 const COLUMNS = [
   {
@@ -61,18 +67,35 @@ export default function SiteFooter() {
             <p className="mt-5 max-w-xs text-sm leading-relaxed text-primary-foreground/65">
               {t('footer.aboutText')}
             </p>
-            <div className="mt-5 space-y-2 text-sm text-primary-foreground/75">
-              <a
-                href={SUPPORT_MAILTO}
-                className="flex items-center gap-2.5 transition hover:text-accent"
-              >
-                <Mail className="h-3.5 w-3.5 shrink-0 text-accent" />
-                {SUPPORT_EMAIL}
-              </a>
-              <p className="flex items-center gap-2.5">
-                <Phone className="h-3.5 w-3.5 shrink-0 text-accent" />
-                {SUPPORT_PHONE}
-              </p>
+            <div className="mt-5 space-y-4 text-sm text-primary-foreground/75">
+              <div>
+                <p className="text-[10px] font-semibold uppercase tracking-wider text-primary-foreground/45">
+                  {t('contact.cat.customer_support')}
+                </p>
+                <a
+                  href={SUPPORT_MAILTO}
+                  className="mt-1 flex items-center gap-2.5 transition hover:text-accent"
+                >
+                  <Mail className="h-3.5 w-3.5 shrink-0 text-accent" />
+                  {SUPPORT_EMAIL}
+                </a>
+                <p className="mt-1 flex items-center gap-2.5">
+                  <Phone className="h-3.5 w-3.5 shrink-0 text-accent" />
+                  {SUPPORT_PHONE}
+                </p>
+              </div>
+              <div>
+                <p className="text-[10px] font-semibold uppercase tracking-wider text-primary-foreground/45">
+                  {t('support.platformLabel')}
+                </p>
+                <a
+                  href={PLATFORM_MAILTO}
+                  className="mt-1 flex items-center gap-2.5 transition hover:text-accent"
+                >
+                  <Mail className="h-3.5 w-3.5 shrink-0 text-accent" />
+                  {PLATFORM_EMAIL}
+                </a>
+              </div>
             </div>
             <div className="mt-6 flex items-center gap-2">
               <span className="mr-2 text-xs uppercase tracking-wider text-primary-foreground/50">

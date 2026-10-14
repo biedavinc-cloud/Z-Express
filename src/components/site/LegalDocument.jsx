@@ -4,7 +4,7 @@ import { Mail, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useI18n } from '@/components/LanguageProvider';
 import { localized, localizedList } from '@/lib/localized';
-import { SUPPORT_EMAIL } from '@/lib/support';
+import { PLATFORM_EMAIL, PLATFORM_MAILTO, SUPPORT_EMAIL, SUPPORT_MAILTO } from '@/lib/support';
 
 // Renders one policy document: its version date, the numbered sections, and the
 // support card that closes every legal page.
@@ -42,9 +42,15 @@ export default function LegalDocument({ doc }) {
             <Link to="/contact">{t('legal.contactCta')}</Link>
           </Button>
           <Button asChild variant="outline" className="rounded-full">
-            <a href={`mailto:${SUPPORT_EMAIL}`}>
+            <a href={SUPPORT_MAILTO}>
               <Mail className="mr-2 h-4 w-4" />
               {SUPPORT_EMAIL}
+            </a>
+          </Button>
+          <Button asChild variant="outline" className="rounded-full">
+            <a href={PLATFORM_MAILTO}>
+              <Mail className="mr-2 h-4 w-4" />
+              {PLATFORM_EMAIL}
             </a>
           </Button>
         </div>
