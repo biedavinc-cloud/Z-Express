@@ -1,0 +1,137 @@
+{
+  "name": "Hub",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "code": {
+      "type": "string"
+    },
+    "zone_code": {
+      "type": "string"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "hub",
+        "sorting_center",
+        "agency",
+        "pickup_point"
+      ],
+      "default": "hub"
+    },
+    "country": {
+      "type": "string"
+    },
+    "city": {
+      "type": "string"
+    },
+    "address": {
+      "type": "string"
+    },
+    "lat": {
+      "type": "number"
+    },
+    "lng": {
+      "type": "number"
+    },
+    "phone": {
+      "type": "string"
+    },
+    "manager_email": {
+      "type": "string"
+    },
+    "capacity_pieces": {
+      "type": "number",
+      "default": 0
+    },
+    "capacity_kg": {
+      "type": "number",
+      "default": 0
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "inactive"
+      ],
+      "default": "active"
+    },
+    "member_emails": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "required": [
+    "tenant_id",
+    "name"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "data.member_emails": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "create": {
+      "$or": [
+        {
+          "data.member_emails": {
+            "$in": [
+              "{{user.email}}"
+            ]
+          }
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "update": {
+      "$or": [
+        {
+          "data.member_emails": {
+            "$in": [
+              "{{user.email}}"
+            ]
+          }
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "data.member_emails": {
+            "$in": [
+              "{{user.email}}"
+            ]
+          }
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,317 @@
+{
+  "name": "Shipment",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string"
+    },
+    "tenant_name": {
+      "type": "string"
+    },
+    "tracking_number": {
+      "type": "string"
+    },
+    "waybill_number": {
+      "type": "string"
+    },
+    "merchant_ref": {
+      "type": "string"
+    },
+    "source": {
+      "type": "string",
+      "enum": [
+        "web",
+        "portal",
+        "api",
+        "merchant"
+      ],
+      "default": "web"
+    },
+    "merchant_email": {
+      "type": "string"
+    },
+    "sender_name": {
+      "type": "string"
+    },
+    "sender_phone": {
+      "type": "string"
+    },
+    "sender_email": {
+      "type": "string"
+    },
+    "sender_country": {
+      "type": "string"
+    },
+    "sender_city": {
+      "type": "string"
+    },
+    "sender_address": {
+      "type": "string"
+    },
+    "receiver_name": {
+      "type": "string"
+    },
+    "receiver_phone": {
+      "type": "string"
+    },
+    "receiver_email": {
+      "type": "string"
+    },
+    "receiver_country": {
+      "type": "string"
+    },
+    "receiver_city": {
+      "type": "string"
+    },
+    "receiver_address": {
+      "type": "string"
+    },
+    "receiver_lat": {
+      "type": "number"
+    },
+    "receiver_lng": {
+      "type": "number"
+    },
+    "receiver_what3words": {
+      "type": "string"
+    },
+    "weight_kg": {
+      "type": "number",
+      "default": 1
+    },
+    "volumetric_weight_kg": {
+      "type": "number"
+    },
+    "chargeable_weight_kg": {
+      "type": "number"
+    },
+    "dimensions": {
+      "type": "object",
+      "properties": {
+        "l": {
+          "type": "number"
+        },
+        "w": {
+          "type": "number"
+        },
+        "h": {
+          "type": "number"
+        }
+      }
+    },
+    "pieces": {
+      "type": "number",
+      "default": 1
+    },
+    "declared_value": {
+      "type": "number",
+      "default": 0
+    },
+    "description": {
+      "type": "string"
+    },
+    "goods_category": {
+      "type": "string",
+      "enum": [
+        "documents",
+        "electronics",
+        "clothing",
+        "food",
+        "cosmetics",
+        "pharma",
+        "auto_parts",
+        "home",
+        "other"
+      ],
+      "default": "other"
+    },
+    "service_type": {
+      "type": "string",
+      "enum": [
+        "express",
+        "standard",
+        "freight",
+        "fulfillment"
+      ],
+      "default": "standard"
+    },
+    "payment_mode": {
+      "type": "string",
+      "enum": [
+        "prepaid",
+        "cod"
+      ],
+      "default": "prepaid"
+    },
+    "payment_method": {
+      "type": "string"
+    },
+    "payment_method_label": {
+      "type": "string"
+    },
+    "payment_status": {
+      "type": "string",
+      "enum": [
+        "unpaid",
+        "awaiting_verification",
+        "paid",
+        "cod_pending"
+      ],
+      "default": "unpaid"
+    },
+    "payment_reference": {
+      "type": "string"
+    },
+    "paid_at": {
+      "type": "string"
+    },
+    "cod_amount": {
+      "type": "number",
+      "default": 0
+    },
+    "currency": {
+      "type": "string",
+      "default": "XAF"
+    },
+    "base_price": {
+      "type": "number",
+      "default": 0
+    },
+    "surcharge_total": {
+      "type": "number",
+      "default": 0
+    },
+    "total_amount": {
+      "type": "number",
+      "default": 0
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "created",
+        "picked_up",
+        "in_transit",
+        "at_hub",
+        "out_for_delivery",
+        "delivered",
+        "failed",
+        "returned",
+        "cancelled"
+      ],
+      "default": "created"
+    },
+    "origin_hub_id": {
+      "type": "string"
+    },
+    "destination_hub_id": {
+      "type": "string"
+    },
+    "current_hub_id": {
+      "type": "string"
+    },
+    "assigned_driver_email": {
+      "type": "string"
+    },
+    "zone_id": {
+      "type": "string"
+    },
+    "delivery_otp": {
+      "type": "string"
+    },
+    "pod_recipient_name": {
+      "type": "string"
+    },
+    "pod_signature": {
+      "type": "string"
+    },
+    "pod_photo_uri": {
+      "type": "string"
+    },
+    "pod_at": {
+      "type": "string"
+    },
+    "delivery_attempts": {
+      "type": "number",
+      "default": 0
+    },
+    "last_ndr_reason": {
+      "type": "string"
+    },
+    "eta_date": {
+      "type": "string"
+    },
+    "webhook_url": {
+      "type": "string"
+    },
+    "notes": {
+      "type": "string"
+    },
+    "member_emails": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "required": [
+    "tenant_id",
+    "tracking_number"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "data.member_emails": "{{user.email}}"
+        },
+        {
+          "data.merchant_email": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "create": {
+      "$or": [
+        {
+          "data.member_emails": {
+            "$in": [
+              "{{user.email}}"
+            ]
+          }
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "update": {
+      "$or": [
+        {
+          "data.member_emails": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "created_by_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    }
+  }
+}

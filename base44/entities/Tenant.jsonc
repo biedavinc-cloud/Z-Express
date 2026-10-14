@@ -1,0 +1,210 @@
+{
+  "name": "Tenant",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string"
+    },
+    "slug": {
+      "type": "string"
+    },
+    "legal_name": {
+      "type": "string"
+    },
+    "email": {
+      "type": "string"
+    },
+    "phone": {
+      "type": "string"
+    },
+    "website": {
+      "type": "string"
+    },
+    "country": {
+      "type": "string"
+    },
+    "city": {
+      "type": "string"
+    },
+    "address": {
+      "type": "string"
+    },
+    "logo_url": {
+      "type": "string"
+    },
+    "brand_color": {
+      "type": "string",
+      "default": "#3D1E00"
+    },
+    "accent_color": {
+      "type": "string",
+      "default": "#FF8E24"
+    },
+    "plan": {
+      "type": "string",
+      "enum": [
+        "starter",
+        "pro",
+        "enterprise"
+      ],
+      "default": "starter"
+    },
+    "monthly_fee": {
+      "type": "number",
+      "default": 49
+    },
+    "currency": {
+      "type": "string",
+      "default": "XAF"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "active",
+        "suspended"
+      ],
+      "default": "pending"
+    },
+    "tracking_prefix": {
+      "type": "string"
+    },
+    "about": {
+      "type": "string"
+    },
+    "documents": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "label": {
+            "type": "string"
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "registration",
+              "tax",
+              "id",
+              "license",
+              "insurance",
+              "bank",
+              "other"
+            ],
+            "default": "other"
+          },
+          "file_name": {
+            "type": "string"
+          },
+          "file_uri": {
+            "type": "string"
+          },
+          "uploaded_at": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "pending",
+              "verified",
+              "rejected"
+            ],
+            "default": "pending"
+          },
+          "note": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "kyc_status": {
+      "type": "string",
+      "enum": [
+        "not_submitted",
+        "pending",
+        "verified",
+        "rejected"
+      ],
+      "default": "not_submitted"
+    },
+    "owner_email": {
+      "type": "string"
+    },
+    "owner_user_id": {
+      "type": "string"
+    },
+    "member_emails": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "required": [
+    "name",
+    "owner_email"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "data.owner_email": "{{user.email}}"
+        },
+        {
+          "data.member_emails": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "create": {
+      "$or": [
+        {
+          "data.owner_email": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "update": {
+      "$or": [
+        {
+          "created_by_id": "{{user.id}}"
+        },
+        {
+          "data.member_emails": {
+            "$in": [
+              "{{user.email}}"
+            ]
+          }
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "created_by_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    }
+  }
+}

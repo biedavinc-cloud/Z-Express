@@ -1,0 +1,110 @@
+{
+  "name": "WebhookEndpoint",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string"
+    },
+    "label": {
+      "type": "string"
+    },
+    "url": {
+      "type": "string"
+    },
+    "events": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "secret": {
+      "type": "string"
+    },
+    "active": {
+      "type": "boolean",
+      "default": true
+    },
+    "last_status": {
+      "type": "number",
+      "default": 0
+    },
+    "last_delivery_at": {
+      "type": "string"
+    },
+    "last_error": {
+      "type": "string"
+    },
+    "member_emails": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "required": [
+    "tenant_id",
+    "url"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "data.member_emails": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "create": {
+      "$or": [
+        {
+          "data.member_emails": {
+            "$in": [
+              "{{user.email}}"
+            ]
+          }
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "update": {
+      "$or": [
+        {
+          "data.member_emails": {
+            "$in": [
+              "{{user.email}}"
+            ]
+          }
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "data.member_emails": {
+            "$in": [
+              "{{user.email}}"
+            ]
+          }
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    }
+  }
+}

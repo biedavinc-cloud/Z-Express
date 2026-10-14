@@ -1,0 +1,57 @@
+{
+  "id": "/",
+  "name": "Z. Express — Ship, Track & Deliver across Africa",
+  "short_name": "Z. Express",
+  "description": "Pan-African logistics platform: track shipments, compare rates, dispatch parcels, manage hubs, COD and store connections.",
+  "lang": "en",
+  "dir": "ltr",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "display_override": ["standalone", "minimal-ui", "browser"],
+  "orientation": "any",
+  "background_color": "#FFFBF5",
+  "theme_color": "#3D1E00",
+  "categories": ["business", "productivity", "navigation"],
+  "prefer_related_applications": false,
+  "icons": [
+    {
+      "src": "https://media.base44.com/images/public/6acf30b6a32b68be46e718aa/062868c74_Favi.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "https://media.base44.com/images/public/6acf30b6a32b68be46e718aa/062868c74_Favi.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "https://media.base44.com/images/public/6acf30b6a32b68be46e718aa/062868c74_Favi.png",
+      "sizes": "1024x1024",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Track a shipment",
+      "short_name": "Track",
+      "description": "Follow one or more parcels in real time",
+      "url": "/track"
+    },
+    {
+      "name": "Send a shipment",
+      "short_name": "Send",
+      "description": "Book a pickup and compare carrier rates",
+      "url": "/send"
+    },
+    {
+      "name": "Rate calculator",
+      "short_name": "Rates",
+      "description": "Estimate the cost of a delivery",
+      "url": "/rate-calculator"
+    }
+  ]
+}

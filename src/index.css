@@ -1,0 +1,129 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 36 40% 99%;
+    --foreground: 29 100% 12%;
+    --card: 0 0% 100%;
+    --card-foreground: 29 100% 12%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 29 100% 12%;
+    --primary: 29 100% 12%;
+    --primary-foreground: 36 100% 97%;
+    --secondary: 33 35% 95%;
+    --secondary-foreground: 29 100% 12%;
+    --muted: 33 30% 96%;
+    --muted-foreground: 29 18% 45%;
+    --accent: 29 100% 57%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 30 22% 89%;
+    --input: 30 22% 89%;
+    --ring: 29 100% 57%;
+    --chart-1: 29 100% 57%;
+    --chart-2: 29 100% 12%;
+    --chart-3: 43 74% 60%;
+    --chart-4: 173 58% 39%;
+    --chart-5: 12 76% 61%;
+    --radius: 0px;
+    --font-heading: 'Poppins', ui-sans-serif, system-ui, sans-serif;
+    --font-body: 'Poppins', ui-sans-serif, system-ui, sans-serif;
+    --font-display: 'Poppins', ui-sans-serif, system-ui, sans-serif;
+    --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    --sidebar-background: 29 100% 12%;
+    --sidebar-foreground: 36 60% 95%;
+    --sidebar-primary: 29 100% 57%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 29 60% 18%;
+    --sidebar-accent-foreground: 36 100% 97%;
+    --sidebar-border: 29 50% 22%;
+    --sidebar-ring: 29 100% 57%;
+  }
+
+  .dark {
+    --background: 29 40% 8%;
+    --foreground: 36 60% 97%;
+    --card: 29 35% 11%;
+    --card-foreground: 36 60% 97%;
+    --popover: 29 35% 11%;
+    --popover-foreground: 36 60% 97%;
+    --primary: 36 60% 97%;
+    --primary-foreground: 29 100% 12%;
+    --secondary: 29 30% 16%;
+    --secondary-foreground: 36 60% 97%;
+    --muted: 29 30% 16%;
+    --muted-foreground: 33 20% 68%;
+    --accent: 29 100% 57%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 62% 40%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 29 25% 20%;
+    --input: 29 25% 20%;
+    --ring: 29 100% 57%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    @apply bg-background text-foreground font-body antialiased;
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  a,
+  button,
+  [role='button'] {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  h1, h2, h3, h4, h5 {
+    @apply font-heading;
+  }
+}
+
+@layer utilities {
+  .zx-shadow {
+    box-shadow: 0 18px 45px -22px rgba(61, 30, 0, 0.35);
+  }
+  .zx-shadow-lg {
+    box-shadow: 0 30px 70px -30px rgba(61, 30, 0, 0.45);
+  }
+  .zx-grid-fade {
+    background-image:
+      linear-gradient(to right, rgba(61, 30, 0, 0.06) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(61, 30, 0, 0.06) 1px, transparent 1px);
+    background-size: 56px 56px;
+  }
+  .zx-scrollbar-none::-webkit-scrollbar { display: none; }
+  .zx-scrollbar-none { scrollbar-width: none; }
+  /* Installed (standalone) app: keep the notch / status bar clear of sticky headers. */
+  .zx-safe-top { padding-top: env(safe-area-inset-top); }
+  /* Traffic band under the hero: asphalt shading and the dashed lane marking. */
+  .zx-road {
+    background-image: linear-gradient(180deg, rgba(0, 0, 0, 0.42), rgba(0, 0, 0, 0.04) 48%, rgba(0, 0, 0, 0.42));
+  }
+  .zx-road-lane {
+    background-image: repeating-linear-gradient(90deg, rgba(255, 247, 237, 0.3) 0 18px, transparent 18px 36px);
+  }
+}
+
+/* Phones: a field below 16px makes iOS zoom the whole page on focus. */
+@media (max-width: 640px) {
+  input:not([type='checkbox']):not([type='radio']),
+  select,
+  textarea {
+    font-size: 16px;
+  }
+}

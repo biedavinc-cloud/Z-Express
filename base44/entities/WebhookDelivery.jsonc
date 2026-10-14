@@ -1,0 +1,122 @@
+{
+  "name": "WebhookDelivery",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string"
+    },
+    "endpoint_id": {
+      "type": "string"
+    },
+    "label": {
+      "type": "string"
+    },
+    "url": {
+      "type": "string"
+    },
+    "event": {
+      "type": "string"
+    },
+    "status_code": {
+      "type": "number",
+      "default": 0
+    },
+    "success": {
+      "type": "boolean",
+      "default": false
+    },
+    "attempts": {
+      "type": "number",
+      "default": 1
+    },
+    "duration_ms": {
+      "type": "number",
+      "default": 0
+    },
+    "response_snippet": {
+      "type": "string"
+    },
+    "error": {
+      "type": "string"
+    },
+    "payload_ref": {
+      "type": "string"
+    },
+    "delivered_at": {
+      "type": "string"
+    },
+    "member_emails": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "required": [
+    "tenant_id",
+    "url",
+    "event"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "data.member_emails": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "create": {
+      "$or": [
+        {
+          "data.member_emails": {
+            "$in": [
+              "{{user.email}}"
+            ]
+          }
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "update": {
+      "$or": [
+        {
+          "data.member_emails": {
+            "$in": [
+              "{{user.email}}"
+            ]
+          }
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "data.member_emails": {
+            "$in": [
+              "{{user.email}}"
+            ]
+          }
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,127 @@
+{
+  "name": "ShipmentEvent",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string"
+    },
+    "shipment_id": {
+      "type": "string"
+    },
+    "tracking_number": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string"
+    },
+    "event_type": {
+      "type": "string",
+      "enum": [
+        "created",
+        "scan_in",
+        "scan_out",
+        "in_transit",
+        "out_for_delivery",
+        "delivered",
+        "ndr",
+        "note",
+        "pod"
+      ],
+      "default": "note"
+    },
+    "location": {
+      "type": "string"
+    },
+    "hub_id": {
+      "type": "string"
+    },
+    "hub_name": {
+      "type": "string"
+    },
+    "driver_email": {
+      "type": "string"
+    },
+    "note": {
+      "type": "string"
+    },
+    "occurred_at": {
+      "type": "string"
+    },
+    "visible_public": {
+      "type": "boolean",
+      "default": true
+    },
+    "member_emails": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "required": [
+    "tenant_id",
+    "shipment_id"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "data.member_emails": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "create": {
+      "$or": [
+        {
+          "data.member_emails": {
+            "$in": [
+              "{{user.email}}"
+            ]
+          }
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "update": {
+      "$or": [
+        {
+          "data.member_emails": {
+            "$in": [
+              "{{user.email}}"
+            ]
+          }
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "data.member_emails": {
+            "$in": [
+              "{{user.email}}"
+            ]
+          }
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    }
+  }
+}

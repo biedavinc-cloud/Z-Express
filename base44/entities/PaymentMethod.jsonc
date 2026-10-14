@@ -1,0 +1,185 @@
+{
+  "name": "PaymentMethod",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string"
+    },
+    "tenant_name": {
+      "type": "string"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "orange_money",
+        "mtn_momo",
+        "moov_money",
+        "wave",
+        "mpesa",
+        "airtel_money",
+        "free_money",
+        "wizall",
+        "mixx_by_yas",
+        "halopesa",
+        "telebirr",
+        "mvola",
+        "ecocash",
+        "afrimoney",
+        "unitel_money",
+        "mpamba",
+        "telecel_cash",
+        "gmoney",
+        "airteltigo_money",
+        "opay",
+        "palmpay",
+        "paga",
+        "chipper_cash",
+        "jumiapay",
+        "fawry",
+        "flouci",
+        "d17",
+        "inwi_money",
+        "express_union_mm",
+        "wari",
+        "snapscan",
+        "zapper",
+        "flutterwave",
+        "paystack",
+        "paydunya",
+        "cinetpay",
+        "kkiapay",
+        "fedapay",
+        "semoa",
+        "hub2",
+        "bizao",
+        "notchpay",
+        "mesomb",
+        "afrikpay",
+        "campay",
+        "fapshi",
+        "koree",
+        "smobilpay",
+        "payunit",
+        "cellulant_tingg",
+        "pesapal",
+        "dpo_pay",
+        "onafriq",
+        "interswitch",
+        "monnify",
+        "remita",
+        "paymob",
+        "kashier",
+        "yoco",
+        "payfast",
+        "peach_payments",
+        "paynow",
+        "dusupay",
+        "voguepay",
+        "bank_transfer",
+        "instant_eft",
+        "pesalink",
+        "card",
+        "cash_on_pickup",
+        "cash_on_delivery",
+        "wafacash",
+        "cash_plus",
+        "mukuru"
+      ],
+      "default": "mtn_momo"
+    },
+    "label": {
+      "type": "string"
+    },
+    "account_name": {
+      "type": "string"
+    },
+    "account_number": {
+      "type": "string"
+    },
+    "bank_name": {
+      "type": "string"
+    },
+    "country": {
+      "type": "string"
+    },
+    "currency": {
+      "type": "string",
+      "default": "XAF"
+    },
+    "instructions": {
+      "type": "string"
+    },
+    "active": {
+      "type": "boolean",
+      "default": true
+    },
+    "sort_order": {
+      "type": "number",
+      "default": 0
+    },
+    "member_emails": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "required": [
+    "tenant_id",
+    "type"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "data.member_emails": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "create": {
+      "$or": [
+        {
+          "data.member_emails": {
+            "$in": [
+              "{{user.email}}"
+            ]
+          }
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "update": {
+      "$or": [
+        {
+          "data.member_emails": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "data.member_emails": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,149 @@
+{
+  "name": "Zone",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "country": {
+      "type": "string"
+    },
+    "cities": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "pricing_model": {
+      "type": "string",
+      "enum": [
+        "flat",
+        "weight",
+        "distance",
+        "tiered"
+      ],
+      "default": "weight"
+    },
+    "base_rate": {
+      "type": "number",
+      "default": 0
+    },
+    "per_kg": {
+      "type": "number",
+      "default": 0
+    },
+    "per_km": {
+      "type": "number",
+      "default": 0
+    },
+    "min_charge": {
+      "type": "number",
+      "default": 0
+    },
+    "eta_days": {
+      "type": "number",
+      "default": 2
+    },
+    "weight_tiers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "max_kg": {
+            "type": "number"
+          },
+          "rate": {
+            "type": "number"
+          }
+        }
+      }
+    },
+    "remote_area": {
+      "type": "boolean",
+      "default": false
+    },
+    "currency": {
+      "type": "string",
+      "default": "XAF"
+    },
+    "active": {
+      "type": "boolean",
+      "default": true
+    },
+    "member_emails": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "required": [
+    "tenant_id",
+    "name"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "data.member_emails": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "create": {
+      "$or": [
+        {
+          "data.member_emails": {
+            "$in": [
+              "{{user.email}}"
+            ]
+          }
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "update": {
+      "$or": [
+        {
+          "data.member_emails": {
+            "$in": [
+              "{{user.email}}"
+            ]
+          }
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "data.member_emails": {
+            "$in": [
+              "{{user.email}}"
+            ]
+          }
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    }
+  }
+}

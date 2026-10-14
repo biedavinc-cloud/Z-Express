@@ -1,0 +1,121 @@
+{
+  "name": "CodEntry",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string"
+    },
+    "shipment_id": {
+      "type": "string"
+    },
+    "tracking_number": {
+      "type": "string"
+    },
+    "driver_email": {
+      "type": "string"
+    },
+    "merchant_email": {
+      "type": "string"
+    },
+    "amount": {
+      "type": "number",
+      "default": 0
+    },
+    "currency": {
+      "type": "string",
+      "default": "XAF"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "collected",
+        "settled",
+        "disputed"
+      ],
+      "default": "pending"
+    },
+    "collected_at": {
+      "type": "string"
+    },
+    "settled_at": {
+      "type": "string"
+    },
+    "settled_by": {
+      "type": "string"
+    },
+    "settlement_ref": {
+      "type": "string"
+    },
+    "notes": {
+      "type": "string"
+    },
+    "member_emails": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "required": [
+    "tenant_id"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "data.member_emails": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "create": {
+      "$or": [
+        {
+          "data.member_emails": {
+            "$in": [
+              "{{user.email}}"
+            ]
+          }
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "update": {
+      "$or": [
+        {
+          "data.member_emails": {
+            "$in": [
+              "{{user.email}}"
+            ]
+          }
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "created_by_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    }
+  }
+}

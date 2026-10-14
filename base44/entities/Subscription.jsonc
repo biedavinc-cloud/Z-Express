@@ -1,0 +1,121 @@
+{
+  "name": "Subscription",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string"
+    },
+    "tenant_name": {
+      "type": "string"
+    },
+    "plan": {
+      "type": "string",
+      "enum": [
+        "starter",
+        "pro",
+        "enterprise"
+      ],
+      "default": "starter"
+    },
+    "amount": {
+      "type": "number",
+      "default": 49
+    },
+    "currency": {
+      "type": "string",
+      "default": "USD"
+    },
+    "billing_cycle": {
+      "type": "string",
+      "enum": [
+        "monthly",
+        "yearly"
+      ],
+      "default": "monthly"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "trialing",
+        "active",
+        "past_due",
+        "cancelled"
+      ],
+      "default": "trialing"
+    },
+    "started_at": {
+      "type": "string"
+    },
+    "current_period_end": {
+      "type": "string"
+    },
+    "seats": {
+      "type": "number",
+      "default": 3
+    },
+    "notes": {
+      "type": "string"
+    },
+    "member_emails": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "required": [
+    "tenant_id",
+    "plan"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "data.member_emails": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "create": {
+      "$or": [
+        {
+          "data.member_emails": {
+            "$in": [
+              "{{user.email}}"
+            ]
+          }
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "update": {
+      "$or": [
+        {
+          "data.member_emails": {
+            "$in": [
+              "{{user.email}}"
+            ]
+          }
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

@@ -1,0 +1,137 @@
+{
+  "name": "Surcharge",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "remote_area",
+        "fuel",
+        "express",
+        "peak_season",
+        "oversize"
+      ],
+      "default": "fuel"
+    },
+    "mode": {
+      "type": "string",
+      "enum": [
+        "flat",
+        "percent"
+      ],
+      "default": "percent"
+    },
+    "amount": {
+      "type": "number",
+      "default": 0
+    },
+    "basis": {
+      "type": "string",
+      "enum": [
+        "always",
+        "weight",
+        "volumetric",
+        "zone"
+      ],
+      "default": "always"
+    },
+    "threshold": {
+      "type": "number",
+      "default": 0
+    },
+    "applies_to": {
+      "type": "string",
+      "enum": [
+        "all",
+        "express",
+        "cod"
+      ],
+      "default": "all"
+    },
+    "zone_id": {
+      "type": "string"
+    },
+    "active": {
+      "type": "boolean",
+      "default": true
+    },
+    "member_emails": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "required": [
+    "tenant_id",
+    "name"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "data.member_emails": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "create": {
+      "$or": [
+        {
+          "data.member_emails": {
+            "$in": [
+              "{{user.email}}"
+            ]
+          }
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "update": {
+      "$or": [
+        {
+          "data.member_emails": {
+            "$in": [
+              "{{user.email}}"
+            ]
+          }
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "data.member_emails": {
+            "$in": [
+              "{{user.email}}"
+            ]
+          }
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    }
+  }
+}

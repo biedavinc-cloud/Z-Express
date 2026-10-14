@@ -1,0 +1,162 @@
+{
+  "name": "MarketplaceConnection",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string"
+    },
+    "tenant_name": {
+      "type": "string"
+    },
+    "marketplace": {
+      "type": "string",
+      "enum": [
+        "shopify",
+        "woocommerce",
+        "magento",
+        "prestashop",
+        "wix",
+        "jumia",
+        "amazon",
+        "ebay",
+        "etsy",
+        "custom"
+      ],
+      "default": "custom"
+    },
+    "label": {
+      "type": "string"
+    },
+    "mode": {
+      "type": "string",
+      "enum": [
+        "orders_in",
+        "carrier_account"
+      ],
+      "default": "orders_in"
+    },
+    "inbound_token": {
+      "type": "string"
+    },
+    "webhook_url": {
+      "type": "string"
+    },
+    "api_base_url": {
+      "type": "string"
+    },
+    "api_key": {
+      "type": "string"
+    },
+    "api_secret": {
+      "type": "string"
+    },
+    "default_service_type": {
+      "type": "string",
+      "enum": [
+        "express",
+        "standard",
+        "freight",
+        "fulfillment"
+      ],
+      "default": "standard"
+    },
+    "default_payment_mode": {
+      "type": "string",
+      "enum": [
+        "prepaid",
+        "cod"
+      ],
+      "default": "prepaid"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "connected",
+        "disabled"
+      ],
+      "default": "connected"
+    },
+    "orders_count": {
+      "type": "number",
+      "default": 0
+    },
+    "last_event_at": {
+      "type": "string"
+    },
+    "last_error": {
+      "type": "string"
+    },
+    "member_emails": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "required": [
+    "tenant_id",
+    "marketplace"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "data.member_emails": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "create": {
+      "$or": [
+        {
+          "data.member_emails": {
+            "$in": [
+              "{{user.email}}"
+            ]
+          }
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "update": {
+      "$or": [
+        {
+          "data.member_emails": {
+            "$in": [
+              "{{user.email}}"
+            ]
+          }
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "data.member_emails": {
+            "$in": [
+              "{{user.email}}"
+            ]
+          }
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    }
+  }
+}

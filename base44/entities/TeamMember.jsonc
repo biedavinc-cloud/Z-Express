@@ -1,0 +1,139 @@
+{
+  "name": "TeamMember",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string"
+    },
+    "tenant_name": {
+      "type": "string"
+    },
+    "full_name": {
+      "type": "string"
+    },
+    "email": {
+      "type": "string"
+    },
+    "phone": {
+      "type": "string"
+    },
+    "role": {
+      "type": "string",
+      "enum": [
+        "tenant_admin",
+        "hub_supervisor",
+        "dispatcher",
+        "billing_manager",
+        "driver"
+      ],
+      "default": "driver"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "invited",
+        "active",
+        "suspended"
+      ],
+      "default": "invited"
+    },
+    "hub_id": {
+      "type": "string"
+    },
+    "vehicle_id": {
+      "type": "string"
+    },
+    "availability": {
+      "type": "string",
+      "enum": [
+        "available",
+        "on_delivery",
+        "offline"
+      ],
+      "default": "offline"
+    },
+    "last_lat": {
+      "type": "number"
+    },
+    "last_lng": {
+      "type": "number"
+    },
+    "last_seen": {
+      "type": "string"
+    },
+    "notes": {
+      "type": "string"
+    },
+    "member_emails": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "required": [
+    "tenant_id",
+    "email"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "data.email": "{{user.email}}"
+        },
+        {
+          "data.member_emails": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "create": {
+      "$or": [
+        {
+          "data.member_emails": {
+            "$in": [
+              "{{user.email}}"
+            ]
+          }
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "update": {
+      "$or": [
+        {
+          "data.member_emails": {
+            "$in": [
+              "{{user.email}}"
+            ]
+          }
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "created_by_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    }
+  }
+}
