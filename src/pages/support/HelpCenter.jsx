@@ -4,6 +4,7 @@ import { Search, BookOpen, ChevronDown, LifeBuoy, Code2, ExternalLink } from 'lu
 import SiteShell from '@/components/site/SiteShell';
 import { useI18n } from '@/components/LanguageProvider';
 import { HELP_ARTICLES, HELP_TOPICS } from '@/lib/helpArticles';
+import { localized, localizedList } from '@/lib/localized';
 
 export default function HelpCenter() {
   const { t, lang } = useI18n();
@@ -17,9 +18,8 @@ export default function HelpCenter() {
       if (topic && article.topic !== topic) return false;
       if (!term) return true;
       const haystack = [
-        article.title[lang],
-        article.title.en,
-        ...(article.body[lang] || []),
+        localized(article.title, lang),
+        ...localizedList(article.body, lang),
         article.topic,
       ]
         .join(' ')
@@ -73,7 +73,7 @@ export default function HelpCenter() {
                     : 'bg-primary-foreground/10 text-primary-foreground/80'
                 }`}
               >
-                {item.label[lang]}
+                {localized(item.label, lang)}
               </button>
             ))}
           </div>
@@ -115,11 +115,11 @@ export default function HelpCenter() {
                         <span className="flex items-center gap-2">
                           <BookOpen className="h-4 w-4 text-accent" />
                           <span className="font-heading text-base font-semibold text-primary">
-                            {article.title[lang]}
+                            {localized(article.title, lang)}
                           </span>
                         </span>
                         <span className="mt-1 block text-xs text-muted-foreground">
-                          {HELP_TOPICS.find((item) => item.id === article.topic)?.label[lang]} ·{' '}
+                          {localized(HELP_TOPICS.find((item) => item.id === article.topic)?.label, lang)} ·{' '}
                           {t('help.updated')} {article.updated}
                         </span>
                       </span>
@@ -131,7 +131,7 @@ export default function HelpCenter() {
                     </button>
                     {isOpen && (
                       <div className="mt-4 space-y-3 pl-6 text-sm leading-relaxed text-muted-foreground">
-                        {article.body[lang].map((paragraph) => (
+                        {localizedList(article.body, lang).map((paragraph) => (
                           <p key={paragraph.slice(0, 24)}>{paragraph}</p>
                         ))}
                       </div>

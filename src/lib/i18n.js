@@ -1,9 +1,18 @@
 import { portalEn, portalFr } from './i18nPortal';
 import { pricingEn, pricingFr } from './i18nPricing';
+import { sw } from './i18nSw';
+import { es } from './i18nEs';
+import { legalEn, legalFr } from './i18nLegal';
+
+// English is the platform's principal language and the fallback for every key that
+// has not been translated yet.
+export const DEFAULT_LANGUAGE = 'en';
 
 export const LANGUAGES = [
   { code: 'en', label: 'English', short: 'EN' },
   { code: 'fr', label: 'Français', short: 'FR' },
+  { code: 'sw', label: 'Kiswahili', short: 'SW' },
+  { code: 'es', label: 'Español', short: 'ES' },
 ];
 
 const en = {
@@ -747,8 +756,10 @@ const fr = {
 };
 
 export const dictionaries = {
-  en: { ...en, ...pricingEn, ...portalEn },
-  fr: { ...fr, ...pricingFr, ...portalFr },
+  en: { ...en, ...pricingEn, ...portalEn, ...legalEn },
+  fr: { ...fr, ...pricingFr, ...portalFr, ...legalFr },
+  sw,
+  es,
 };
 
 export function translate(lang, key, vars) {

@@ -50,7 +50,7 @@ export default function Developers() {
             </pre>
           </div>
 
-          <div className="rounded-3xl border border-border bg-card p-7">
+          <div id="webhooks" className="scroll-mt-28 rounded-3xl border border-border bg-card p-7">
             <span className="grid h-11 w-11 place-items-center rounded-2xl bg-accent/12 text-accent">
               <Webhook className="h-5 w-5" />
             </span>
@@ -84,7 +84,10 @@ export default function Developers() {
           ))}
         </div>
 
-        <div className="mt-16 flex flex-col gap-4 rounded-3xl border border-accent/40 bg-accent/5 p-8 sm:flex-row sm:items-center">
+        <div
+          id="marketplaces"
+          className="mt-16 flex scroll-mt-28 flex-col gap-4 rounded-3xl border border-accent/40 bg-accent/5 p-8 sm:flex-row sm:items-center"
+        >
           <span className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-accent text-accent-foreground">
             <Store className="h-6 w-6" />
           </span>

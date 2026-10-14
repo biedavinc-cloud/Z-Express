@@ -1,8 +1,9 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Linkedin, Twitter, Facebook, Instagram } from 'lucide-react';
+import { Linkedin, Twitter, Facebook, Instagram, Mail, Phone } from 'lucide-react';
 import { useI18n } from '@/components/LanguageProvider';
 import BrandMark from '@/components/site/BrandMark';
+import { SUPPORT_EMAIL, SUPPORT_MAILTO, SUPPORT_PHONE } from '@/lib/support';
 
 const COLUMNS = [
   {
@@ -10,7 +11,7 @@ const COLUMNS = [
     links: [
       { key: 'nav.business', to: '/business' },
       { key: 'nav.developers', to: '/developers' },
-      { key: 'nav.careers', to: '/contact' },
+      { key: 'nav.careers', to: '/careers' },
       { key: 'nav.contact', to: '/contact' },
       { key: 'help.title', to: '/support/help-center' },
     ],
@@ -29,19 +30,19 @@ const COLUMNS = [
     title: 'footer.developers',
     links: [
       { key: 'footer.apiDocs', to: '/developers' },
-      { key: 'dev.webhooks', to: '/developers' },
-      { key: 'dev.marketplaceTitle', to: '/developers' },
+      { key: 'dev.webhooks', to: '/developers#webhooks' },
+      { key: 'dev.marketplaceTitle', to: '/developers#marketplaces' },
       { key: 'quick.rateTitle', to: '/rate-calculator' },
     ],
   },
   {
     title: 'footer.legal',
     links: [
-      { key: 'footer.sdkPolicy', to: '/developers' },
-      { key: 'footer.remoteSurcharge', to: '/contact' },
-      { key: 'footer.fuelSurcharge', to: '/contact' },
-      { key: 'footer.privacy', to: '/contact' },
-      { key: 'footer.terms', to: '/contact' },
+      { key: 'footer.sdkPolicy', to: '/legal/sdk-policy' },
+      { key: 'footer.remoteSurcharge', to: '/surcharges' },
+      { key: 'footer.fuelSurcharge', to: '/surcharges' },
+      { key: 'footer.privacy', to: '/legal/privacy' },
+      { key: 'footer.terms', to: '/legal/terms' },
     ],
   },
 ];
@@ -60,6 +61,19 @@ export default function SiteFooter() {
             <p className="mt-5 max-w-xs text-sm leading-relaxed text-primary-foreground/65">
               {t('footer.aboutText')}
             </p>
+            <div className="mt-5 space-y-2 text-sm text-primary-foreground/75">
+              <a
+                href={SUPPORT_MAILTO}
+                className="flex items-center gap-2.5 transition hover:text-accent"
+              >
+                <Mail className="h-3.5 w-3.5 shrink-0 text-accent" />
+                {SUPPORT_EMAIL}
+              </a>
+              <p className="flex items-center gap-2.5">
+                <Phone className="h-3.5 w-3.5 shrink-0 text-accent" />
+                {SUPPORT_PHONE}
+              </p>
+            </div>
             <div className="mt-6 flex items-center gap-2">
               <span className="mr-2 text-xs uppercase tracking-wider text-primary-foreground/50">
                 {t('footer.follow')}
@@ -122,10 +136,10 @@ export default function SiteFooter() {
             </a>
           </span>
           <div className="flex gap-5">
-            <Link to="/contact" className="transition hover:text-primary-foreground">
+            <Link to="/legal/privacy" className="transition hover:text-primary-foreground">
               {t('footer.privacy')}
             </Link>
-            <Link to="/contact" className="transition hover:text-primary-foreground">
+            <Link to="/legal/terms" className="transition hover:text-primary-foreground">
               {t('footer.terms')}
             </Link>
           </div>

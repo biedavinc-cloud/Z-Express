@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { base44 } from '@/api/base44Client';
-import { CheckCircle2, Loader2, Send } from 'lucide-react';
+import { CheckCircle2, Loader2, Mail, MapPin, Phone, Send } from 'lucide-react';
 import { useI18n } from '@/components/LanguageProvider';
+import { SUPPORT_ADDRESS, SUPPORT_EMAIL, SUPPORT_MAILTO, SUPPORT_PHONE } from '@/lib/support';
 import { Button } from '@/components/ui/button';
 import { COUNTRIES } from '@/lib/logistics';
 
@@ -69,9 +70,18 @@ export default function ContactSection() {
           </h2>
           <p className="mt-3 max-w-md text-base text-muted-foreground">{t('contact.subtitle')}</p>
           <div className="mt-8 space-y-3 text-sm text-muted-foreground">
-            <p>support@zexpress.africa</p>
-            <p>+237 6 00 00 00 00</p>
-            <p>Bonanjo, Douala — Cameroon</p>
+            <a href={SUPPORT_MAILTO} className="flex items-center gap-2.5 transition hover:text-accent">
+              <Mail className="h-4 w-4 text-accent" />
+              {SUPPORT_EMAIL}
+            </a>
+            <p className="flex items-center gap-2.5">
+              <Phone className="h-4 w-4 text-accent" />
+              {SUPPORT_PHONE}
+            </p>
+            <p className="flex items-center gap-2.5">
+              <MapPin className="h-4 w-4 text-accent" />
+              {SUPPORT_ADDRESS}
+            </p>
           </div>
         </div>
 

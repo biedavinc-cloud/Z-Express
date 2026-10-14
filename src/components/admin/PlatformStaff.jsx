@@ -31,7 +31,7 @@ export default function PlatformStaff({ users, roles, busy, onInvite, onRole, on
               type="email"
               value={email}
               onChange={(event) => setEmail(event.target.value)}
-              placeholder="admin@zexpress.africa"
+              placeholder="express@zanldo.com"
               className="h-11 w-full border border-input bg-transparent pl-10 pr-3 text-sm outline-none focus:border-accent"
             />
           </div>

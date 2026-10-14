@@ -51,6 +51,11 @@ import PortalPermissions from './pages/portal/PortalPermissions';
 import PortalPayments from './pages/portal/PortalPayments';
 import HelpCenter from './pages/support/HelpCenter';
 import InvoiceHistory from './pages/billing/InvoiceHistory';
+import Careers from './pages/Careers';
+import Surcharges from './pages/Surcharges';
+import PrivacyPolicy from './pages/legal/PrivacyPolicy';
+import TermsOfUse from './pages/legal/TermsOfUse';
+import SdkPolicy from './pages/legal/SdkPolicy';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -87,6 +92,11 @@ const AuthenticatedApp = () => {
       <Route path="/developers" element={<Developers />} />
       <Route path="/contact" element={<Contact />} />
       <Route path="/support/help-center" element={<HelpCenter />} />
+      <Route path="/careers" element={<Careers />} />
+      <Route path="/surcharges" element={<Surcharges />} />
+      <Route path="/legal/privacy" element={<PrivacyPolicy />} />
+      <Route path="/legal/terms" element={<TermsOfUse />} />
+      <Route path="/legal/sdk-policy" element={<SdkPolicy />} />
 
       {/* Authentication */}
       <Route path="/login" element={<Login />} />
