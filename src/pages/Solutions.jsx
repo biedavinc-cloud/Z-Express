@@ -27,6 +27,7 @@ import {
   LAST_MILE_ICON,
   SUPPLY_CHAIN_ICON,
 } from '@/lib/branding';
+import { BUSINESS_HERO_IMAGE } from '@/lib/siteImages';
 
 // A detailed, Aramex-style service page: hero, overview, the four core services,
 // how it works, features, benefits, industries, FAQ and a closing CTA. Service
@@ -84,8 +85,15 @@ export default function Solutions() {
   return (
     <SiteShell>
       {/* Hero */}
-      <section className="bg-primary py-20 text-primary-foreground sm:py-24">
-        <div className="mx-auto max-w-5xl px-4 sm:px-6">
+      <section className="relative overflow-hidden bg-primary py-20 text-primary-foreground sm:py-24">
+        {/* Transparent 3D wordmark as a faded background watermark; its own alpha
+            lets the brown hero show through the negative space. */}
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 flex justify-center px-4 opacity-20 sm:opacity-25">
+          <div className="aspect-[3.11/1] w-full max-w-5xl">
+            <Image src={BUSINESS_HERO_IMAGE} alt="" className="h-full w-full" fittingType="fit" />
+          </div>
+        </div>
+        <div className="relative mx-auto max-w-5xl px-4 sm:px-6">
           <span className="inline-flex items-center gap-2 rounded-full border border-primary-foreground/20 px-3.5 py-1.5 text-xs font-medium uppercase tracking-wider text-accent">
             <Package className="h-3.5 w-3.5" />
             {t('solutions.pageEyebrow')}

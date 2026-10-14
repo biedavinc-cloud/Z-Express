@@ -25,7 +25,8 @@ export const ONBOARD_IMAGES = [
   `${BASE}/fea7c7f8f_generated_image.png`,
 ];
 
-// 3D block-lettering hero used behind the Business portal page (full opacity).
-export const BUSINESS_HERO_IMAGE = `${BASE}/9aabb2221_image_20261014_172945.jpg`;
+// 3D "Z.express" wordmark (RGBA, real alpha) used as the Business portal hero —
+// its own transparency lets the page background show through the negative space.
+export const BUSINESS_HERO_IMAGE = `${BASE}/6ba614a68_z_express_transparent.png`;
 
 export const IMAGE_OPACITY = 0.95;

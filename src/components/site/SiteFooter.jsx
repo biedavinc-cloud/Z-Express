@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom';
 import { ChevronDown, Linkedin, Twitter, Facebook, Instagram, Mail, Phone } from 'lucide-react';
 import { useI18n } from '@/components/LanguageProvider';
 import BrandMark from '@/components/site/BrandMark';
+import { Image } from '@/components/ui/image';
+import { BUSINESS_HERO_IMAGE } from '@/lib/siteImages';
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -90,6 +92,14 @@ export default function SiteFooter() {
                 {PLATFORM_EMAIL}
               </a>
             </div>
+            <Image
+              src={BUSINESS_HERO_IMAGE}
+              alt="Z. Express"
+              originWidth={2688}
+              originHeight={864}
+              className="mt-5 w-32 sm:w-40"
+              fittingType="fit"
+            />
           </div>
 
           {/* Navigation dropdowns */}
