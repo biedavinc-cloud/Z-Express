@@ -3,6 +3,7 @@ import { pricingEn, pricingFr } from './i18nPricing';
 import { sw } from './i18nSw';
 import { es } from './i18nEs';
 import { legalEn, legalFr } from './i18nLegal';
+import { supportEn, supportFr, supportSw, supportEs } from './i18nSupport';
 
 // English is the platform's principal language and the fallback for every key that
 // has not been translated yet.
@@ -756,10 +757,10 @@ const fr = {
 };
 
 export const dictionaries = {
-  en: { ...en, ...pricingEn, ...portalEn, ...legalEn },
-  fr: { ...fr, ...pricingFr, ...portalFr, ...legalFr },
-  sw,
-  es,
+  en: { ...en, ...pricingEn, ...portalEn, ...legalEn, ...supportEn },
+  fr: { ...fr, ...pricingFr, ...portalFr, ...legalFr, ...supportFr },
+  sw: { ...sw, ...supportSw },
+  es: { ...es, ...supportEs },
 };
 
 export function translate(lang, key, vars) {

@@ -1,12 +1,30 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
-import { ArrowRight, Banknote, CheckCircle2, Copy, Loader2, PackageCheck, Wallet } from 'lucide-react';
+import {
+  ArrowRight,
+  Banknote,
+  CheckCircle2,
+  Copy,
+  Loader2,
+  MapPin,
+  PackageCheck,
+  Wallet,
+} from 'lucide-react';
+import PickupMapPicker from '@/components/site/PickupMapPicker';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
 import SiteShell from '@/components/site/SiteShell';
 import { useI18n } from '@/components/LanguageProvider';
 import { useCountry } from '@/components/site/useCountry';
 import { Button } from '@/components/ui/button';
-import { CITIES, COUNTRIES, SERVICE_TYPES, formatMoney } from '@/lib/logistics';
+import { CITIES, COUNTRIES, MARKET_COVERAGE, SERVICE_TYPES, formatMoney } from '@/lib/logistics';
 import { DEFAULT_GOODS, GOODS_CATEGORIES, goodsLabel } from '@/lib/goods';
 import { railLabel } from '@/lib/payments';
 
@@ -28,6 +46,7 @@ export default function CreateShipment() {
   const [error, setError] = useState('');
   const [booked, setBooked] = useState(null);
   const [copied, setCopied] = useState(false);
+  const [mapOpen, setMapOpen] = useState(false);
 
   const [form, setForm] = useState({
     origin_country: params.get('origin_country') || country,
@@ -53,6 +72,8 @@ export default function CreateShipment() {
     sender_phone: '',
     sender_email: '',
     sender_address: '',
+    sender_lat: '',
+    sender_lng: '',
     receiver_name: '',
     receiver_phone: '',
     receiver_email: '',
@@ -64,6 +85,20 @@ export default function CreateShipment() {
   });
 
   const update = (field) => (event) => setForm((prev) => ({ ...prev, [field]: event.target.value }));
+
+  const pickup =
+    form.sender_lat && form.sender_lng ? [Number(form.sender_lat), Number(form.sender_lng)] : null;
+  const setPickup = (point) =>
+    setForm((prev) => ({
+      ...prev,
+      sender_lat: point ? Number(Number(point[0]).toFixed(6)) : '',
+      sender_lng: point ? Number(Number(point[1]).toFixed(6)) : '',
+    }));
+  // The map opens on the city the parcel leaves from when we know it.
+  const originPoint = MARKET_COVERAGE.find(
+    (point) => point.city.toLowerCase() === String(form.origin_city || '').trim().toLowerCase()
+  );
+
   const selected = quotes.find((q) => q.tenant_id === form.tenant_id);
   const methodLabel = (method) =>
     [method.label || railLabel(method.type, lang), method.account_number].filter(Boolean).join(' · ');
@@ -162,6 +197,8 @@ export default function CreateShipment() {
       const response = await base44.functions.invoke('createShipment', {
         ...form,
         tenant_id: form.tenant_id,
+        sender_lat: Number(form.sender_lat) || 0,
+        sender_lng: Number(form.sender_lng) || 0,
         weight_kg: Number(form.weight_kg),
         pieces: Number(form.pieces) || 1,
         cod_amount: Number(form.cod_amount) || 0,
@@ -543,8 +580,68 @@ export default function CreateShipment() {
                   <p className="rounded-none bg-secondary px-3.5 py-2.5 text-xs text-muted-foreground">
                     {[form.origin_city, form.origin_country].filter(Boolean).join(', ')}
                   </p>
+
+                  <div className="rounded-none border border-dashed border-accent/45 bg-accent/5 p-4">
+                    <div className="flex items-start gap-3">
+                      <span className="grid h-10 w-10 shrink-0 place-items-center rounded-none bg-accent/12 text-accent">
+                        <MapPin className="h-5 w-5" />
+                      </span>
+                      <div className="min-w-0 flex-1">
+                        <p className="font-heading text-sm font-semibold text-primary">
+                          {t('pickup.title')}
+                        </p>
+                        <p className="mt-0.5 text-xs leading-relaxed text-muted-foreground">
+                          {pickup
+                            ? `${t('pickup.selected')} · ${pickup[0].toFixed(5)}, ${pickup[1].toFixed(5)}`
+                            : t('pickup.optional')}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      <Button type="button" size="sm" onClick={() => setMapOpen(true)}>
+                        <MapPin className="mr-1.5 h-3.5 w-3.5" />
+                        {pickup ? t('pickup.change') : t('pickup.set')}
+                      </Button>
+                      {pickup && (
+                        <Button type="button" size="sm" variant="outline" onClick={() => setPickup(null)}>
+                          {t('pickup.clear')}
+                        </Button>
+                      )}
+                    </div>
+                  </div>
                 </div>
               </div>
+
+              <Dialog open={mapOpen} onOpenChange={setMapOpen}>
+                <DialogContent className="max-w-2xl rounded-none p-5 sm:p-6">
+                  <DialogHeader>
+                    <DialogTitle className="font-heading text-base font-semibold text-primary">
+                      {t('pickup.title')}
+                    </DialogTitle>
+                    <DialogDescription className="text-xs leading-relaxed text-muted-foreground">
+                      {t('pickup.hint')}
+                    </DialogDescription>
+                  </DialogHeader>
+                  <PickupMapPicker
+                    value={pickup}
+                    onPick={setPickup}
+                    center={originPoint ? [originPoint.lat, originPoint.lng] : null}
+                  />
+                  <DialogFooter className="gap-2">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => setPickup(null)}
+                      disabled={!pickup}
+                    >
+                      {t('pickup.clear')}
+                    </Button>
+                    <Button type="button" onClick={() => setMapOpen(false)} disabled={!pickup}>
+                      {t('pickup.done')}
+                    </Button>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
               <div>
                 <h2 className="font-heading text-sm font-semibold uppercase tracking-wider text-muted-foreground">
                   {t('ship.receiver')}
@@ -581,6 +678,12 @@ export default function CreateShipment() {
                     <p className="text-xs uppercase tracking-wider text-muted-foreground">{t('ship.sender')}</p>
                     <p className="mt-1 font-medium text-primary">{form.sender_name || '—'}</p>
                     <p className="text-muted-foreground">{form.sender_phone}</p>
+                    {pickup && (
+                      <p className="mt-2 flex items-center gap-1.5 text-xs text-muted-foreground">
+                        <MapPin className="h-3 w-3 text-accent" />
+                        {t('pickup.summary')} : {pickup[0].toFixed(5)}, {pickup[1].toFixed(5)}
+                      </p>
+                    )}
                   </div>
                   <div className="rounded-none border border-border p-5">
                     <p className="text-xs uppercase tracking-wider text-muted-foreground">{t('ship.receiver')}</p>

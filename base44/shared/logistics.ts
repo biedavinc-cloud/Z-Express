@@ -277,6 +277,8 @@ export async function createShipmentRecord(service, tenant, payload, source) {
     sender_country: String(payload.sender_country || p.origin_country || "").slice(0, 60),
     sender_city: String(payload.sender_city || p.origin_city || "").slice(0, 60),
     sender_address: String(payload.sender_address || "").slice(0, 400),
+    sender_lat: Number(payload.sender_lat) || undefined,
+    sender_lng: Number(payload.sender_lng) || undefined,
     receiver_name: String(payload.receiver_name).slice(0, 120),
     receiver_phone: String(payload.receiver_phone).slice(0, 40),
     receiver_email: String(payload.receiver_email || "").slice(0, 120),

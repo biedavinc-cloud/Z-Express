@@ -48,6 +48,12 @@
     "sender_address": {
       "type": "string"
     },
+    "sender_lat": {
+      "type": "number"
+    },
+    "sender_lng": {
+      "type": "number"
+    },
     "receiver_name": {
       "type": "string"
     },

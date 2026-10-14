@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link, NavLink, Navigate, Outlet, useNavigate } from 'react-router-dom';
+import { Link, NavLink, Navigate, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
 import {
   LayoutDashboard,
@@ -67,10 +67,23 @@ export default function PortalLayout() {
   const navigate = useNavigate();
   const [session, setSession] = useState(null);
   const [open, setOpen] = useState(false);
+  const location = useLocation();
 
   useEffect(() => {
     resolveSession().then(setSession);
   }, []);
+
+  // On phones the drawer follows navigation, and the page behind it stays still.
+  useEffect(() => {
+    setOpen(false);
+  }, [location.pathname]);
+
+  useEffect(() => {
+    document.body.style.overflow = open ? 'hidden' : '';
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [open]);
 
   if (!session) {
     return (
@@ -211,33 +224,45 @@ export default function PortalLayout() {
 
       {open && (
         <div className="fixed inset-0 z-50 lg:hidden">
-          <div className="absolute inset-0 bg-primary/40" onClick={() => setOpen(false)} />
-          <div className="absolute left-0 top-0 h-full w-[280px] bg-sidebar">
+          <div
+            className="absolute inset-0 animate-in bg-primary/45 fade-in"
+            onClick={() => setOpen(false)}
+          />
+          <div className="absolute left-0 top-0 h-full w-[288px] animate-in overflow-hidden rounded-r-3xl bg-sidebar shadow-2xl slide-in-from-left-2 zx-safe-top">
             <button
               type="button"
               onClick={() => setOpen(false)}
-              className="absolute right-3 top-3 grid h-9 w-9 place-items-center rounded-full text-sidebar-foreground/70"
+              aria-label={t('nav.menu')}
+              className="absolute right-3 top-3 z-10 grid h-10 w-10 place-items-center rounded-full text-sidebar-foreground/70 transition hover:bg-sidebar-accent"
             >
               <X className="h-5 w-5" />
             </button>
-            {sidebar}
+            <div className="h-full overflow-y-auto pb-[max(1rem,env(safe-area-inset-bottom))] zx-scrollbar-none">
+              {sidebar}
+            </div>
           </div>
         </div>
       )}
 
       <div className="flex min-h-screen flex-col">
         <header className="zx-safe-top sticky top-0 z-40 flex h-16 items-center justify-between gap-4 border-b border-border bg-background/95 px-4 backdrop-blur sm:px-6">
-          <div className="flex items-center gap-3">
+          <div className="flex min-w-0 items-center gap-3">
             <button
               type="button"
               onClick={() => setOpen(true)}
-              className="grid h-10 w-10 place-items-center rounded-full border border-border text-primary lg:hidden"
+              aria-label={t('nav.menu')}
+              className="grid h-11 w-11 shrink-0 place-items-center rounded-full border border-border text-primary transition hover:bg-secondary lg:hidden"
             >
               <Menu className="h-5 w-5" />
             </button>
-            <div>
-              <p className="text-xs uppercase tracking-wider text-muted-foreground">{t('portal.workspace')}</p>
-              <p className="font-heading text-sm font-semibold text-primary">
+            <Link to="/" className="shrink-0 lg:hidden">
+              <BrandMark />
+            </Link>
+            <div className="hidden min-w-0 sm:block">
+              <p className="text-[11px] uppercase tracking-wider text-muted-foreground">
+                {t('portal.workspace')}
+              </p>
+              <p className="truncate font-heading text-sm font-semibold text-primary">
                 {session.tenant?.name || t('portal.adminConsole')}
               </p>
             </div>
@@ -252,7 +277,7 @@ export default function PortalLayout() {
                 key={code}
                 type="button"
                 onClick={() => setLang(code)}
-                className={`rounded-full px-3 py-1 text-xs font-medium uppercase transition ${
+                className={`grid h-8 w-8 place-items-center rounded-full text-[11px] font-semibold uppercase transition ${
                   lang === code ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:bg-secondary'
                 }`}
               >

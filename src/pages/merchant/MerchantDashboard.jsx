@@ -6,6 +6,7 @@ import BrandMark from '@/components/site/BrandMark';
 import MetricCard from '@/components/portal/MetricCard';
 import { useI18n } from '@/components/LanguageProvider';
 import { resolveSession } from '@/lib/session';
+import ZSupportWidget from '@/components/support/ZSupportWidget';
 import { formatMoney, formatDate, SHIPMENT_STATUS_CLASS } from '@/lib/logistics';
 
 const ACTIVE_STATUSES = ['created', 'picked_up', 'in_transit', 'at_hub', 'out_for_delivery'];
@@ -98,8 +99,8 @@ export default function MerchantDashboard() {
 
   return (
     <div className="min-h-screen bg-background">
-      <header className="border-b border-border bg-primary text-primary-foreground">
-        <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
+      <header className="zx-safe-top border-b border-border bg-primary text-primary-foreground">
+        <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-3 px-4 sm:px-6">
           <Link to="/">
             <BrandMark variant="light" />
           </Link>
@@ -110,7 +111,7 @@ export default function MerchantDashboard() {
                 key={code}
                 type="button"
                 onClick={() => setLang(code)}
-                className={`rounded-full px-3 py-1 text-xs font-medium uppercase transition ${
+                className={`grid h-8 w-8 place-items-center rounded-full text-[11px] font-semibold uppercase transition ${
                   lang === code ? 'bg-accent text-accent-foreground' : 'text-primary-foreground/60'
                 }`}
               >
@@ -249,6 +250,19 @@ export default function MerchantDashboard() {
           </div>
         )}
       </main>
+
+      <ZSupportWidget
+        context={{
+          space: 'merchant_dashboard',
+          name: session.user.full_name || session.user.email,
+          carrier: session.tenant?.name || null,
+          active_shipments: data?.activeCount ?? 0,
+          delivered_this_month: data?.deliveredMonth ?? 0,
+          total_spend: data?.spend ?? 0,
+          currency: data?.currency || null,
+          channels: (data?.channels || []).map((channel) => channel.source),
+        }}
+      />
     </div>
   );
 }

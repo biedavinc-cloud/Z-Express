@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from 'react-router-dom';
 import BrandMark from '@/components/site/BrandMark';
 import ImageBackdrop from '@/components/site/ImageBackdrop';
 
@@ -11,9 +12,9 @@ export default function AuthLayout({ title, subtitle, footer, children }) {
       />
       <div className="relative w-full max-w-md">
         <div className="text-center mb-10">
-          <div className="mb-5 inline-flex justify-center">
+          <Link to="/" className="mb-5 inline-flex justify-center transition hover:opacity-85">
             <BrandMark size="lg" variant="light" />
-          </div>
+          </Link>
           <h1 className="text-3xl font-bold tracking-tight text-primary-foreground">{title}</h1>
           {subtitle && <p className="text-primary-foreground/70 mt-2">{subtitle}</p>}
         </div>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import {
   Globe,
@@ -46,6 +46,18 @@ export default function SiteHeader() {
   const { country, setCountry } = useCountry();
   const [open, setOpen] = useState(false);
   const location = useLocation();
+
+  // On phones the sheet closes itself as soon as the visitor lands on another page.
+  useEffect(() => {
+    setOpen(false);
+  }, [location.pathname]);
+
+  useEffect(() => {
+    document.body.style.overflow = open ? 'hidden' : '';
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [open]);
 
   const scrollToHash = (to) => {
     setOpen(false);
@@ -105,7 +117,7 @@ export default function SiteHeader() {
       </div>
 
       <div className="border-b border-border bg-background/90 backdrop-blur supports-[backdrop-filter]:bg-background/75">
-        <div className="mx-auto flex h-[4.5rem] max-w-7xl items-center justify-between gap-6 px-4 sm:px-6">
+        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:h-[4.5rem] sm:gap-6 sm:px-6">
           <Link to="/" className="shrink-0" onClick={() => setOpen(false)}>
             <BrandMark />
           </Link>
@@ -128,15 +140,16 @@ export default function SiteHeader() {
           <button
             type="button"
             onClick={() => setOpen((prev) => !prev)}
-            className="grid h-10 w-10 place-items-center rounded-full border border-border text-primary transition hover:bg-secondary lg:hidden"
+            className="grid h-11 w-11 shrink-0 place-items-center rounded-full border border-border text-primary transition hover:bg-secondary lg:hidden"
             aria-label={t('nav.menu')}
+            aria-expanded={open}
           >
             {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </button>
         </div>
 
         {open && (
-          <div className="border-t border-border bg-background px-4 pb-6 pt-5 lg:hidden">
+          <div className="max-h-[calc(100vh-5.5rem)] animate-in overflow-y-auto border-t border-border bg-background px-4 pb-[max(1.5rem,env(safe-area-inset-bottom))] pt-5 fade-in slide-in-from-top-1 zx-scrollbar-none lg:hidden">
             {groups.map((group) => (
               <div key={group.key} className="mb-5 last:mb-0">
                 <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
@@ -150,7 +163,7 @@ export default function SiteHeader() {
                         key={item.key}
                         to={item.to.startsWith('/#') ? '/' : item.to}
                         onClick={() => scrollToHash(item.to)}
-                        className="flex items-center gap-3 border-b border-border/70 py-3 text-sm font-medium text-foreground/85 last:border-0"
+                        className="flex items-center gap-3 border-b border-border/70 py-3.5 text-sm font-medium text-foreground/85 last:border-0"
                       >
                         <Icon className="h-4 w-4 text-accent" />
                         {item.label}

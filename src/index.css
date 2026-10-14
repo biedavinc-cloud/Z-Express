@@ -119,6 +119,59 @@
   }
 }
 
+@layer base {
+  /* Icon colour: the platform accent on light surfaces, white on dark ones.
+     Everything sits inside :where() so the rules carry no specificity and any
+     colour utility on the icon itself, or on the surface it sits on, still wins. */
+  :where(svg.lucide) {
+    color: hsl(var(--accent));
+  }
+
+  :where(
+      [class*='text-foreground'],
+      [class*='text-primary'],
+      [class*='text-secondary'],
+      [class*='text-muted'],
+      [class*='text-accent'],
+      [class*='text-card'],
+      [class*='text-popover'],
+      [class*='text-destructive'],
+      [class*='text-sidebar'],
+      [class*='text-white'],
+      [class*='text-black'],
+      [class*='text-slate'],
+      [class*='text-gray'],
+      [class*='text-zinc'],
+      [class*='text-neutral'],
+      [class*='text-stone'],
+      [class*='text-red'],
+      [class*='text-orange'],
+      [class*='text-amber'],
+      [class*='text-yellow'],
+      [class*='text-lime'],
+      [class*='text-green'],
+      [class*='text-emerald'],
+      [class*='text-teal'],
+      [class*='text-cyan'],
+      [class*='text-sky'],
+      [class*='text-blue'],
+      [class*='text-indigo'],
+      [class*='text-violet'],
+      [class*='text-purple'],
+      [class*='text-fuchsia'],
+      [class*='text-pink'],
+      [class*='text-rose'],
+      [class*='text-[#']
+    )
+    :where(svg.lucide) {
+    color: inherit;
+  }
+
+  :where(.dark, [class*='bg-sidebar']) :where(svg.lucide) {
+    color: #ffffff;
+  }
+}
+
 /* Phones: a field below 16px makes iOS zoom the whole page on focus. */
 @media (max-width: 640px) {
   input:not([type='checkbox']):not([type='radio']),

@@ -6,6 +6,7 @@ import BrandMark from '@/components/site/BrandMark';
 import { useI18n } from '@/components/LanguageProvider';
 import { resolveSession } from '@/lib/session';
 import { formatMoney } from '@/lib/logistics';
+import ZSupportWidget from '@/components/support/ZSupportWidget';
 
 export default function DriverHome() {
   const { t } = useI18n();
@@ -58,7 +59,7 @@ export default function DriverHome() {
   const online = session?.member?.availability !== 'offline';
 
   return (
-    <div className="min-h-screen bg-secondary/40 pb-10">
+    <div className="min-h-screen bg-secondary/40 pb-24">
       <header className="zx-safe-top bg-primary px-5 pb-8 pt-6 text-primary-foreground">
         <div className="mx-auto flex max-w-2xl items-center justify-between">
           <BrandMark variant="light" />
@@ -142,6 +143,16 @@ export default function DriverHome() {
           </a>
         </div>
       </main>
+
+      <ZSupportWidget
+        context={{
+          space: 'driver_app',
+          name: session?.user?.full_name || session?.user?.email || null,
+          carrier: session?.tenant?.name || null,
+          availability: online ? 'available' : 'offline',
+          todays_stops: shipments.length,
+        }}
+      />
     </div>
   );
 }
