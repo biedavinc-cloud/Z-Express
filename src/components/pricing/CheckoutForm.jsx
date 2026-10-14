@@ -1,15 +1,13 @@
 import React, { useState } from 'react';
-import { CircleCheck, CreditCard, Landmark, Loader2, Smartphone } from 'lucide-react';
+import { Loader2 } from 'lucide-react';
 import { useI18n } from '@/components/LanguageProvider';
 import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { COUNTRIES, formatDate, formatMoney } from '@/lib/logistics';
-import { PAYMENT_METHODS, TRIAL_DAYS, quote } from '@/lib/pricing';
+import { TRIAL_DAYS, quote } from '@/lib/pricing';
 
 const inputClass =
   'w-full rounded-none border border-input bg-card px-3.5 py-2.5 text-sm outline-none transition focus:border-accent';
-
-const METHOD_ICONS = { card: CreditCard, mobile_money: Smartphone, bank: Landmark };
 
 const COUNTRY_OPTIONS = COUNTRIES.map((country) => (typeof country === 'string' ? country : country?.name)).filter(
   Boolean
@@ -17,20 +15,18 @@ const COUNTRY_OPTIONS = COUNTRIES.map((country) => (typeof country === 'string' 
 
 const trialEndDate = () => new Date(Date.now() + TRIAL_DAYS * 86400000).toISOString().slice(0, 10);
 
-// The real checkout: billing details and how the customer wants to pay. They never
-// choose a payment provider and never see its fee — the subscription is the only
-// amount here, and the billing backend prices it again before issuing the invoice.
+// The agency confirms its plan and billing details, then we redirect to the hosted
+// Base44 Payments checkout. The price is resolved again server-side there — the browser
+// never sends an amount — and the webhook activates the subscription while the agency pays.
 export default function CheckoutForm({ tenant, session, initial = {}, onDone, onClose }) {
   const { t } = useI18n();
   const [planId] = useState(initial.planId || 'pro');
   const [cycle] = useState(initial.cycle || 'monthly');
   const [extraSeats] = useState(initial.extraSeats || 0);
-  const [method, setMethod] = useState('card');
   const [startMode, setStartMode] = useState(initial.startMode || 'trial');
   const [terms, setTerms] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
-  const [done, setDone] = useState(null);
   const [form, setForm] = useState({
     company: tenant?.legal_name || tenant?.name || '',
     contact_name: session?.user?.full_name || '',
@@ -40,8 +36,6 @@ export default function CheckoutForm({ tenant, session, initial = {}, onDone, on
     city: tenant?.city || '',
     address: tenant?.address || '',
     tax_id: '',
-    holder: session?.user?.full_name || '',
-    momo_number: '',
   });
 
   const priced = quote({ planId, cycle, extraSeats });
@@ -58,90 +52,44 @@ export default function CheckoutForm({ tenant, session, initial = {}, onDone, on
       setError(t('checkout.invalidEmail'));
       return;
     }
-    if (method === 'mobile_money' && !form.momo_number.trim()) {
-      setError(t('checkout.needMomo'));
-      return;
-    }
     if (!terms) {
       setError(t('checkout.needTerms'));
       return;
     }
 
     setBusy(true);
-    const response = await base44.functions.invoke('billingCheckout', {
-      tenant_id: tenant.id,
-      plan: planId,
-      billing_cycle: cycle,
-      extra_seats: extraSeats,
-      method,
-      start_mode: startMode === 'now' ? 'pay_now' : 'trial',
-      momo_number: form.momo_number,
-      billing: {
-        company: form.company,
-        contact_name: form.contact_name,
-        email: form.email,
-        phone: form.phone,
-        country: form.country,
-        city: form.city,
-        address: form.address,
-        tax_id: form.tax_id,
-      },
-    });
-    const result = response?.data || {};
-    setBusy(false);
-    if (result.error) {
-      setError(result.error);
-      return;
+    try {
+      const response = await base44.functions.invoke('create-checkout', {
+        productId: planId,
+        billing_cycle: cycle,
+        start_mode: startMode === 'now' ? 'now' : 'trial',
+        extra_seats: extraSeats,
+        tenant_id: tenant.id,
+        billing: {
+          company: form.company,
+          contact_name: form.contact_name,
+          email: form.email,
+          phone: form.phone,
+          country: form.country,
+          city: form.city,
+          address: form.address,
+          tax_id: form.tax_id,
+        },
+      });
+      const result = response?.data || {};
+      if (result.error) {
+        setError(result.error);
+        setBusy(false);
+        return;
+      }
+      // Redirect to the hosted Base44 Payments page. The webhook activates the
+      // subscription while the agency is paying.
+      window.location.href = result.redirectUrl;
+    } catch (err) {
+      setError(err.message || t('checkout.failed'));
+      setBusy(false);
     }
-    setDone(result);
-    onDone?.(result);
   };
-
-  if (done) {
-    return (
-      <div className="space-y-5">
-        <div className="flex items-start gap-4 rounded-2xl border border-emerald-200 bg-emerald-50 p-5">
-          <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-emerald-100 text-emerald-700">
-            <CircleCheck className="h-5 w-5" />
-          </span>
-          <div>
-            <h2 className="font-heading text-lg font-semibold text-emerald-900">{t('checkout.done')}</h2>
-            <p className="mt-1 text-sm text-emerald-800">{t('checkout.doneBody')}</p>
-          </div>
-        </div>
-
-        <dl className="grid gap-4 rounded-2xl border border-border bg-card p-5 sm:grid-cols-2">
-          <div>
-            <dt className="text-[11px] uppercase tracking-wider text-muted-foreground">{t('checkout.invoice')}</dt>
-            <dd className="mt-1 font-mono text-sm font-medium text-primary">{done.invoice?.number}</dd>
-          </div>
-          <div>
-            <dt className="text-[11px] uppercase tracking-wider text-muted-foreground">
-              {done.trial_ends_at ? t('checkout.firstPayment') : t('checkout.amountDue')}
-            </dt>
-            <dd className="mt-1 text-sm font-medium text-primary">
-              {formatMoney(done.invoice?.amount, done.invoice?.currency)} ·{' '}
-              {formatDate(done.trial_ends_at || done.invoice?.due_at)}
-            </dd>
-          </div>
-          <div>
-            <dt className="text-[11px] uppercase tracking-wider text-muted-foreground">{t('checkout.reference')}</dt>
-            <dd className="mt-1 font-mono text-sm font-medium text-primary">{done.reference}</dd>
-          </div>
-          <div>
-            <dt className="text-[11px] uppercase tracking-wider text-muted-foreground">{t('checkout.method')}</dt>
-            <dd className="mt-1 text-sm font-medium text-primary">{t(`pay.method.${done.method}`)}</dd>
-          </div>
-        </dl>
-
-        <div className="flex justify-end">
-          <Button onClick={onClose} className="bg-primary text-primary-foreground">
-            {t('checkout.close')}
-          </Button>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="space-y-6">
@@ -200,7 +148,7 @@ export default function CheckoutForm({ tenant, session, initial = {}, onDone, on
                 <span className="mb-1.5 block text-xs font-medium text-primary">{t('checkout.city')}</span>
                 <input className={inputClass} value={form.city} onChange={(e) => update({ city: e.target.value })} />
               </label>
-              <label>
+              <label className="sm:col-span-2">
                 <span className="mb-1.5 block text-xs font-medium text-primary">{t('checkout.address')}</span>
                 <input
                   className={inputClass}
@@ -218,62 +166,6 @@ export default function CheckoutForm({ tenant, session, initial = {}, onDone, on
                 />
               </label>
             </div>
-          </section>
-
-          <section className="rounded-2xl border border-border bg-card p-5">
-            <h3 className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
-              {t('checkout.paymentSection')}
-            </h3>
-            <p className="mt-2 text-xs text-muted-foreground">{t('checkout.methodHint')}</p>
-
-            <div className="mt-4 flex flex-wrap gap-2">
-              {PAYMENT_METHODS.map((value) => {
-                const Icon = METHOD_ICONS[value];
-                return (
-                  <button
-                    key={value}
-                    type="button"
-                    onClick={() => setMethod(value)}
-                    className={`inline-flex items-center gap-2 rounded-full px-4 py-2 text-xs font-medium transition ${
-                      method === value ? 'bg-primary text-primary-foreground' : 'bg-secondary text-muted-foreground'
-                    }`}
-                  >
-                    <Icon className="h-3.5 w-3.5" />
-                    {t(`pay.method.${value}`)}
-                  </button>
-                );
-              })}
-            </div>
-
-            {method === 'mobile_money' && (
-              <div className="mt-4 grid gap-3 sm:grid-cols-2">
-                <label>
-                  <span className="mb-1.5 block text-xs font-medium text-primary">{t('checkout.holder')}</span>
-                  <input
-                    className={inputClass}
-                    value={form.holder}
-                    onChange={(e) => update({ holder: e.target.value })}
-                  />
-                </label>
-                <label>
-                  <span className="mb-1.5 block text-xs font-medium text-primary">{t('checkout.momoNumber')}</span>
-                  <input
-                    className={inputClass}
-                    inputMode="tel"
-                    value={form.momo_number}
-                    onChange={(e) => update({ momo_number: e.target.value })}
-                  />
-                </label>
-              </div>
-            )}
-
-            <p className="mt-4 text-xs leading-relaxed text-muted-foreground">
-              {method === 'mobile_money'
-                ? t('checkout.momoNote')
-                : method === 'bank'
-                  ? t('checkout.bankNote')
-                  : t('checkout.cardNote')}
-            </p>
           </section>
 
           <section className="rounded-2xl border border-border bg-card p-5">
@@ -362,7 +254,7 @@ export default function CheckoutForm({ tenant, session, initial = {}, onDone, on
             className="mt-5 w-full bg-accent text-accent-foreground hover:bg-accent/90"
           >
             {busy && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-            {busy ? t('checkout.submitting') : t('checkout.submit')}
+            {busy ? t('checkout.redirecting') : t('checkout.submit')}
           </Button>
         </div>
       </div>
