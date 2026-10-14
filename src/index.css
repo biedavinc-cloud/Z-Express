@@ -75,10 +75,12 @@
 
   html {
     -webkit-text-size-adjust: 100%;
+    overflow-x: clip;
   }
 
   body {
     @apply bg-background text-foreground font-body antialiased;
+    overflow-x: clip;
     padding-bottom: env(safe-area-inset-bottom);
   }
 
@@ -116,6 +118,13 @@
   }
   .zx-road-lane {
     background-image: repeating-linear-gradient(90deg, rgba(255, 247, 237, 0.3) 0 18px, transparent 18px 36px);
+  }
+  @keyframes zx-marquee {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+  .zx-marquee {
+    animation: zx-marquee 32s linear infinite;
   }
 }
 

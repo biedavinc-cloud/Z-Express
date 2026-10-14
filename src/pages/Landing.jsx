@@ -5,6 +5,7 @@ import HeroTracker from '@/components/site/HeroTracker';
 import HeroTraffic from '@/components/site/HeroTraffic';
 import QuickActions from '@/components/site/QuickActions';
 import SolutionsSection from '@/components/site/SolutionsSection';
+import PartnerMarquee from '@/components/site/PartnerMarquee';
 import NetworkMap from '@/components/site/NetworkMap';
 import AppPromo from '@/components/site/AppPromo';
 
@@ -24,6 +25,7 @@ export default function Landing() {
       <HeroTraffic />
       <QuickActions />
       <SolutionsSection />
+      <PartnerMarquee />
       <NetworkMap />
       <AppPromo />
     </SiteShell>

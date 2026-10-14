@@ -12,6 +12,7 @@ import Landing from './pages/Landing';
 import Track from './pages/Track';
 import RateCalculator from './pages/RateCalculator';
 import CreateShipment from './pages/CreateShipment';
+import Solutions from './pages/Solutions';
 import BusinessPortal from './pages/BusinessPortal';
 import Developers from './pages/Developers';
 import Contact from './pages/Contact';
@@ -89,6 +90,7 @@ const AuthenticatedApp = () => {
       <Route path="/rate-calculator" element={<RateCalculator />} />
       <Route path="/send" element={<CreateShipment />} />
       <Route path="/business" element={<BusinessPortal />} />
+      <Route path="/solutions" element={<Solutions />} />
       <Route path="/developers" element={<Developers />} />
       <Route path="/contact" element={<Contact />} />
       <Route path="/support/help-center" element={<HelpCenter />} />

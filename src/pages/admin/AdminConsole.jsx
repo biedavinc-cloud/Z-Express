@@ -6,6 +6,7 @@ import {
   Building2,
   CheckCircle2,
   CreditCard,
+  Images,
   LayoutDashboard,
   Loader2,
   ShieldCheck,
@@ -20,6 +21,7 @@ import CompanyTable from '@/components/admin/CompanyTable';
 import PlatformRoles from '@/components/admin/PlatformRoles';
 import PlatformStaff from '@/components/admin/PlatformStaff';
 import SubscriptionBoard from '@/components/admin/SubscriptionBoard';
+import PartnerCms from '@/components/admin/PartnerCms';
 
 // Console modules a custom platform role can grant.
 const MODULES = ['companies', 'subscriptions', 'invoices', 'staff'];
@@ -209,6 +211,7 @@ export default function AdminConsole() {
     ...(myPermissions.includes('subscriptions') || myPermissions.includes('invoices')
       ? [{ id: 'subscriptions', label: t('admin.tabSubscriptions'), icon: CreditCard }]
       : []),
+    { id: 'partners', label: t('partners.tabPartners'), icon: Images },
   ];
   const activeTab = tabs.some((item) => item.id === tab) ? tab : 'overview';
 
@@ -405,6 +408,8 @@ export default function AdminConsole() {
             onPaid={(invoice) => call({ action: 'invoice_paid', invoice_id: invoice.id }, 'admin.paid')}
           />
         )}
+
+        {activeTab === 'partners' && <PartnerCms />}
 
         <Link to="/portal" className="inline-block text-sm font-medium text-accent">
           {t('biz.ctaLogin')} →

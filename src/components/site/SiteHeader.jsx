@@ -33,7 +33,7 @@ const NAV_GROUPS = [
   {
     key: 'nav.groupBusiness',
     items: [
-      { key: 'nav.solutions', to: '/#solutions', icon: Truck },
+      { key: 'nav.solutions', to: '/solutions', icon: Truck },
       { key: 'nav.business', to: '/business', icon: Building2 },
       { key: 'nav.developers', to: '/developers', icon: Code2 },
       { key: 'nav.contact', to: '/contact', icon: LifeBuoy },

@@ -25,4 +25,7 @@ export const ONBOARD_IMAGES = [
   `${BASE}/fea7c7f8f_generated_image.png`,
 ];
 
+// 3D block-lettering hero used behind the Business portal page (full opacity).
+export const BUSINESS_HERO_IMAGE = `${BASE}/9aabb2221_image_20261014_172945.jpg`;
+
 export const IMAGE_OPACITY = 0.95;
