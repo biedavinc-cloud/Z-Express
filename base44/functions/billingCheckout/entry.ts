@@ -75,6 +75,34 @@ export default async function (req) {
         status: 'cancelled',
         notes: [current.notes, `Cancelled ${closedAt}`].filter(Boolean).join(' | ').slice(0, 400),
       });
+
+      // Stop the real recurring charge at the provider: soft-cancel so the agency keeps the
+      // period it already paid for, then ends naturally.
+      try {
+        const purchaseRows = await service.entities.Base44Purchase.filter(
+          { tenantId: tenant.id, status: 'paid' },
+          { sort: '-created_date', limit: 10 }
+        );
+        const purchases = purchaseRows.items || purchaseRows;
+        const withSub = purchases.find((p) => p.subscriptionId);
+        if (withSub?.subscriptionId) {
+          const wixKey = Deno.env.get('WIX_CHECKOUT_API_KEY');
+          const wixSite = Deno.env.get('WIX_CHECKOUT_SITE_ID');
+          if (wixKey && wixSite) {
+            await fetch(
+              `https://www.wixapis.com/payments/base44/v1/subscriptions/${withSub.subscriptionId}/cancel`,
+              {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', Authorization: wixKey, 'wix-site-id': wixSite },
+                body: JSON.stringify({ subscription_id: withSub.subscriptionId, immediate: false }),
+              }
+            );
+          }
+        }
+      } catch (cancelErr) {
+        console.error('billingCheckout: provider cancel failed', cancelErr);
+      }
+
       return Response.json({
         ok: true,
         status: 'cancelled',

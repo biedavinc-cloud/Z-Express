@@ -6,10 +6,12 @@ import { Image } from '@/components/ui/image';
 // Public, scrolling band of partner logos. Reads the PartnerLogo table directly:
 // the entity's read rule is open, so an anonymous visitor on the home page sees
 // the same logos a signed-in merchant does. Logos come from the CMS the platform
-// admin maintains in the super-admin console.
+// admin maintains in the super-admin console. A logo that fails to load falls
+// back to the partner's name in type, so a broken URL never shows a placeholder.
 export default function PartnerMarquee() {
   const { t } = useI18n();
   const [partners, setPartners] = useState(null);
+  const [failed, setFailed] = useState({});
 
   useEffect(() => {
     let alive = true;
@@ -24,6 +26,8 @@ export default function PartnerMarquee() {
       alive = false;
     };
   }, []);
+
+  const markFailed = (id) => setFailed((prev) => (prev[id] ? prev : { ...prev, [id]: true }));
 
   if (!partners) return null;
   if (!partners.length) return null;
@@ -52,12 +56,19 @@ export default function PartnerMarquee() {
               className="flex h-12 shrink-0 items-center"
               aria-label={partner.name}
             >
-              <Image
-                src={partner.logo_url}
-                alt={partner.name}
-                className="h-9 w-auto max-w-[150px] opacity-65 transition hover:opacity-100"
-                fittingType="fit"
-              />
+              {failed[partner.id] ? (
+                <span className="whitespace-nowrap text-sm font-semibold tracking-tight text-muted-foreground/70 transition group-hover:opacity-100 group-hover:text-primary">
+                  {partner.name}
+                </span>
+              ) : (
+                <Image
+                  src={partner.logo_url}
+                  alt={partner.name}
+                  className="h-9 w-auto max-w-[150px] opacity-65 transition hover:opacity-100"
+                  fittingType="fit"
+                  onError={() => markFailed(partner.id)}
+                />
+              )}
             </a>
           ))}
         </div>

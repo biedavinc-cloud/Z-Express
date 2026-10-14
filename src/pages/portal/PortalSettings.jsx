@@ -171,6 +171,7 @@ export default function PortalSettings() {
           {field('accent_color', t('settings.accentColor'))}
         </div>
         <p className="mt-3 text-[11px] text-muted-foreground">{t('settings.logoHint')}</p>
+        <p className="mt-1 text-[11px] text-muted-foreground">{t('settings.whiteLabelHint')}</p>
       </div>
 
       <MerchantDocuments tenant={tenant} />
