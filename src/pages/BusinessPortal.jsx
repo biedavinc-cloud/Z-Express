@@ -23,15 +23,18 @@ export default function BusinessPortal() {
     <SiteShell>
       <section className="relative overflow-hidden bg-gradient-to-b from-white via-white/90 to-primary">
         <div className="mx-auto max-w-7xl px-4 sm:px-6">
-          <div className="relative min-h-[440px] sm:min-h-[500px]">
-            <Image
-              src={BUSINESS_HERO_IMAGE}
-              alt="Z. Express — express, freight, warehousing and last-mile logistics"
-              className="absolute inset-0 h-full w-full"
-              fittingType="fit"
-            />
-            <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-primary via-primary/80 to-transparent px-6 pb-7 pt-24 sm:px-10 sm:pb-10">
-              <div className="max-w-2xl">
+          <div className="relative sm:min-h-[500px]">
+            {/* Mobile: wide banner on top (10% zoom). Desktop: banner fills the hero, copy overlaid at the bottom. */}
+            <div className="relative aspect-[3/1] w-full overflow-hidden sm:absolute sm:inset-0 sm:aspect-auto">
+              <Image
+                src={BUSINESS_HERO_IMAGE}
+                alt="Z. Express — express, freight, warehousing and last-mile logistics"
+                className="h-full w-full scale-110"
+                fittingType="fit"
+              />
+            </div>
+            <div className="relative bg-primary px-6 pb-7 pt-8 sm:absolute sm:inset-x-0 sm:bottom-0 sm:bg-gradient-to-t sm:from-primary sm:via-primary/80 sm:to-transparent sm:px-10 sm:pb-10 sm:pt-24">
+              <div className="mx-auto max-w-2xl">
                 <span className="inline-flex items-center gap-2 rounded-full border border-primary-foreground/20 px-3.5 py-1.5 text-xs font-medium uppercase tracking-wider text-accent">
                   <Building2 className="h-3.5 w-3.5" />
                   {t('biz.title')}
