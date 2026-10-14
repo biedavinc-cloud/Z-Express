@@ -13,6 +13,7 @@ import {
   Truck,
 } from 'lucide-react';
 import { detectProvider, providerLabel } from '@/lib/trackingProviders';
+import ShipmentLiveTracker from '@/components/site/ShipmentLiveTracker';
 import SiteShell from '@/components/site/SiteShell';
 import { Image } from '@/components/ui/image';
 import { useI18n } from '@/components/LanguageProvider';
@@ -125,6 +126,8 @@ function ShipmentCard({ result }) {
           {t(`status.${shipment.status}`)}
         </span>
       </div>
+
+      <ShipmentLiveTracker shipment={shipment} events={result.events} />
 
       <div className="grid gap-6 px-6 py-6 lg:grid-cols-[1fr_1.1fr]">
         <div className="space-y-4">

@@ -17,6 +17,7 @@ import { Button } from '@/components/ui/button';
 import SignaturePad from '@/components/driver/SignaturePad';
 import { useI18n } from '@/components/LanguageProvider';
 import { resolveSession } from '@/lib/session';
+import { readPosition } from '@/hooks/useDriverTracking';
 import { formatMoney, NDR_REASONS } from '@/lib/logistics';
 
 const inputClass =
@@ -106,12 +107,16 @@ export default function DriverStop() {
       return;
     }
     setBusy(true);
+    // The delivery is stamped where it happened, so the customer's map closes on
+    // the real door and the timeline keeps a verified scan.
+    const at = await readPosition();
     const result = await runOp({
       action: 'pod',
       otp,
       recipient: recipient.trim(),
       signature,
       photo_uri: photoUri,
+      ...(at ? { lat: at.lat, lng: at.lng } : {}),
     });
     setBusy(false);
     if (!result.ok) {
@@ -123,10 +128,12 @@ export default function DriverStop() {
 
   const submitNdr = async () => {
     setBusy(true);
+    const at = await readPosition();
     const result = await runOp({
       action: 'ndr',
       reason: ndrReason,
       note: ndrNote.trim(),
+      ...(at ? { lat: at.lat, lng: at.lng } : {}),
     });
     setBusy(false);
     if (!result.ok) {

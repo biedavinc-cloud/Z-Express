@@ -1,9 +1,10 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Link, useOutletContext } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
-import { Loader2, Zap, MapPin, Route as RouteIcon, Check } from 'lucide-react';
+import { Loader2, Zap, MapPin, Route as RouteIcon, Check, Radio } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { haversineKm } from '@/lib/logistics';
+import LiveMap from '@/components/site/LiveMap';
+import { formatDate, haversineKm } from '@/lib/logistics';
 
 export default function PortalDispatch() {
   const { tenant, t, session } = useOutletContext();
@@ -30,9 +31,44 @@ export default function PortalDispatch() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tenant.id]);
 
+  // A dispatch cockpit is only useful when it is current: the positions of the
+  // drivers on the road refresh on their own while the screen stays open.
+  useEffect(() => {
+    const timer = setInterval(load, 30000);
+    return () => clearInterval(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tenant.id]);
+
   const pending = useMemo(() => shipments.filter((s) => !s.assigned_driver_email), [shipments]);
   const onRoad = useMemo(() => shipments.filter((s) => s.assigned_driver_email), [shipments]);
   const available = useMemo(() => drivers.filter((d) => d.availability !== 'offline'), [drivers]);
+
+  // Every driver sharing their position, plus the parcels already moving.
+  const fleetPins = useMemo(() => {
+    const pins = drivers
+      .filter((driver) => driver.last_lat && driver.last_lng)
+      .map((driver) => ({
+        id: `driver-${driver.id}`,
+        kind: 'driver',
+        lat: driver.last_lat,
+        lng: driver.last_lng,
+        label: driver.full_name || driver.email,
+        detail: driver.last_seen ? formatDate(driver.last_seen) : '',
+      }));
+    onRoad
+      .filter((shipment) => shipment.current_lat && shipment.current_lng)
+      .forEach((shipment) => {
+        pins.push({
+          id: `shipment-${shipment.id}`,
+          kind: 'parcel',
+          lat: shipment.current_lat,
+          lng: shipment.current_lng,
+          label: shipment.tracking_number,
+          detail: shipment.courier_name || shipment.assigned_driver_email,
+        });
+      });
+    return pins;
+  }, [drivers, onRoad]);
 
   const memberEmails = (shipment) =>
     shipment.member_emails?.length
@@ -132,6 +168,23 @@ export default function PortalDispatch() {
         <div className="rounded-3xl border border-border bg-card p-5">
           <p className="text-xs uppercase tracking-wider text-muted-foreground">{t('fleet.available')}</p>
           <p className="mt-2 font-heading text-2xl font-semibold text-primary">{available.length}</p>
+        </div>
+      </div>
+
+      <div className="rounded-3xl border border-border bg-card p-5">
+        <h2 className="flex items-center gap-2 font-heading text-sm font-semibold uppercase tracking-wider text-muted-foreground">
+          <Radio className="h-4 w-4" />
+          {t('dispatch.liveMap')}
+        </h2>
+        <p className="mt-1 text-xs text-muted-foreground">{t('dispatch.liveHint')}</p>
+        <div className="mt-4">
+          {fleetPins.length ? (
+            <LiveMap pins={fleetPins} height="h-[340px]" />
+          ) : (
+            <p className="rounded-2xl border border-dashed border-border px-5 py-12 text-center text-sm text-muted-foreground">
+              {t('dispatch.noPositions')}
+            </p>
+          )}
         </div>
       </div>
 

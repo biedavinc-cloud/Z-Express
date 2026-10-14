@@ -29,6 +29,15 @@ const STATUS_FLOW = {
 
 const text = (value, max = 200) => String(value === undefined || value === null ? '' : value).trim().slice(0, max);
 
+// A scan is only geotagged when the phone really reported a usable fix.
+const coords = (body) => {
+  const lat = Number(body && body.lat);
+  const lng = Number(body && body.lng);
+  return Number.isFinite(lat) && Number.isFinite(lng) && Math.abs(lat) <= 90 && Math.abs(lng) <= 180
+    ? { lat, lng }
+    : null;
+};
+
 const allows = (actor, roles) => actor.role === 'platform_admin' || roles.includes(actor.role);
 
 const summary = (shipment) => ({
@@ -70,6 +79,7 @@ async function logEvent(service, shipment, options) {
       location: [shipment.receiver_city, shipment.receiver_country].filter(Boolean).join(', '),
       hub_id: shipment.current_hub_id || '',
       driver_email: options.actorEmail || '',
+      ...(options.position ? { lat: options.position.lat, lng: options.position.lng } : {}),
       note: options.note || '',
       occurred_at: new Date().toISOString(),
       // Internal cash notes stay out of the customer-facing tracking timeline.
@@ -181,12 +191,15 @@ export default async function (req) {
       if (!photoUri) return Response.json({ error: 'A delivery photo is required', code: 'missing_photo' });
 
       const stamp = new Date().toISOString();
+      const at = coords(body);
       const updated = await service.entities.Shipment.update(shipment.id, {
         status: 'delivered',
         pod_recipient_name: recipient,
         pod_signature: signature,
         pod_photo_uri: photoUri,
         pod_at: stamp,
+        // The door is where the parcel was last known to be.
+        ...(at ? { current_lat: at.lat, current_lng: at.lng, last_gps_at: stamp } : {}),
         // Single use: a spent code can never open another delivery.
         delivery_otp: '',
       });
@@ -197,6 +210,7 @@ export default async function (req) {
         status: 'delivered',
         note: `Proof of delivery · ${recipient}`,
         actorEmail: user.email,
+        position: at,
       });
       await freeDriver(service, actor);
       await announce(service, updated, 'shipment.delivered');
@@ -211,15 +225,18 @@ export default async function (req) {
         return Response.json({ error: 'This shipment is already closed', code: 'closed' });
       }
       const reason = text(body.reason, 60) || 'customer_unreachable';
+      const at = coords(body);
       const updated = await service.entities.Shipment.update(shipment.id, {
         delivery_attempts: (Number(shipment.delivery_attempts) || 0) + 1,
         last_ndr_reason: reason,
+        ...(at ? { current_lat: at.lat, current_lng: at.lng, last_gps_at: new Date().toISOString() } : {}),
       });
       await logEvent(service, updated, {
         eventType: 'ndr',
         status: updated.status,
         note: text(body.note, 200) || reason,
         actorEmail: user.email,
+        position: at,
       });
       await freeDriver(service, actor);
       await announce(service, updated, 'shipment.failed');
@@ -238,9 +255,11 @@ export default async function (req) {
           code: 'invalid_transition',
         });
       }
+      const at = coords(body);
       const patch = {
         status: next,
         current_hub_id: body.hub_id !== undefined ? text(body.hub_id, 40) : shipment.current_hub_id || '',
+        ...(at ? { current_lat: at.lat, current_lng: at.lng, last_gps_at: new Date().toISOString() } : {}),
       };
       const updated = await service.entities.Shipment.update(shipment.id, patch);
       await logEvent(service, updated, {
@@ -248,6 +267,7 @@ export default async function (req) {
         status: next,
         note: text(body.note, 200),
         actorEmail: user.email,
+        position: at,
       });
       const event =
         next === 'delivered' ? 'shipment.delivered' : next === 'failed' ? 'shipment.failed' : 'shipment.status_changed';

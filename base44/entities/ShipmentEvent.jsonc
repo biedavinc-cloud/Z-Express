@@ -41,6 +41,12 @@
     "driver_email": {
       "type": "string"
     },
+    "lat": {
+      "type": "number"
+    },
+    "lng": {
+      "type": "number"
+    },
     "note": {
       "type": "string"
     },
@@ -94,11 +100,7 @@
     "update": {
       "$or": [
         {
-          "data.member_emails": {
-            "$in": [
-              "{{user.email}}"
-            ]
-          }
+          "data.member_emails": "{{user.email}}"
         },
         {
           "user_condition": {

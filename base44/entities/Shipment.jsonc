@@ -218,6 +218,18 @@
     "assigned_driver_email": {
       "type": "string"
     },
+    "courier_name": {
+      "type": "string"
+    },
+    "current_lat": {
+      "type": "number"
+    },
+    "current_lng": {
+      "type": "number"
+    },
+    "last_gps_at": {
+      "type": "string"
+    },
     "zone_id": {
       "type": "string"
     },

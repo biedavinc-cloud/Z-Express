@@ -3,6 +3,7 @@ import { Link, Navigate } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
 import { Loader2, MapPin, Phone, Banknote, ChevronRight, Power, Package } from 'lucide-react';
 import BrandMark from '@/components/site/BrandMark';
+import GpsTracker from '@/components/driver/GpsTracker';
 import { useI18n } from '@/components/LanguageProvider';
 import { resolveSession } from '@/lib/session';
 import { formatMoney } from '@/lib/logistics';
@@ -84,7 +85,9 @@ export default function DriverHome() {
       </header>
 
       <main className="mx-auto -mt-5 max-w-2xl px-5">
-        <div className="rounded-3xl border border-border bg-card p-2 zx-shadow">
+        <GpsTracker tenantId={session?.tenant?.id} autoStart />
+
+        <div className="mt-4 rounded-3xl border border-border bg-card p-2 zx-shadow">
           <div className="flex items-center justify-between px-4 py-3">
             <p className="font-heading text-sm font-semibold uppercase tracking-wider text-muted-foreground">
               {t('driver.todayStops')}

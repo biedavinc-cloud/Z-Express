@@ -376,6 +376,16 @@ export async function createShipmentRecord(service, tenant, payload, source) {
   return shipment;
 }
 
+// Coordinates reaching a public tracking page are rounded: the parcel's live
+// position to ~100 m, the pickup and delivery points to ~1 km. A visitor holding
+// a tracking number therefore sees the journey, never a doorstep.
+function coarse(value, digits) {
+  const number = Number(value);
+  if (!Number.isFinite(number) || number === 0) return undefined;
+  const factor = 10 ** digits;
+  return Math.round(number * factor) / factor;
+}
+
 export function publicShipmentView(s) {
   return {
     tracking_number: s.tracking_number,
@@ -400,6 +410,14 @@ export function publicShipmentView(s) {
     last_ndr_reason: s.last_ndr_reason,
     pod_at: s.pod_at,
     pod_recipient_name: s.pod_recipient_name,
+    sender_lat: coarse(s.sender_lat, 2),
+    sender_lng: coarse(s.sender_lng, 2),
+    receiver_lat: coarse(s.receiver_lat, 2),
+    receiver_lng: coarse(s.receiver_lng, 2),
+    current_lat: coarse(s.current_lat, 3),
+    current_lng: coarse(s.current_lng, 3),
+    last_gps_at: s.last_gps_at,
+    courier_name: s.courier_name,
   };
 }
 
@@ -450,6 +468,8 @@ export async function trackNumbers(service, numbers, options) {
         hub_name: e.hub_name,
         note: e.note,
         occurred_at: e.occurred_at,
+        lat: coarse(e.lat, 3),
+        lng: coarse(e.lng, 3),
       })),
   }));
 }

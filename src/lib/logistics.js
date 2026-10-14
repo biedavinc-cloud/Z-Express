@@ -103,18 +103,8 @@ export const CITIES = [
   'Sharjah',
 ];
 
-export const MARKET_COVERAGE = [
-  { country: 'Cameroon', city: 'Douala', lat: 4.0511, lng: 9.7679, type: 'hub' },
-  { country: 'Cameroon', city: 'Yaoundé', lat: 3.848, lng: 11.5021, type: 'sorting_center' },
-  { country: 'Nigeria', city: 'Lagos', lat: 6.5244, lng: 3.3792, type: 'hub' },
-  { country: 'Ghana', city: 'Accra', lat: 5.6037, lng: -0.187, type: 'agency' },
-  { country: 'Senegal', city: 'Dakar', lat: 14.7167, lng: -17.4677, type: 'agency' },
-  { country: "Côte d'Ivoire", city: 'Abidjan', lat: 5.36, lng: -4.0083, type: 'sorting_center' },
-  { country: 'Kenya', city: 'Nairobi', lat: -1.2921, lng: 36.8219, type: 'hub' },
-  { country: 'Rwanda', city: 'Kigali', lat: -1.9441, lng: 30.0619, type: 'agency' },
-  { country: 'United Arab Emirates', city: 'Dubai', lat: 25.2048, lng: 55.2708, type: 'hub' },
-  { country: 'South Africa', city: 'Johannesburg', lat: -26.2041, lng: 28.0473, type: 'hub' },
-];
+// The public network map no longer carries a fixed list: it is drawn from the
+// offices the agencies registered, served by the publicNetwork function.
 
 export function formatMoney(amount, currency) {
   const value = Number(amount) || 0;

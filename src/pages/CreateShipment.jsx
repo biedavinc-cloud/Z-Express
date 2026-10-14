@@ -24,7 +24,7 @@ import SiteShell from '@/components/site/SiteShell';
 import { useI18n } from '@/components/LanguageProvider';
 import { useCountry } from '@/components/site/useCountry';
 import { Button } from '@/components/ui/button';
-import { CITIES, COUNTRIES, MARKET_COVERAGE, SERVICE_TYPES, formatMoney } from '@/lib/logistics';
+import { CITIES, COUNTRIES, SERVICE_TYPES, formatMoney } from '@/lib/logistics';
 import { DEFAULT_GOODS, GOODS_CATEGORIES, goodsLabel } from '@/lib/goods';
 import { railLabel } from '@/lib/payments';
 
@@ -94,10 +94,6 @@ export default function CreateShipment() {
       sender_lat: point ? Number(Number(point[0]).toFixed(6)) : '',
       sender_lng: point ? Number(Number(point[1]).toFixed(6)) : '',
     }));
-  // The map opens on the city the parcel leaves from when we know it.
-  const originPoint = MARKET_COVERAGE.find(
-    (point) => point.city.toLowerCase() === String(form.origin_city || '').trim().toLowerCase()
-  );
 
   const selected = quotes.find((q) => q.tenant_id === form.tenant_id);
   const methodLabel = (method) =>
@@ -622,11 +618,10 @@ export default function CreateShipment() {
                       {t('pickup.hint')}
                     </DialogDescription>
                   </DialogHeader>
-                  <PickupMapPicker
-                    value={pickup}
-                    onPick={setPickup}
-                    center={originPoint ? [originPoint.lat, originPoint.lng] : null}
-                  />
+                  {/* No fixed city table any more: the picker opens on the pin the
+                      sender already placed, or on the map default, and the
+                      "use my location" button drops them on the spot. */}
+                  <PickupMapPicker value={pickup} onPick={setPickup} />
                   <DialogFooter className="gap-2">
                     <Button
                       type="button"
