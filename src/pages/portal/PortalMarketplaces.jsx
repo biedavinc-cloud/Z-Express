@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useOutletContext } from 'react-router-dom';
-import { base44 } from '@/api/base44Client';
+import { api } from '@/api/client';
 import { ArrowRight, Loader2, Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import MarketplaceCard from '@/components/portal/MarketplaceCard';
 import MarketplaceForm from '@/components/portal/MarketplaceForm';
 import { scopeForEntity } from '@/lib/session';
 import { generateInboundToken } from '@/lib/marketplaces';
-import { APP_DOMAIN } from '@/lib/branding';
+import { FUNCTIONS_URL } from '@/lib/branding';
 
 const emptyForm = {
   marketplace: 'shopify',
@@ -31,12 +31,12 @@ export default function PortalMarketplaces() {
   const [error, setError] = useState('');
   const [form, setForm] = useState(emptyForm);
 
-  const origin = APP_DOMAIN;
+  const origin = FUNCTIONS_URL;
 
   const load = async () => {
     setError('');
     try {
-      const page = await base44.entities.MarketplaceConnection.filter(
+      const page = await api.entities.MarketplaceConnection.filter(
         { tenant_id: tenant.id },
         { sort: '-created_date', limit: 50 }
       );
@@ -57,7 +57,7 @@ export default function PortalMarketplaces() {
     setBusy(true);
     setError('');
     try {
-      await base44.entities.MarketplaceConnection.create({
+      await api.entities.MarketplaceConnection.create({
         ...form,
         label: form.label || '',
         inbound_token: generateInboundToken(),
@@ -78,7 +78,7 @@ export default function PortalMarketplaces() {
   const toggle = async (connection) => {
     setError('');
     try {
-      await base44.entities.MarketplaceConnection.update(connection.id, {
+      await api.entities.MarketplaceConnection.update(connection.id, {
         status: connection.status === 'connected' ? 'disabled' : 'connected',
       });
       await load();
@@ -90,7 +90,7 @@ export default function PortalMarketplaces() {
   const remove = async (connection) => {
     setError('');
     try {
-      await base44.entities.MarketplaceConnection.delete(connection.id);
+      await api.entities.MarketplaceConnection.delete(connection.id);
       await load();
     } catch (e) {
       setError(e.message || t('common.error'));

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { base44 } from '@/api/base44Client';
+import { api } from '@/api/client';
 import { Calculator, Loader2, Clock, Truck, ArrowRight } from 'lucide-react';
 import SiteShell from '@/components/site/SiteShell';
 import { useI18n } from '@/components/LanguageProvider';
@@ -39,7 +39,7 @@ export default function RateCalculator() {
     setLoading(true);
     setSearched(true);
     try {
-      const response = await base44.functions.invoke('quoteRate', {
+      const response = await api.functions.invoke('quoteRate', {
         ...form,
         weight_kg: Number(form.weight_kg),
         dimensions: {

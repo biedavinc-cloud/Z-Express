@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Loader2, FileText, Download, ChevronDown } from 'lucide-react';
-import { base44 } from '@/api/base44Client';
+import { api, escapeRegExp } from '@/api/client';
 import { Button } from '@/components/ui/button';
 import { toast } from '@/components/ui/use-toast';
 import { useI18n } from '@/components/LanguageProvider';
@@ -41,11 +41,11 @@ export default function InvoiceHistory() {
       query.issued_at = { $gte: `${year}-01-01`, $lt: `${Number(year) + 1}-01-01` };
     }
     const term = search.trim();
-    if (term) query.number = { $regex: term, $options: 'i' };
+    if (term) query.number = { $regex: escapeRegExp(term), $options: 'i' };
 
     Promise.all([
-      base44.entities.Invoice.filter(query, { sort: '-issued_at', limit: 50 }),
-      base44.entities.Invoice.aggregate({
+      api.entities.Invoice.filter(query, { sort: '-issued_at', limit: 50 }),
+      api.entities.Invoice.aggregate({
         query: { tenant_id: tenant.id },
         groupBy: 'status',
         sum: 'amount',

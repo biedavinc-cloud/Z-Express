@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { base44 } from '@/api/base44Client';
+import { api } from '@/api/client';
 import { useI18n } from '@/components/LanguageProvider';
 import { Image } from '@/components/ui/image';
 
@@ -15,7 +15,7 @@ export default function PartnerMarquee() {
 
   useEffect(() => {
     let alive = true;
-    base44.entities.PartnerLogo.filter({ active: true }, { sort: 'sort_order', limit: 50 })
+    api.entities.PartnerLogo.filter({ active: true }, { sort: 'sort_order', limit: 50 })
       .then((page) => {
         if (alive) setPartners(page.items || []);
       })

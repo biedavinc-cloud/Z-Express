@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { base44 } from '@/api/base44Client';
+import { api } from '@/api/client';
 import { useI18n } from '@/components/LanguageProvider';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -23,7 +23,7 @@ export default function PartnerCms() {
   const [notice, setNotice] = useState('');
 
   const load = useCallback(async () => {
-    const page = await base44.entities.PartnerLogo.filter({}, { sort: 'sort_order', limit: 100 });
+    const page = await api.entities.PartnerLogo.filter({}, { sort: 'sort_order', limit: 100 });
     setPartners(page.items || []);
   }, []);
 
@@ -36,7 +36,7 @@ export default function PartnerCms() {
     setUploading(true);
     setError('');
     try {
-      const { file_url } = await base44.integrations.Core.UploadPublicFile({ file });
+      const { file_url } = await api.integrations.Core.UploadPublicFile({ file });
       setDraft((d) => ({ ...d, logo_url: file_url }));
     } catch (e) {
       setError(e.message || t('common.error'));
@@ -67,9 +67,9 @@ export default function PartnerCms() {
         active: !!draft.active,
       };
       if (draft.id) {
-        await base44.entities.PartnerLogo.update(draft.id, payload);
+        await api.entities.PartnerLogo.update(draft.id, payload);
       } else {
-        await base44.entities.PartnerLogo.create(payload);
+        await api.entities.PartnerLogo.create(payload);
       }
       setNotice(t('partners.saved'));
       setDraft(null);
@@ -86,7 +86,7 @@ export default function PartnerCms() {
     setBusy(true);
     setError('');
     try {
-      await base44.entities.PartnerLogo.delete(partner.id);
+      await api.entities.PartnerLogo.delete(partner.id);
       setNotice(t('partners.deleted'));
       await load();
     } catch (e) {
@@ -98,7 +98,7 @@ export default function PartnerCms() {
 
   const toggleActive = async (partner) => {
     try {
-      await base44.entities.PartnerLogo.update(partner.id, { active: !partner.active });
+      await api.entities.PartnerLogo.update(partner.id, { active: !partner.active });
       await load();
     } catch (e) {
       setError(e.message || t('common.error'));

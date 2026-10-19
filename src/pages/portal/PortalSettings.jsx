@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useOutletContext } from 'react-router-dom';
-import { base44 } from '@/api/base44Client';
+import { api } from '@/api/client';
 import { Loader2, Building2, Palette, Upload } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Image } from '@/components/ui/image';
@@ -42,7 +42,7 @@ export default function PortalSettings() {
     const file = event.target.files?.[0];
     if (!file) return;
     setBusy(true);
-    const { file_url } = await base44.integrations.Core.UploadPublicFile({ file });
+    const { file_url } = await api.integrations.Core.UploadPublicFile({ file });
     setForm((prev) => ({ ...prev, logo_url: file_url }));
     setBusy(false);
   };
@@ -50,7 +50,7 @@ export default function PortalSettings() {
   const save = async () => {
     setBusy(true);
     const payload = Object.keys(FIELDS).reduce((acc, field) => ({ ...acc, [field]: form[field] ?? '' }), {});
-    await base44.entities.Tenant.update(tenant.id, { ...payload, logo_url: form.logo_url || '' });
+    await api.entities.Tenant.update(tenant.id, { ...payload, logo_url: form.logo_url || '' });
     setBusy(false);
     setSaved(true);
     setTimeout(() => window.location.reload(), 900);

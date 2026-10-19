@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Loader2, ScrollText } from 'lucide-react';
-import { base44 } from '@/api/base44Client';
+import { api, escapeRegExp } from '@/api/client';
 import { useI18n } from '@/components/LanguageProvider';
 import StaffPage from '@/components/portal/StaffPage';
 import useStaffScope from '@/hooks/useStaffScope';
@@ -35,9 +35,9 @@ function buildQuery({ tenantId, tab, eventType, term, webhookState }) {
     if (eventType) query.event_type = eventType;
     if (term) {
       query.$or = [
-        { tracking_number: { $regex: term, $options: 'i' } },
-        { driver_email: { $regex: term, $options: 'i' } },
-        { note: { $regex: term, $options: 'i' } },
+        { tracking_number: { $regex: escapeRegExp(term), $options: 'i' } },
+        { driver_email: { $regex: escapeRegExp(term), $options: 'i' } },
+        { note: { $regex: escapeRegExp(term), $options: 'i' } },
       ];
     }
     return query;
@@ -75,7 +75,7 @@ export default function ActivityLogs() {
     const load = async () => {
       if (tab === 'events') {
         const query = buildQuery({ tenantId, tab, eventType, term, webhookState });
-        const page = await base44.entities.ShipmentEvent.filter(query, {
+        const page = await api.entities.ShipmentEvent.filter(query, {
           sort: '-occurred_at',
           limit: 40,
         });
@@ -83,16 +83,16 @@ export default function ActivityLogs() {
       }
       if (tab === 'webhooks') {
         const query = buildQuery({ tenantId, tab, eventType, term, webhookState });
-        const page = await base44.entities.WebhookDelivery.filter(query, {
+        const page = await api.entities.WebhookDelivery.filter(query, {
           sort: '-delivered_at',
           limit: 40,
         });
         return { items: page.items || [], next: page.next_cursor, more: page.has_more };
       }
       const [invoices, subscriptions, members] = await Promise.all([
-        base44.entities.Invoice.filter({ tenant_id: tenantId }, { sort: '-issued_at', limit: 20 }),
-        base44.entities.Subscription.filter({ tenant_id: tenantId }, { sort: '-created_date', limit: 5 }),
-        base44.entities.TeamMember.filter({ tenant_id: tenantId }, { sort: '-created_date', limit: 20 }),
+        api.entities.Invoice.filter({ tenant_id: tenantId }, { sort: '-issued_at', limit: 20 }),
+        api.entities.Subscription.filter({ tenant_id: tenantId }, { sort: '-created_date', limit: 5 }),
+        api.entities.TeamMember.filter({ tenant_id: tenantId }, { sort: '-created_date', limit: 20 }),
       ]);
       const merged = [
         ...(invoices.items || []).map((invoice) => ({
@@ -136,8 +136,8 @@ export default function ActivityLogs() {
     const query = buildQuery({ tenantId: tenant.id, tab, eventType, term: search.trim(), webhookState });
     const page =
       tab === 'events'
-        ? await base44.entities.ShipmentEvent.filter(query, { sort: '-occurred_at', limit: 40, cursor })
-        : await base44.entities.WebhookDelivery.filter(query, { sort: '-delivered_at', limit: 40, cursor });
+        ? await api.entities.ShipmentEvent.filter(query, { sort: '-occurred_at', limit: 40, cursor })
+        : await api.entities.WebhookDelivery.filter(query, { sort: '-delivered_at', limit: 40, cursor });
     setRows((current) => [...current, ...(page.items || [])]);
     setCursor(page.next_cursor);
     setHasMore(Boolean(page.has_more));

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useOutletContext } from 'react-router-dom';
-import { base44 } from '@/api/base44Client';
+import { api } from '@/api/client';
 import { Package, Banknote, Users, Plus, Warehouse, Route, ArrowRight, Loader2 } from 'lucide-react';
 import { formatMoney, SHIPMENT_STATUS_CLASS } from '@/lib/logistics';
 
@@ -27,19 +27,19 @@ export default function PortalOverview() {
     let cancelled = false;
     const load = async () => {
       const [statusRows, codRows, driverRows, deliveredToday, shipments] = await Promise.all([
-        base44.entities.Shipment.aggregate({ query: { tenant_id: tenant.id }, groupBy: 'status' }),
-        base44.entities.CodEntry.aggregate({
+        api.entities.Shipment.aggregate({ query: { tenant_id: tenant.id }, groupBy: 'status' }),
+        api.entities.CodEntry.aggregate({
           query: { tenant_id: tenant.id },
           groupBy: 'status',
           sum: 'amount',
         }),
-        base44.entities.TeamMember.aggregate({ query: { tenant_id: tenant.id, role: 'driver' }, groupBy: 'availability' }),
-        base44.entities.Shipment.count({
+        api.entities.TeamMember.aggregate({ query: { tenant_id: tenant.id, role: 'driver' }, groupBy: 'availability' }),
+        api.entities.Shipment.count({
           tenant_id: tenant.id,
           status: 'delivered',
           pod_at: { $gte: new Date(Date.now() - 86400000).toISOString() },
         }),
-        base44.entities.Shipment.filter({ tenant_id: tenant.id }, { sort: '-created_date', limit: 6 }),
+        api.entities.Shipment.filter({ tenant_id: tenant.id }, { sort: '-created_date', limit: 6 }),
       ]);
 
       if (cancelled) return;

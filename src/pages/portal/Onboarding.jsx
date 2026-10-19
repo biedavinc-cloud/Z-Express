@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
-import { base44 } from '@/api/base44Client';
+import { api } from '@/api/client';
 import { ArrowLeft, ArrowRight, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import BrandMark from '@/components/site/BrandMark';
@@ -95,7 +95,7 @@ export default function Onboarding() {
     }
     setBusy(true);
     try {
-      const me = await base44.auth.me();
+      const me = await api.auth.me();
       if (!me) {
         navigate('/login?returnTo=/portal/onboarding');
         return;
@@ -103,7 +103,7 @@ export default function Onboarding() {
       const plan = PLANS.find((p) => p.id === form.plan) || PLANS[0];
       const name = form.name.trim();
 
-      const tenant = await base44.entities.Tenant.create({
+      const tenant = await api.entities.Tenant.create({
         name,
         slug: name.toLowerCase().replace(/[^a-z0-9]+/g, '-').slice(0, 40),
         legal_name: form.legal_name,
@@ -128,7 +128,7 @@ export default function Onboarding() {
         member_emails: [me.email],
       });
 
-      await base44.entities.Subscription.create({
+      await api.entities.Subscription.create({
         tenant_id: tenant.id,
         tenant_name: tenant.name,
         plan: plan.id,

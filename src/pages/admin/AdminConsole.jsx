@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { Navigate, Link } from 'react-router-dom';
-import { base44 } from '@/api/base44Client';
+import { api, escapeRegExp } from '@/api/client';
 import {
   AlertTriangle,
   Building2,
@@ -60,11 +60,11 @@ export default function AdminConsole() {
   // action only re-reads the lists, unless it moved one of the counters.
   const load = useCallback(async ({ refreshStats = true } = {}) => {
     const [tenantPage, subPage, invoicePage, userRows, rolePage] = await Promise.all([
-      base44.entities.Tenant.filter({}, { sort: '-created_date', limit: 100 }),
-      base44.entities.Subscription.filter({}, { sort: '-created_date', limit: 100 }),
-      base44.entities.Invoice.filter({}, { sort: '-created_date', limit: 100 }),
-      base44.entities.User.list(),
-      base44.entities.PlatformRole.filter({}, { sort: 'name', limit: 50 }),
+      api.entities.Tenant.filter({}, { sort: '-created_date', limit: 100 }),
+      api.entities.Subscription.filter({}, { sort: '-created_date', limit: 100 }),
+      api.entities.Invoice.filter({}, { sort: '-created_date', limit: 100 }),
+      api.entities.User.list(),
+      api.entities.PlatformRole.filter({}, { sort: 'name', limit: 50 }),
     ]);
 
     const subs = subPage.items || [];
@@ -86,11 +86,11 @@ export default function AdminConsole() {
     }
 
     const [statusRows, countryRows, staffRows, volumeRows, invoiceRows] = await Promise.all([
-      base44.entities.Shipment.aggregate({ groupBy: 'status' }),
-      base44.entities.Shipment.aggregate({ groupBy: 'receiver_country', limit: 10 }),
-      base44.entities.TeamMember.aggregate({ groupBy: 'tenant_id' }),
-      base44.entities.Shipment.aggregate({ groupBy: 'tenant_id' }),
-      base44.entities.Invoice.aggregate({ groupBy: 'status', sum: 'amount' }),
+      api.entities.Shipment.aggregate({ groupBy: 'status' }),
+      api.entities.Shipment.aggregate({ groupBy: 'receiver_country', limit: 10 }),
+      api.entities.TeamMember.aggregate({ groupBy: 'tenant_id' }),
+      api.entities.Shipment.aggregate({ groupBy: 'tenant_id' }),
+      api.entities.Invoice.aggregate({ groupBy: 'status', sum: 'amount' }),
     ]);
 
     const rows = statusRows?.rows || [];
@@ -131,7 +131,7 @@ export default function AdminConsole() {
     setError('');
     setNotice('');
     try {
-      const response = await base44.functions.invoke('platformAdmin', payload);
+      const response = await api.functions.invoke('platformAdmin', payload);
       if (response.data?.error) throw new Error(response.data.error);
       setNotice(successKey ? t(successKey) : '');
       if (closeTab) setTab(closeTab);
@@ -155,9 +155,9 @@ export default function AdminConsole() {
     const term = next.search.trim();
     if (term) {
       query.$or = [
-        { name: { $regex: term, $options: 'i' } },
-        { city: { $regex: term, $options: 'i' } },
-        { owner_email: { $regex: term, $options: 'i' } },
+        { name: { $regex: escapeRegExp(term), $options: 'i' } },
+        { city: { $regex: escapeRegExp(term), $options: 'i' } },
+        { owner_email: { $regex: escapeRegExp(term), $options: 'i' } },
       ];
     }
     if (!Object.keys(query).length) {
@@ -166,7 +166,7 @@ export default function AdminConsole() {
     }
     setBusy(true);
     try {
-      const page = await base44.entities.Tenant.filter(query, { sort: '-created_date', limit: 100 });
+      const page = await api.entities.Tenant.filter(query, { sort: '-created_date', limit: 100 });
       setCompanyResults(page.items || []);
     } finally {
       setBusy(false);

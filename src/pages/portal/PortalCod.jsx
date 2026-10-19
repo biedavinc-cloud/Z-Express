@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useOutletContext } from 'react-router-dom';
-import { base44 } from '@/api/base44Client';
+import { api } from '@/api/client';
 import { Loader2, Banknote } from 'lucide-react';
 import { formatMoney, formatDate } from '@/lib/logistics';
 
@@ -21,8 +21,8 @@ export default function PortalCod() {
 
   const load = async () => {
     const [rows, page] = await Promise.all([
-      base44.entities.CodEntry.aggregate({ query: { tenant_id: tenant.id }, groupBy: 'status', sum: 'amount' }),
-      base44.entities.CodEntry.filter(
+      api.entities.CodEntry.aggregate({ query: { tenant_id: tenant.id }, groupBy: 'status', sum: 'amount' }),
+      api.entities.CodEntry.filter(
         filter === 'all' ? { tenant_id: tenant.id } : { tenant_id: tenant.id, status: filter },
         { sort: '-created_date', limit: 60 }
       ),
@@ -46,7 +46,7 @@ export default function PortalCod() {
   const mark = async (entry, status) => {
     setBusy(true);
     setError('');
-    const response = await base44.functions.invoke('shipmentOps', {
+    const response = await api.functions.invoke('shipmentOps', {
       action: 'cod',
       shipment_id: entry.shipment_id,
       cod_status: status,

@@ -2,7 +2,7 @@
 // the transaction fees of the payment providers we collect with.
 //
 // The billing backend keeps its own copy of these numbers
-// (base44/shared/pricing.ts) because the browser is never trusted with the amount
+// (supabase/functions/_shared/pricing.ts) because the browser is never trusted with the amount
 // that is actually charged. Change a price here and change it there too.
 
 export const YEARLY_DISCOUNT = 0.15; // paying a full year up front saves 15%
@@ -89,7 +89,7 @@ export const PAYMENT_METHODS = ['card', 'mobile_money', 'bank'];
 
 // Which provider collects each payment rail. The customer only chooses how they pay
 // — the provider, its rate and its fee are ours to manage and are never billed to
-// them. Move a rail to another provider here (and in base44/shared/pricing.ts) and
+// them. Move a rail to another provider here (and in supabase/functions/_shared/pricing.ts) and
 // nothing customer-facing changes.
 export const PROVIDER_BY_METHOD = {
   card: 'flutterwave',

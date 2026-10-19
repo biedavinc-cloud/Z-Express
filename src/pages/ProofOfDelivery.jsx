@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Loader2, LayoutGrid, List, Camera, Search } from 'lucide-react';
-import { base44 } from '@/api/base44Client';
+import { api, escapeRegExp } from '@/api/client';
 import { useI18n } from '@/components/LanguageProvider';
 import StaffPage from '@/components/portal/StaffPage';
 import PodCard from '@/components/pod/PodCard';
@@ -27,14 +27,14 @@ export default function ProofOfDelivery() {
     const term = search.trim();
     if (term) {
       query.$or = [
-        { tracking_number: { $regex: term, $options: 'i' } },
-        { receiver_name: { $regex: term, $options: 'i' } },
+        { tracking_number: { $regex: escapeRegExp(term), $options: 'i' } },
+        { receiver_name: { $regex: escapeRegExp(term), $options: 'i' } },
       ];
     }
 
     Promise.all([
-      base44.entities.Shipment.filter(query, { sort: '-pod_at', limit: 24 }),
-      base44.entities.Shipment.count({ tenant_id: tenant.id, pod_at: { $exists: true } }),
+      api.entities.Shipment.filter(query, { sort: '-pod_at', limit: 24 }),
+      api.entities.Shipment.count({ tenant_id: tenant.id, pod_at: { $exists: true } }),
     ]).then(([page, count]) => {
       if (cancelled) return;
       setItems(page.items || []);

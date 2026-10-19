@@ -16,19 +16,19 @@
   "prefer_related_applications": false,
   "icons": [
     {
-      "src": "https://media.base44.com/images/public/6acf30b6a32b68be46e718aa/062868c74_Favi.png",
+      "src": "/images/062868c74_Favi.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "https://media.base44.com/images/public/6acf30b6a32b68be46e718aa/062868c74_Favi.png",
+      "src": "/images/062868c74_Favi.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "https://media.base44.com/images/public/6acf30b6a32b68be46e718aa/062868c74_Favi.png",
+      "src": "/images/062868c74_Favi.png",
       "sizes": "1024x1024",
       "type": "image/png",
       "purpose": "maskable"

@@ -2,7 +2,7 @@ import React from 'react';
 import { Code2, Webhook, Store, ShieldCheck } from 'lucide-react';
 import SiteShell from '@/components/site/SiteShell';
 import { useI18n } from '@/components/LanguageProvider';
-import { APP_DOMAIN } from '@/lib/branding';
+import { FUNCTIONS_URL } from '@/lib/branding';
 
 const ENDPOINTS = [
   { key: 'dev.endpointRate', action: 'rate', body: '{ "action": "rate", "dest_country": "Cameroon", "dest_city": "Douala", "weight_kg": 2 }' },
@@ -43,7 +43,7 @@ export default function Developers() {
             <h2 className="mt-5 font-heading text-lg font-semibold text-primary">{t('dev.auth')}</h2>
             <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{t('dev.authDesc')}</p>
             <pre className="mt-4 overflow-x-auto rounded-2xl bg-primary p-4 text-xs text-primary-foreground">
-{`curl -X POST ${APP_DOMAIN}/functions/merchantApi \\
+{`curl -X POST ${FUNCTIONS_URL}/merchantApi \\
   -H "x-api-key: zx_live_xxxxxxxx" \\
   -H "Content-Type: application/json" \\
   -d '{ "action": "rate", "dest_country": "Cameroon" }'`}

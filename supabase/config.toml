@@ -1,0 +1,73 @@
+# Supabase project configuration.
+# Every function authenticates the caller itself (platform.ts), and several are
+# public by design (tracking, quotes, merchant API with API keys, payment webhook),
+# so the gateway-level JWT check is switched off for all of them.
+project_id = "xoqhibsuyrvfjbmmvsma"
+
+[auth]
+site_url = "https://express.zanldo.com"
+additional_redirect_urls = [
+  "https://express.zanldo.com/login",
+  "https://express.zanldo.com/reset-password",
+  "http://localhost:5173/login",
+  "http://localhost:5173/reset-password",
+]
+enable_signup = true
+minimum_password_length = 8
+
+[auth.email]
+enable_confirmations = true
+
+[functions.billingCheckout]
+verify_jwt = false
+
+[functions.create-checkout]
+verify_jwt = false
+
+[functions.createShipment]
+verify_jwt = false
+
+[functions.driverLocation]
+verify_jwt = false
+
+[functions.fileSignedUrl]
+verify_jwt = false
+
+[functions.inviteUser]
+verify_jwt = false
+
+[functions.marketplaceOrder]
+verify_jwt = false
+
+[functions.merchantApi]
+verify_jwt = false
+
+[functions.payments-webhook]
+verify_jwt = false
+
+[functions.platformAdmin]
+verify_jwt = false
+
+[functions.publicNetwork]
+verify_jwt = false
+
+[functions.quoteRate]
+verify_jwt = false
+
+[functions.shipmentOps]
+verify_jwt = false
+
+[functions.shipmentWebhook]
+verify_jwt = false
+
+[functions.teamMember]
+verify_jwt = false
+
+[functions.tenantPaymentMethods]
+verify_jwt = false
+
+[functions.trackShipment]
+verify_jwt = false
+
+[functions.zSupport]
+verify_jwt = false

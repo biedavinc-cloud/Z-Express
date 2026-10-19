@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { base44 } from '@/api/base44Client';
+import { api } from '@/api/client';
 
 // Live position sharing for the driver app. The browser watch runs while the
 // screen is open and every fix is pushed to the server, which stamps it on the
@@ -62,7 +62,7 @@ export default function useDriverTracking({ tenantId = '', shipmentId = null, au
       sendingRef.current = true;
       setSending(true);
       try {
-        await base44.functions.invoke('driverLocation', {
+        await api.functions.invoke('driverLocation', {
           tenant_id: tenantId || undefined,
           shipment_id: shipmentId || undefined,
           lat: coords.lat,

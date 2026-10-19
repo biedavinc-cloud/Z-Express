@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Navigate, Link } from 'react-router-dom';
-import { base44 } from '@/api/base44Client';
+import { api } from '@/api/client';
 import { ArrowLeft, ArrowRight, Loader2, LogOut, Package, Search } from 'lucide-react';
 import BrandMark from '@/components/site/BrandMark';
 import { Button } from '@/components/ui/button';
@@ -24,7 +24,7 @@ export default function MerchantHome() {
         setLoading(false);
         return;
       }
-      const page = await base44.entities.Shipment.filter(
+      const page = await api.entities.Shipment.filter(
         { $or: [{ merchant_email: resolved.user.email }, { sender_email: resolved.user.email }] },
         { sort: '-created_date', limit: 50 }
       );
@@ -54,7 +54,7 @@ export default function MerchantHome() {
   // An individual sender keeps a free space: no subscription, pay per parcel.
   const isIndividual = session.user.account_type === 'individual';
   const logout = async () => {
-    await base44.auth.logout();
+    await api.auth.logout();
     window.location.href = '/';
   };
 

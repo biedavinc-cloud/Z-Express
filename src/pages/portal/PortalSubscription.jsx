@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useOutletContext } from 'react-router-dom';
-import { base44 } from '@/api/base44Client';
+import { api } from '@/api/client';
 import { CreditCard, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
@@ -31,7 +31,7 @@ export default function PortalSubscription() {
   const [cancelError, setCancelError] = useState('');
 
   const load = async () => {
-    const list = await base44.entities.Subscription.filter({ tenant_id: tenant.id }, { sort: '-created_date', limit: 5 });
+    const list = await api.entities.Subscription.filter({ tenant_id: tenant.id }, { sort: '-created_date', limit: 5 });
     const current = (list.items || list)[0] || null;
     setSubscription(current);
     if (current?.billing_cycle) setCycle(current.billing_cycle);
@@ -49,7 +49,7 @@ export default function PortalSubscription() {
     setCancelling(true);
     setCancelError('');
     try {
-      const response = await base44.functions.invoke('billingCheckout', { action: 'cancel', tenant_id: tenant.id });
+      const response = await api.functions.invoke('billingCheckout', { action: 'cancel', tenant_id: tenant.id });
       const result = response?.data || {};
       if (result.error) throw new Error(result.error);
       await load();

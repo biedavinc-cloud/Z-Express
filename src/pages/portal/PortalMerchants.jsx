@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useOutletContext } from 'react-router-dom';
-import { base44 } from '@/api/base44Client';
+import { api } from '@/api/client';
 import { ArrowRight, Copy, KeyRound, Loader2, UserPlus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { formatDate, formatMoney } from '@/lib/logistics';
@@ -18,18 +18,18 @@ export default function PortalMerchants() {
     let cancelled = false;
     const load = async () => {
       const [totals, done, apiKeys] = await Promise.all([
-        base44.entities.Shipment.aggregate({
+        api.entities.Shipment.aggregate({
           query: { tenant_id: tenant.id },
           groupBy: 'merchant_email',
           sum: 'total_amount',
           sort: '-sum_total_amount',
           limit: 30,
         }),
-        base44.entities.Shipment.aggregate({
+        api.entities.Shipment.aggregate({
           query: { tenant_id: tenant.id, status: 'delivered' },
           groupBy: 'merchant_email',
         }),
-        base44.entities.ApiKey.filter({ tenant_id: tenant.id }, { sort: '-created_date', limit: 20 }),
+        api.entities.ApiKey.filter({ tenant_id: tenant.id }, { sort: '-created_date', limit: 20 }),
       ]);
       if (cancelled) return;
       setMerchants((totals?.rows || []).filter((row) => row.merchant_email));
@@ -48,7 +48,7 @@ export default function PortalMerchants() {
   const invite = async (email) => {
     setMessage('');
     try {
-      await base44.users.inviteUser(email, 'user');
+      await api.users.inviteUser(email, 'user');
       setMessage(`${t('merch.invited')} · ${email}`);
     } catch (error) {
       setMessage(error.message);

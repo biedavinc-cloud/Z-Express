@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Link, useOutletContext } from 'react-router-dom';
-import { base44 } from '@/api/base44Client';
+import { api } from '@/api/client';
 import { Loader2, Zap, MapPin, Route as RouteIcon, Check, Radio } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import LiveMap from '@/components/site/LiveMap';
@@ -15,11 +15,11 @@ export default function PortalDispatch() {
 
   const load = async () => {
     const [page, team] = await Promise.all([
-      base44.entities.Shipment.filter(
+      api.entities.Shipment.filter(
         { tenant_id: tenant.id, status: { $in: ['created', 'picked_up', 'in_transit'] } },
         { sort: 'created_date', limit: 60 }
       ),
-      base44.entities.TeamMember.filter({ tenant_id: tenant.id, role: 'driver' }),
+      api.entities.TeamMember.filter({ tenant_id: tenant.id, role: 'driver' }),
     ]);
     setShipments(page.items || []);
     setDrivers(team);
@@ -78,16 +78,16 @@ export default function PortalDispatch() {
   const assign = async (shipment, driverEmail) => {
     setBusy(true);
     const driver = drivers.find((d) => d.email === driverEmail);
-    await base44.entities.Shipment.update(shipment.id, {
+    await api.entities.Shipment.update(shipment.id, {
       assigned_driver_email: driverEmail,
       status: shipment.status === 'created' ? 'picked_up' : shipment.status,
     });
     // Side channel: notify the agency's own endpoints that the parcel is out.
-    base44.functions
+    api.functions
       .invoke('shipmentWebhook', { shipment_id: shipment.id, event: 'shipment.status_changed' })
       .catch(() => null);
-    if (driver) await base44.entities.TeamMember.update(driver.id, { availability: 'on_delivery' });
-    await base44.entities.ShipmentEvent.create({
+    if (driver) await api.entities.TeamMember.update(driver.id, { availability: 'on_delivery' });
+    await api.entities.ShipmentEvent.create({
       tenant_id: tenant.id,
       shipment_id: shipment.id,
       tracking_number: shipment.tracking_number,

@@ -1,88 +1,72 @@
 import { Toaster } from "@/components/ui/toaster"
 import { QueryClientProvider } from '@tanstack/react-query'
 import { queryClientInstance } from '@/lib/query-client'
-import { BrowserRouter as Router, Navigate, Route, Routes } from 'react-router-dom';
+import { lazy, Suspense } from 'react';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import LanguageProvider from '@/components/LanguageProvider';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import PageNotFound from './lib/PageNotFound';
-import { AuthProvider, useAuth } from '@/lib/AuthContext';
-import UserNotRegisteredError from '@/components/UserNotRegisteredError';
+import { AuthProvider } from '@/lib/AuthContext';
 import ScrollToTop from './components/ScrollToTop';
 import Landing from './pages/Landing';
-import Track from './pages/Track';
-import RateCalculator from './pages/RateCalculator';
-import CreateShipment from './pages/CreateShipment';
-import Solutions from './pages/Solutions';
-import BusinessPortal from './pages/BusinessPortal';
-import Developers from './pages/Developers';
-import Contact from './pages/Contact';
-import Login from './pages/Login';
-import Register from './pages/Register';
-import ForgotPassword from './pages/ForgotPassword';
-import ResetPassword from './pages/ResetPassword';
-import Onboarding from './pages/portal/Onboarding';
-import PortalLayout from './components/portal/PortalLayout';
-import PortalOverview from './pages/portal/PortalOverview';
-import PortalShipments from './pages/portal/PortalShipments';
-import PortalShipmentDetail from './pages/portal/PortalShipmentDetail';
-import PortalDispatch from './pages/portal/PortalDispatch';
-import PortalFleet from './pages/portal/PortalFleet';
-import PortalPricing from './pages/portal/PortalPricing';
-import PortalCod from './pages/portal/PortalCod';
-import PortalHubs from './pages/portal/PortalHubs';
-import PortalTeam from './pages/portal/PortalTeam';
-import PortalApi from './pages/portal/PortalApi';
-import PortalMarketplaces from './pages/portal/PortalMarketplaces';
-import PortalAnalytics from './pages/portal/PortalAnalytics';
-import PortalSettings from './pages/portal/PortalSettings';
-import PortalMerchants from './pages/portal/PortalMerchants';
-import PortalTickets from './pages/portal/PortalTickets';
-import PortalSubscription from './pages/portal/PortalSubscription';
-import DriverHome from './pages/driver/DriverHome';
-import DriverStop from './pages/driver/DriverStop';
-import AdminConsole from './pages/admin/AdminConsole';
-import MerchantHome from './pages/merchant/MerchantHome';
-import ShipmentOverview from './pages/ShipmentOverview';
-import PricingZones from './pages/PricingZones';
-import ProofOfDelivery from './pages/ProofOfDelivery';
-import ActivityLogs from './pages/ActivityLogs';
-import MerchantDashboard from './pages/merchant/MerchantDashboard';
-import PortalWebhooks from './pages/portal/PortalWebhooks';
-import PortalPermissions from './pages/portal/PortalPermissions';
-import PortalPayments from './pages/portal/PortalPayments';
-import HelpCenter from './pages/support/HelpCenter';
-import InvoiceHistory from './pages/billing/InvoiceHistory';
-import Careers from './pages/Careers';
-import Surcharges from './pages/Surcharges';
-import PrivacyPolicy from './pages/legal/PrivacyPolicy';
-import TermsOfUse from './pages/legal/TermsOfUse';
-import SdkPolicy from './pages/legal/SdkPolicy';
+const Track = lazy(() => import('./pages/Track'));
+const RateCalculator = lazy(() => import('./pages/RateCalculator'));
+const CreateShipment = lazy(() => import('./pages/CreateShipment'));
+const Solutions = lazy(() => import('./pages/Solutions'));
+const BusinessPortal = lazy(() => import('./pages/BusinessPortal'));
+const Developers = lazy(() => import('./pages/Developers'));
+const Contact = lazy(() => import('./pages/Contact'));
+const Login = lazy(() => import('./pages/Login'));
+const Register = lazy(() => import('./pages/Register'));
+const ForgotPassword = lazy(() => import('./pages/ForgotPassword'));
+const ResetPassword = lazy(() => import('./pages/ResetPassword'));
+const Onboarding = lazy(() => import('./pages/portal/Onboarding'));
+const PortalLayout = lazy(() => import('./components/portal/PortalLayout'));
+const PortalOverview = lazy(() => import('./pages/portal/PortalOverview'));
+const PortalShipments = lazy(() => import('./pages/portal/PortalShipments'));
+const PortalShipmentDetail = lazy(() => import('./pages/portal/PortalShipmentDetail'));
+const PortalDispatch = lazy(() => import('./pages/portal/PortalDispatch'));
+const PortalFleet = lazy(() => import('./pages/portal/PortalFleet'));
+const PortalPricing = lazy(() => import('./pages/portal/PortalPricing'));
+const PortalCod = lazy(() => import('./pages/portal/PortalCod'));
+const PortalHubs = lazy(() => import('./pages/portal/PortalHubs'));
+const PortalTeam = lazy(() => import('./pages/portal/PortalTeam'));
+const PortalApi = lazy(() => import('./pages/portal/PortalApi'));
+const PortalMarketplaces = lazy(() => import('./pages/portal/PortalMarketplaces'));
+const PortalAnalytics = lazy(() => import('./pages/portal/PortalAnalytics'));
+const PortalSettings = lazy(() => import('./pages/portal/PortalSettings'));
+const PortalMerchants = lazy(() => import('./pages/portal/PortalMerchants'));
+const PortalTickets = lazy(() => import('./pages/portal/PortalTickets'));
+const PortalSubscription = lazy(() => import('./pages/portal/PortalSubscription'));
+const DriverHome = lazy(() => import('./pages/driver/DriverHome'));
+const DriverStop = lazy(() => import('./pages/driver/DriverStop'));
+const AdminConsole = lazy(() => import('./pages/admin/AdminConsole'));
+const MerchantHome = lazy(() => import('./pages/merchant/MerchantHome'));
+const ShipmentOverview = lazy(() => import('./pages/ShipmentOverview'));
+const PricingZones = lazy(() => import('./pages/PricingZones'));
+const ProofOfDelivery = lazy(() => import('./pages/ProofOfDelivery'));
+const ActivityLogs = lazy(() => import('./pages/ActivityLogs'));
+const MerchantDashboard = lazy(() => import('./pages/merchant/MerchantDashboard'));
+const PortalWebhooks = lazy(() => import('./pages/portal/PortalWebhooks'));
+const PortalPermissions = lazy(() => import('./pages/portal/PortalPermissions'));
+const PortalPayments = lazy(() => import('./pages/portal/PortalPayments'));
+const HelpCenter = lazy(() => import('./pages/support/HelpCenter'));
+const InvoiceHistory = lazy(() => import('./pages/billing/InvoiceHistory'));
+const Careers = lazy(() => import('./pages/Careers'));
+const Surcharges = lazy(() => import('./pages/Surcharges'));
+const PrivacyPolicy = lazy(() => import('./pages/legal/PrivacyPolicy'));
+const TermsOfUse = lazy(() => import('./pages/legal/TermsOfUse'));
+const SdkPolicy = lazy(() => import('./pages/legal/SdkPolicy'));
 
-const AuthenticatedApp = () => {
-  const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
+const PageSpinner = () => (
+  <div className="fixed inset-0 flex items-center justify-center">
+    <div className="w-8 h-8 border-4 border-slate-200 border-t-slate-800 rounded-full animate-spin"></div>
+  </div>
+);
 
-  // Show loading spinner while checking app public settings or auth
-  if (isLoadingPublicSettings || isLoadingAuth) {
-    return (
-      <div className="fixed inset-0 flex items-center justify-center">
-        <div className="w-8 h-8 border-4 border-slate-200 border-t-slate-800 rounded-full animate-spin"></div>
-      </div>
-    );
-  }
-
-  // Handle authentication errors
-  if (authError) {
-    if (authError.type === 'user_not_registered') {
-      return <UserNotRegisteredError />;
-    } else if (authError.type === 'auth_required') {
-      // Redirect to login automatically
-      navigateToLogin();
-      return null;
-    }
-  }
-
-  // Render the main app
+const AppRoutes = () => {
   return (
+    <Suspense fallback={<PageSpinner />}>
     <Routes>
       {/* Public site */}
       <Route path="/" element={<Landing />} />
@@ -107,7 +91,7 @@ const AuthenticatedApp = () => {
       <Route path="/reset-password" element={<ResetPassword />} />
 
       {/* Authenticated areas */}
-      <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login" replace />} />}>
+      <Route element={<ProtectedRoute />}>
         <Route path="/portal/onboarding" element={<Onboarding />} />
         <Route path="/driver" element={<DriverHome />} />
         <Route path="/driver/:id" element={<DriverStop />} />
@@ -145,6 +129,7 @@ const AuthenticatedApp = () => {
 
       <Route path="*" element={<PageNotFound />} />
     </Routes>
+    </Suspense>
   );
 };
 
@@ -157,7 +142,7 @@ function App() {
         <LanguageProvider>
           <Router>
             <ScrollToTop />
-            <AuthenticatedApp />
+            <AppRoutes />
           </Router>
           <Toaster />
         </LanguageProvider>

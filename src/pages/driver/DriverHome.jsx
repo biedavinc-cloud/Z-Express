@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link, Navigate } from 'react-router-dom';
-import { base44 } from '@/api/base44Client';
+import { api } from '@/api/client';
 import { Loader2, MapPin, Phone, Banknote, ChevronRight, Power, Package } from 'lucide-react';
 import BrandMark from '@/components/site/BrandMark';
 import GpsTracker from '@/components/driver/GpsTracker';
@@ -22,7 +22,7 @@ export default function DriverHome() {
       if (cancelled) return;
       setSession(resolved);
       if (!resolved.user) return;
-      const page = await base44.entities.Shipment.filter(
+      const page = await api.entities.Shipment.filter(
         {
           assigned_driver_email: resolved.user.email,
           status: { $in: ['picked_up', 'in_transit', 'at_hub', 'out_for_delivery', 'created'] },
@@ -44,7 +44,7 @@ export default function DriverHome() {
     if (!session?.member) return;
     setBusy(true);
     const next = session.member.availability === 'offline' ? 'available' : 'offline';
-    await base44.entities.TeamMember.update(session.member.id, { availability: next });
+    await api.entities.TeamMember.update(session.member.id, { availability: next });
     setSession((prev) => ({ ...prev, member: { ...prev.member, availability: next } }));
     setBusy(false);
   };

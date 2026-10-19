@@ -4,7 +4,7 @@ import { useI18n } from '@/components/LanguageProvider';
 import { Image } from '@/components/ui/image';
 import StoreButton from '@/components/site/StoreButton';
 
-const IMG = 'https://media.base44.com/images/public/6acf30b6a32b68be46e718aa';
+const IMG = '/images';
 
 const APP_MOCKUP = `${IMG}/fc3c48c0a_generated_fc34e5e0.png`;
 

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { base44 } from '@/api/base44Client';
+import { api } from '@/api/client';
 
 const ACTIVE_STATUSES = ['created', 'picked_up', 'in_transit', 'at_hub', 'out_for_delivery'];
 
@@ -24,34 +24,34 @@ export function useShipmentOverview(tenant) {
     const base = { tenant_id: tenantId };
 
     Promise.all([
-      base44.entities.Shipment.aggregate({
+      api.entities.Shipment.aggregate({
         query: base,
         groupBy: 'status',
         sum: ['total_amount'],
         sort: 'status',
       }),
-      base44.entities.CodEntry.aggregate({
+      api.entities.CodEntry.aggregate({
         query: { ...base, status: 'pending' },
         sum: 'amount',
       }),
-      base44.entities.ShipmentEvent.filter(base, {
+      api.entities.ShipmentEvent.filter(base, {
         sort: '-occurred_at',
         limit: 8,
         fields: ['tracking_number', 'status', 'event_type', 'location', 'note', 'occurred_at', 'driver_email'],
       }),
-      base44.entities.Shipment.filter(
+      api.entities.Shipment.filter(
         { ...base, status: { $in: ['created', 'at_hub'] }, assigned_driver_email: { $exists: false } },
         { sort: 'created_date', limit: 5, fields: ['tracking_number', 'receiver_city', 'created_date'] }
       ),
-      base44.entities.Shipment.count({
+      api.entities.Shipment.count({
         ...base,
         status: { $in: ACTIVE_STATUSES },
         assigned_driver_email: { $exists: false },
       }),
-      base44.entities.Shipment.count({ ...base, status: 'delivered', pod_at: { $exists: false } }),
-      base44.entities.Shipment.count({ ...base, pod_at: { $gte: startOfToday() } }),
-      base44.entities.Shipment.count({ ...base, status: 'failed' }),
-      base44.entities.Shipment.count(base),
+      api.entities.Shipment.count({ ...base, status: 'delivered', pod_at: { $exists: false } }),
+      api.entities.Shipment.count({ ...base, pod_at: { $gte: startOfToday() } }),
+      api.entities.Shipment.count({ ...base, status: 'failed' }),
+      api.entities.Shipment.count(base),
     ]).then(
       ([statusAgg, codAgg, eventPage, unassignedPage, unassigned, podMissing, deliveredToday, failed, total]) => {
         if (cancelled) return;

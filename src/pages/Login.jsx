@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import { base44 } from "@/api/base44Client";
+import { api } from '@/api/client';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -9,6 +9,8 @@ import AuthLayout from "@/components/AuthLayout";
 import GoogleIcon from "@/components/GoogleIcon";
 import { useI18n } from "@/components/LanguageProvider";
 import { safeReturnTo } from "@/lib/authReturnTo";
+import { useAuth } from "@/lib/AuthContext";
+import { homeFor, resolveSession } from "@/lib/session";
 
 export default function Login() {
   const { t } = useI18n();
@@ -19,23 +21,40 @@ export default function Login() {
   // Post-login destination (e.g. the MCP OAuth consent page sends users here
   // with returnTo so the grant flow can resume). Same-origin paths only.
   const returnTo = safeReturnTo();
+  const { isAuthenticated, authChecked } = useAuth();
+  const redirecting = useRef(false);
+
+  // Once a session exists (password, Google, or an already-signed-in visitor),
+  // go to the requested page, or to the home that fits the person's role.
+  useEffect(() => {
+    if (!authChecked || !isAuthenticated || redirecting.current) return;
+    redirecting.current = true;
+    (async () => {
+      const destination = returnTo !== "/" ? returnTo : homeFor(await resolveSession());
+      window.location.replace(destination);
+    })();
+  }, [authChecked, isAuthenticated, returnTo]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
     setLoading(true);
     try {
-      await base44.auth.loginViaEmailPassword(email, password);
-      window.location.href = returnTo;
+      // The effect above performs the redirect as soon as the session is live.
+      await api.auth.loginViaEmailPassword(email, password);
     } catch (err) {
       setError(err.message || t("auth.invalidCredentials"));
-    } finally {
       setLoading(false);
     }
   };
 
-  const handleGoogle = () => {
-    base44.auth.loginWithProvider("google", returnTo);
+  const handleGoogle = async () => {
+    setError("");
+    try {
+      await api.auth.loginWithProvider("google", returnTo);
+    } catch (err) {
+      setError(err.message || t("auth.invalidCredentials"));
+    }
   };
 
   return (

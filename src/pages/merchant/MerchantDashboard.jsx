@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link, Navigate } from 'react-router-dom';
 import { Loader2, Package, Truck, CheckCircle2, ArrowLeft } from 'lucide-react';
-import { base44 } from '@/api/base44Client';
+import { api } from '@/api/client';
 import BrandMark from '@/components/site/BrandMark';
 import MetricCard from '@/components/portal/MetricCard';
 import { useI18n } from '@/components/LanguageProvider';
@@ -35,26 +35,26 @@ export default function MerchantDashboard() {
       const scope = { merchant_email: email };
 
       const [active, deliveredMonth, spendAgg, channelAgg, recent] = await Promise.all([
-        base44.entities.Shipment.filter(
+        api.entities.Shipment.filter(
           { ...scope, status: { $in: ACTIVE_STATUSES } },
           { sort: '-created_date', limit: 20 }
         ),
-        base44.entities.Shipment.count({ ...scope, status: 'delivered', pod_at: { $gte: monthStart() } }),
-        base44.entities.Shipment.aggregate({ query: scope, sum: 'total_amount' }),
-        base44.entities.Shipment.aggregate({
+        api.entities.Shipment.count({ ...scope, status: 'delivered', pod_at: { $gte: monthStart() } }),
+        api.entities.Shipment.aggregate({ query: scope, sum: 'total_amount' }),
+        api.entities.Shipment.aggregate({
           query: scope,
           groupBy: 'source',
           sum: 'total_amount',
           max: 'created_date',
           sort: '-count',
         }),
-        base44.entities.Shipment.filter(scope, { sort: '-created_date', limit: 12 }),
+        api.entities.Shipment.filter(scope, { sort: '-created_date', limit: 12 }),
       ]);
 
       const recentShipments = recent.items || [];
       const ids = recentShipments.map((shipment) => shipment.id);
       const events = ids.length
-        ? await base44.entities.ShipmentEvent.filter(
+        ? await api.entities.ShipmentEvent.filter(
             { shipment_id: { $in: ids } },
             { sort: '-occurred_at', limit: 10 }
           )

@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { base44 } from '@/api/base44Client';
+import { api } from '@/api/client';
 import {
   Banknote,
   CheckCircle2,
@@ -246,7 +246,7 @@ export default function Track() {
     setLoading(true);
     setError('');
     try {
-      const response = await base44.functions.invoke('trackShipment', { numbers });
+      const response = await api.functions.invoke('trackShipment', { numbers });
       setResults(response.data?.results || []);
     } catch (err) {
       setError(err.message || t('common.error'));

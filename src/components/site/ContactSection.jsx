@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { base44 } from '@/api/base44Client';
+import { api } from '@/api/client';
 import { CheckCircle2, Loader2, Mail, MapPin, Phone, Send } from 'lucide-react';
 import { useI18n } from '@/components/LanguageProvider';
 import {
@@ -58,7 +58,7 @@ export default function ContactSection() {
     }
     setSending(true);
     try {
-      await base44.entities.ContactMessage.create(form);
+      await api.entities.ContactMessage.create(form);
       setSent(true);
       setForm(EMPTY);
     } catch (err) {

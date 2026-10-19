@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { useOutletContext } from 'react-router-dom';
-import { base44 } from '@/api/base44Client';
+import { api } from '@/api/client';
 import { Loader2, Plus, Copy, Eye, EyeOff, KeyRound } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { scopeForEntity } from '@/lib/session';
 import { formatDate } from '@/lib/logistics';
-import { APP_DOMAIN } from '@/lib/branding';
+import { FUNCTIONS_URL } from '@/lib/branding';
 
 const inputClass =
   'w-full rounded-xl border border-input bg-card px-3.5 py-2.5 text-sm outline-none transition focus:border-accent';
@@ -27,10 +27,10 @@ export default function PortalApi() {
   const [limits, setLimits] = useState({});
   const [savedLimit, setSavedLimit] = useState('');
 
-  const endpoint = `${APP_DOMAIN}/functions/merchantApi`;
+  const endpoint = `${FUNCTIONS_URL}/merchantApi`;
 
   const load = async () => {
-    const list = await base44.entities.ApiKey.filter({ tenant_id: tenant.id }, { sort: '-created_date', limit: 50 });
+    const list = await api.entities.ApiKey.filter({ tenant_id: tenant.id }, { sort: '-created_date', limit: 50 });
     setKeys(list.items || list);
     setLoading(false);
   };
@@ -43,7 +43,7 @@ export default function PortalApi() {
   const createKey = async () => {
     setBusy(true);
     const api_key = generateKey(form.environment);
-    await base44.entities.ApiKey.create({
+    await api.entities.ApiKey.create({
       label: form.label,
       environment: form.environment,
       webhook_url: form.webhook_url,
@@ -59,12 +59,12 @@ export default function PortalApi() {
   };
 
   const toggleActive = async (key) => {
-    await base44.entities.ApiKey.update(key.id, { active: !key.active });
+    await api.entities.ApiKey.update(key.id, { active: !key.active });
     load();
   };
 
   const remove = async (key) => {
-    await base44.entities.ApiKey.delete(key.id);
+    await api.entities.ApiKey.delete(key.id);
     load();
   };
 
@@ -73,7 +73,7 @@ export default function PortalApi() {
     const parsed = Number(limits[key.id] ?? key.rate_limit_per_min ?? 60);
     const value = Number.isFinite(parsed) ? Math.min(Math.max(Math.floor(parsed), 10), 1000) : 60;
     setBusy(true);
-    await base44.entities.ApiKey.update(key.id, { rate_limit_per_min: value });
+    await api.entities.ApiKey.update(key.id, { rate_limit_per_min: value });
     setBusy(false);
     setSavedLimit(key.id);
     load();

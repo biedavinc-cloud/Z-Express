@@ -1,0 +1,147 @@
+{
+  "name": "Purchase",
+  "type": "object",
+  "properties": {
+    "checkoutSessionId": {
+      "type": "string",
+      "description": "Payment provider checkout session id; correlation key."
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "paid",
+        "canceled"
+      ],
+      "default": "pending"
+    },
+    "orderId": {
+      "type": "string",
+      "description": "Provider order id, filled in by the webhook."
+    },
+    "appUserId": {
+      "type": "string",
+      "description": "App user who initiated checkout."
+    },
+    "buyerEmail": {
+      "type": "string"
+    },
+    "productId": {
+      "type": "string"
+    },
+    "productName": {
+      "type": "string"
+    },
+    "quantity": {
+      "type": "number",
+      "default": 1
+    },
+    "amount": {
+      "type": "string",
+      "description": "Charged amount in major units, e.g. \"19.99\"."
+    },
+    "currency": {
+      "type": "string"
+    },
+    "subscriptionId": {
+      "type": "string"
+    },
+    "paidAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "canceledAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "tenantId": {
+      "type": "string",
+      "description": "The agency (Tenant) this subscription activates."
+    },
+    "plan": {
+      "type": "string",
+      "description": "Plan id (starter / pro / enterprise) the webhook grants."
+    },
+    "billingCycle": {
+      "type": "string",
+      "enum": [
+        "monthly",
+        "yearly"
+      ]
+    },
+    "seats": {
+      "type": "number",
+      "default": 1
+    },
+    "trial": {
+      "type": "boolean",
+      "default": false
+    },
+    "billing": {
+      "type": "object",
+      "properties": {
+        "company": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "phone": {
+          "type": "string"
+        },
+        "country": {
+          "type": "string"
+        },
+        "city": {
+          "type": "string"
+        },
+        "address": {
+          "type": "string"
+        },
+        "tax_id": {
+          "type": "string"
+        }
+      },
+      "description": "Billing details from the portal form, reused by the webhook to issue the invoice."
+    }
+  },
+  "required": [
+    "checkoutSessionId",
+    "status"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "data.appUserId": "{{user.id}}"
+        },
+        {
+          "created_by_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

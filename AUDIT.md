@@ -10,7 +10,7 @@ de la base.
 
 | Annonce sur la grille | Statut | Ce qui la rend vraie |
 | --- | --- | --- |
-| 49 / 89 / 199 $ par mois | Réel | Table de prix unique côté client **et** recalculée côté serveur avant facturation (`base44/shared/pricing.ts`). Prix envoyé par le navigateur : jamais utilisé. |
+| 49 / 89 / 199 $ par mois | Réel | Table de prix unique côté client **et** recalculée côté serveur avant facturation (`supabase/functions/_shared/pricing.ts`). Prix envoyé par le navigateur : jamais utilisé. |
 | −15 % en annuel | Réel | `YEARLY_DISCOUNT = 0.15` appliqué au même endroit. Test : Pro annuel = 1 068 $ → **908 $** facturés, remise −160 $ affichée. |
 | 1 mois offert | Réel | `TRIAL_DAYS = 30` ; l'abonnement est créé en `trialing` et le premier paiement est daté à J+30. |
 | 4 $ par utilisateur supplémentaire | Réel | Calculateur → paiement → facture : `extra_seats` est transmis et facturé. |
@@ -55,8 +55,6 @@ trois engagements commerciaux (SLA, responsable dédié, support 7j/7) qui vous 
 - **Cohérence front / backend :** 8 fonctions appelées par l'interface, toutes existantes ; 3 autres
   (`merchantApi`, `marketplaceOrder`, `tenantPaymentMethods`) servent les API et webhooks externes.
 - **Aucun texte inachevé** (TODO, exemple, brouillon) dans le code, hors exemples dans les champs de formulaire.
-- **Point de vigilance :** la page de consentement OAuth (serveur MCP) n'est pas reliée au routeur.
-  Sans conséquence tant qu'aucun serveur MCP n'est configuré ; à relier le jour où vous en activez un.
 
 ---
 
@@ -76,9 +74,9 @@ trois engagements commerciaux (SLA, responsable dédié, support 7j/7) qui vous 
 
 ## 5. Fichiers touchés par cet audit
 
-- `base44/functions/billingCheckout/entry.ts` — résiliation, montant facturé = abonnement seul.
-- `base44/functions/teamMember/entry.ts` — quota d'utilisateurs du plan appliqué.
-- `base44/shared/logistics.ts` — marque de l'agence renvoyée avec le suivi public.
+- `supabase/functions/billingCheckout/index.ts` — résiliation, montant facturé = abonnement seul.
+- `supabase/functions/teamMember/index.ts` — quota d'utilisateurs du plan appliqué.
+- `supabase/functions/_shared/logistics.ts` — marque de l'agence renvoyée avec le suivi public.
 - `src/pages/portal/PortalSubscription.jsx` — bouton et confirmation de résiliation.
 - `src/pages/portal/PortalTeam.jsx` — message de dépassement de quota.
 - `src/pages/Track.jsx` — logo et couleur de l'agence sur la page de suivi.

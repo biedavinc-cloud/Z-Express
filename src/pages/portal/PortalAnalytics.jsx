@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useOutletContext } from 'react-router-dom';
-import { base44 } from '@/api/base44Client';
+import { api } from '@/api/client';
 import { Loader2, Package, Banknote, Timer, TrendingUp } from 'lucide-react';
 import {
   Area,
@@ -51,21 +51,21 @@ export default function PortalAnalytics() {
     const since = new Date(Date.now() - 29 * 86400000).toISOString().slice(0, 10);
     const load = async () => {
       const [daily, byStatus, byCountry, delivered, failed, attempts] = await Promise.all([
-        base44.entities.Shipment.aggregate({
+        api.entities.Shipment.aggregate({
           query: { tenant_id: tenant.id, created_date: { $gte: since } },
           dateBucket: { field: 'created_date', unit: 'day' },
           sum: 'total_amount',
         }),
-        base44.entities.Shipment.aggregate({ query: { tenant_id: tenant.id }, groupBy: 'status' }),
-        base44.entities.Shipment.aggregate({
+        api.entities.Shipment.aggregate({ query: { tenant_id: tenant.id }, groupBy: 'status' }),
+        api.entities.Shipment.aggregate({
           query: { tenant_id: tenant.id },
           groupBy: 'receiver_country',
           sort: '-count',
           limit: 6,
         }),
-        base44.entities.Shipment.count({ tenant_id: tenant.id, status: 'delivered' }),
-        base44.entities.Shipment.count({ tenant_id: tenant.id, status: { $in: ['failed', 'returned'] } }),
-        base44.entities.Shipment.aggregate({
+        api.entities.Shipment.count({ tenant_id: tenant.id, status: 'delivered' }),
+        api.entities.Shipment.count({ tenant_id: tenant.id, status: { $in: ['failed', 'returned'] } }),
+        api.entities.Shipment.aggregate({
           query: { tenant_id: tenant.id, status: 'delivered' },
           avg: 'delivery_attempts',
         }),

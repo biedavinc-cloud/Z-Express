@@ -1,42 +1,67 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
-import { base44 } from "@/api/base44Client";
+import { api } from '@/api/client';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Lock, Loader2, AlertTriangle } from "lucide-react";
 import AuthLayout from "@/components/AuthLayout";
 import { useI18n } from "@/components/LanguageProvider";
+import { useAuth } from "@/lib/AuthContext";
 
 export default function ResetPassword() {
   const { t } = useI18n();
   const [searchParams] = useSearchParams();
-  const resetToken = searchParams.get("token");
+  const { isAuthenticated, isPasswordRecovery, authChecked } = useAuth();
 
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [waited, setWaited] = useState(false);
+
+  // The email link carries a one-time code that the auth client exchanges for a
+  // recovery session. Give that exchange a moment before calling the link invalid.
+  useEffect(() => {
+    const timer = setTimeout(() => setWaited(true), 3000);
+    return () => clearTimeout(timer);
+  }, []);
+
+  const hash = new URLSearchParams(window.location.hash.replace(/^#/, ""));
+  const linkFailed = Boolean(hash.get("error") || searchParams.get("error"));
+  const hasSession = isPasswordRecovery || isAuthenticated;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
+    if (newPassword.length < 8) {
+      setError(t("auth.passwordTooShort"));
+      return;
+    }
     if (newPassword !== confirmPassword) {
       setError(t("auth.passwordMismatch"));
       return;
     }
     setLoading(true);
     try {
-      await base44.auth.resetPassword({ resetToken, newPassword });
-      window.location.href = "/login";
+      await api.auth.updatePassword(newPassword);
+      // End the recovery session so the person signs in with the new password.
+      await api.auth.logout("/login");
     } catch (err) {
       setError(err.message || t("auth.resetFailed"));
-    } finally {
       setLoading(false);
     }
   };
 
-  if (!resetToken) {
+  if (!hasSession && !linkFailed && (!authChecked || !waited)) {
+    return (
+      <div className="fixed inset-0 flex items-center justify-center">
+        <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" aria-label="Loading" />
+      </div>
+    );
+  }
+
+  if (!hasSession) {
     return (
       <AuthLayout
         icon={AlertTriangle}

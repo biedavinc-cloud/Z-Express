@@ -3,7 +3,7 @@ import { MapContainer, Marker, Popup, TileLayer, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { Building2, Loader2, MapPin } from 'lucide-react';
-import { base44 } from '@/api/base44Client';
+import { api } from '@/api/client';
 import { useI18n } from '@/components/LanguageProvider';
 
 const AFRICA_CENTER = [6.5, 17];
@@ -62,7 +62,7 @@ export default function NetworkMap() {
   // appears here without anyone editing the site.
   useEffect(() => {
     let cancelled = false;
-    base44.functions
+    api.functions
       .invoke('publicNetwork', {})
       .then((response) => {
         if (cancelled) return;

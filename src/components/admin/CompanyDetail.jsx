@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { base44 } from '@/api/base44Client';
+import { api } from '@/api/client';
 import {
   ArrowLeft,
   Ban,
@@ -59,8 +59,8 @@ export default function CompanyDetail({
     setTeam(null);
     setInvoices(null);
     Promise.all([
-      base44.entities.TeamMember.filter({ tenant_id: tenant.id }, { sort: 'full_name', limit: 50 }),
-      base44.entities.Invoice.filter({ tenant_id: tenant.id }, { sort: '-issued_at', limit: 20 }),
+      api.entities.TeamMember.filter({ tenant_id: tenant.id }, { sort: 'full_name', limit: 50 }),
+      api.entities.Invoice.filter({ tenant_id: tenant.id }, { sort: '-issued_at', limit: 20 }),
     ]).then(([teamPage, invoicePage]) => {
       if (cancelled) return;
       setTeam(teamPage.items || []);
@@ -77,7 +77,7 @@ export default function CompanyDetail({
     setOpening(document.id);
     setDocError('');
     try {
-      const { signed_url } = await base44.integrations.Core.CreateFileSignedUrl({
+      const { signed_url } = await api.integrations.Core.CreateFileSignedUrl({
         file_uri: document.file_uri,
       });
       window.open(signed_url, '_blank', 'noopener');

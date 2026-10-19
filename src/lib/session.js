@@ -1,4 +1,4 @@
-import { base44 } from '@/api/base44Client';
+import { api } from '@/api/client';
 
 export const ROLE_LABELS = {
   super_admin: 'Platform Admin',
@@ -16,14 +16,14 @@ export const STAFF_ROLES = ['tenant_admin', 'hub_supervisor', 'dispatcher', 'bil
 // Resolves who the signed-in person is inside the logistics platform:
 // platform admin, an agency owner, an agency staff member, or a merchant.
 export async function resolveSession() {
-  const user = await base44.auth.me().catch(() => null);
+  const user = await api.auth.me().catch(() => null);
   if (!user) return { user: null, role: 'guest', tenant: null, member: null, isSuperAdmin: false };
 
   const isSuperAdmin = user.role === 'admin';
 
   const [ownedTenants, memberships] = await Promise.all([
-    base44.entities.Tenant.filter({ owner_email: user.email }),
-    base44.entities.TeamMember.filter({ email: user.email }),
+    api.entities.Tenant.filter({ owner_email: user.email }),
+    api.entities.TeamMember.filter({ email: user.email }),
   ]);
 
   // An agency manager keeps their agency workspace even when they also hold
@@ -33,7 +33,7 @@ export async function resolveSession() {
 
   const member = memberships.find((m) => m.status !== 'suspended');
   if (member) {
-    const tenant = await base44.entities.Tenant.get(member.tenant_id).catch(() => null);
+    const tenant = await api.entities.Tenant.get(member.tenant_id).catch(() => null);
     if (tenant) return { user, role: member.role, tenant, member, isSuperAdmin };
   }
 
@@ -74,7 +74,7 @@ export async function scopeForEntity(tenant, entityName, userEmail) {
   const roles = ROLE_SCOPED_ENTITIES[entityName];
   if (!roles) return scopeFor(tenant, userEmail);
 
-  const members = await base44.entities.TeamMember.filter({ tenant_id: tenant.id });
+  const members = await api.entities.TeamMember.filter({ tenant_id: tenant.id });
   const allowed = members
     .filter((member) => member.status !== 'suspended' && roles.includes(member.role))
     .map((member) => member.email);
@@ -88,7 +88,7 @@ export async function scopeForEntity(tenant, entityName, userEmail) {
 
 export async function tenantScope(tenant) {
   if (!tenant) return {};
-  const members = await base44.entities.TeamMember.filter({ tenant_id: tenant.id });
+  const members = await api.entities.TeamMember.filter({ tenant_id: tenant.id });
   const emails = [tenant.owner_email, ...(tenant.member_emails || []), ...members.map((m) => m.email)].filter(
     Boolean
   );
@@ -97,4 +97,21 @@ export async function tenantScope(tenant) {
     tenant_name: tenant.name,
     member_emails: Array.from(new Set(emails)),
   };
+}
+
+// Where a person lands after signing in when no specific page was requested.
+export function homeFor(session) {
+  switch (session?.role) {
+    case 'super_admin':
+      return '/admin';
+    case 'driver':
+      return '/driver';
+    case 'tenant_admin':
+    case 'hub_supervisor':
+    case 'dispatcher':
+    case 'billing_manager':
+      return '/portal';
+    default:
+      return '/my-shipments';
+  }
 }

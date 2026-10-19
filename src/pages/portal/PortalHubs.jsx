@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useOutletContext } from 'react-router-dom';
-import { base44 } from '@/api/base44Client';
+import { api } from '@/api/client';
 import { Loader2, Plus, ScanLine, PackageCheck, Printer } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { scopeFor, scopeForEntity } from '@/lib/session';
@@ -43,12 +43,12 @@ export default function PortalHubs() {
 
   const loadData = async () => {
     const [facilities, events, inFacility] = await Promise.all([
-      base44.entities.Hub.filter({ tenant_id: tenant.id }, { sort: 'name', limit: 100 }),
-      base44.entities.ShipmentEvent.filter(
+      api.entities.Hub.filter({ tenant_id: tenant.id }, { sort: 'name', limit: 100 }),
+      api.entities.ShipmentEvent.filter(
         { tenant_id: tenant.id, event_type: { $in: ['scan_in', 'scan_out'] } },
         { sort: '-occurred_at', limit: 12 }
       ),
-      base44.entities.Shipment.aggregate({
+      api.entities.Shipment.aggregate({
         query: { tenant_id: tenant.id, status: { $in: ['at_hub', 'out_for_delivery'] } },
         groupBy: 'current_hub_id',
       }),
@@ -73,7 +73,7 @@ export default function PortalHubs() {
   const addHub = async () => {
     if (!hub.name) return;
     setBusy(true);
-    await base44.entities.Hub.create({
+    await api.entities.Hub.create({
       ...hub,
       capacity_pieces: Number(hub.capacity_pieces) || 0,
       capacity_kg: Number(hub.capacity_kg) || 0,
@@ -87,7 +87,7 @@ export default function PortalHubs() {
   };
 
   const toggleHub = async (facility) => {
-    await base44.entities.Hub.update(facility.id, {
+    await api.entities.Hub.update(facility.id, {
       status: facility.status === 'active' ? 'inactive' : 'active',
     });
     loadData();
@@ -104,7 +104,7 @@ export default function PortalHubs() {
       return;
     }
     setBusy(true);
-    const found = await base44.entities.Shipment.filter({ tenant_id: tenant.id, tracking_number: code });
+    const found = await api.entities.Shipment.filter({ tenant_id: tenant.id, tracking_number: code });
     const shipment = found.items?.[0] || found[0];
     if (!shipment) {
       setBusy(false);
@@ -112,11 +112,11 @@ export default function PortalHubs() {
       return;
     }
     const status = eventType === 'scan_in' ? 'at_hub' : 'in_transit';
-    await base44.entities.Shipment.update(shipment.id, {
+    await api.entities.Shipment.update(shipment.id, {
       current_hub_id: facility.id,
       status: shipment.status === 'delivered' ? shipment.status : status,
     });
-    await base44.entities.ShipmentEvent.create({
+    await api.entities.ShipmentEvent.create({
       tenant_id: tenant.id,
       shipment_id: shipment.id,
       tracking_number: shipment.tracking_number,

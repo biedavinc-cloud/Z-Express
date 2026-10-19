@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { base44 } from '@/api/base44Client';
+import { api } from '@/api/client';
 import { Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { PAYMENT_RAILS, PAYMENT_RAIL_KINDS, DEFAULT_RAIL, railLabel } from '@/lib/payments';
@@ -38,8 +38,8 @@ export default function PaymentMethodForm({ tenant, method, lang, t, onSaved, on
         label: form.label.trim() || railLabel(form.type, lang),
         member_emails: (await scopeForEntity(tenant, 'PaymentMethod')).member_emails,
       };
-      if (method) await base44.entities.PaymentMethod.update(method.id, payload);
-      else await base44.entities.PaymentMethod.create({ ...payload, sort_order: Date.now() % 100000 });
+      if (method) await api.entities.PaymentMethod.update(method.id, payload);
+      else await api.entities.PaymentMethod.create({ ...payload, sort_order: Date.now() % 100000 });
       onSaved();
     } catch (err) {
       setError(err.message || t('common.error'));

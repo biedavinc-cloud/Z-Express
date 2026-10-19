@@ -1,107 +1,67 @@
 import * as React from "react"
-import { ResponsiveImage } from "./responsive-image"
-import {
-  getOriginalImageUrl,
-  IMAGE_LOAD_MODE,
-  nextImageLoadMode,
-  parseWixMediaUrl,
-} from "./image-helpers"
+import { cn } from "../../lib/utils"
 
+// Neutral placeholder shown when no source is given or the file fails to load.
 const FALLBACK_IMAGE_URL =
-  "https://static.wixstatic.com/media/12d367_4f26ccd17f8f4e3a8958306ea08c2332~mv2.png"
+  "data:image/svg+xml;utf8," +
+  encodeURIComponent(
+    '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300"><rect width="400" height="300" fill="#f1ebe3"/>' +
+      '<path d="M120 200l55-70 40 50 25-30 40 50z" fill="#d8cdbf"/><circle cx="150" cy="105" r="18" fill="#d8cdbf"/></svg>'
+  )
 
 /**
- * Image with built-in Wix Media Platform support: canonical public images on
- * media.base44.com and static.wixstatic.com/media are resized to the rendered
- * container per device pixel ratio and served as AVIF/WebP when supported; `fittingType="fill"`
- * crops server-side, optionally anchored at a focal point. Other URLs render
- * as a plain <img>. Failed transforms retry the original URL; only a broken
- * original swaps to the generic fallback image.
+ * Plain image with a graceful fallback. `fittingType="fill"` crops (object-cover),
+ * `"fit"` letterboxes (object-contain). Extra props go straight to the <img>.
  */
 const Image = React.forwardRef(
   (
     {
-      src: source,
+      src,
       fittingType = "fill",
+      // Kept so existing call sites stay valid; layout is driven by CSS.
       originWidth,
       originHeight,
       focalPointX,
       focalPointY,
-      quality = 90,
+      quality,
+      className,
+      loading = "lazy",
+      decoding = "async",
       onError,
+      alt = "",
       ...props
     },
     ref
   ) => {
-    const [previewSource, setPreviewSource] = React.useState(null)
-    const preview = previewSource?.source === source ? previewSource : null
-    const src = preview ? preview.value : source
-    const replaceSource = (value, className) => setPreviewSource({
-      source, value, className, sourceClassName: props.className,
-    })
-    React.useEffect(() => setPreviewSource(null), [source])
-    const parsedSource = src && src !== FALLBACK_IMAGE_URL ? parseWixMediaUrl(src) : null
-    const initialMode = parsedSource ? IMAGE_LOAD_MODE.OPTIMIZED : IMAGE_LOAD_MODE.ORIGINAL
-    const [loadState, setLoadState] = React.useState({ src, mode: initialMode })
-    const mode = loadState.src === src ? loadState.mode : initialMode
+    const [failed, setFailed] = React.useState(false)
+    React.useEffect(() => setFailed(false), [src])
 
-    React.useEffect(() => {
-      setLoadState({ src, mode: initialMode })
-    }, [src, initialMode])
-
-    const handleError = (event) => {
-      if (mode === IMAGE_LOAD_MODE.FALLBACK) return
-      const nextMode = nextImageLoadMode(mode)
-      setLoadState({ src, mode: nextMode })
-      if (nextMode === IMAGE_LOAD_MODE.FALLBACK) onError?.(event)
-    }
-
-    const imageProps = {
-      ...props,
-      className: preview && preview.sourceClassName === props.className ? preview.className : props.className,
-      onError: handleError,
-    }
-
-    if (!src) {
-      // Renders as a real <img> (not a <div>) — the visual editor's
-      // click-to-edit toolbar keys its "Replace Image" action off the DOM
-      // tag being `img`, so a placeholder div would be unrecoverable in the
-      // editor. FALLBACK_IMAGE_URL doubles as the "no image chosen" graphic.
-      return <img ref={ref} src={FALLBACK_IMAGE_URL} {...imageProps} data-empty-image />
-    }
-
-    // A failed transform retries the underlying original as a plain image.
-    // Only a failure of that original advances to the generic fallback.
-    const parsed = mode === IMAGE_LOAD_MODE.OPTIMIZED ? parsedSource : null
-
-    if (!parsed) {
-      const isErrorMode = mode === IMAGE_LOAD_MODE.FALLBACK
-      const imageSrc = isErrorMode ? FALLBACK_IMAGE_URL : getOriginalImageUrl(src, parsedSource)
-      return (
-        <img ref={ref} src={imageSrc} {...imageProps} data-error-image={isErrorMode || undefined} />
-      )
-    }
-
-    const focalPoint =
+    const empty = !src
+    const showFallback = empty || failed
+    const hasObjectFit = /\bobject-(cover|contain|fill|none|scale-down)\b/.test(className || "")
+    const fit = hasObjectFit ? "" : fittingType === "fit" ? "object-contain" : "object-cover"
+    const focal =
       typeof focalPointX === "number" && typeof focalPointY === "number"
-        ? { x: focalPointX, y: focalPointY }
+        ? { objectPosition: `${focalPointX * 100}% ${focalPointY * 100}%` }
         : undefined
-    // Origin dimensions are optional — when known they stabilize layout via
-    // the wrapper's aspect-ratio before the image loads.
-    const aspectRatio =
-      originWidth && originHeight ? `${originWidth} / ${originHeight}` : undefined
 
     return (
-      <ResponsiveImage
+      <img
         ref={ref}
-        src={src}
-        parsed={parsed}
-        onSourceChange={replaceSource}
-        fittingType={fittingType}
-        focalPoint={focalPoint}
-        quality={quality}
-        aspectRatio={aspectRatio}
-        {...imageProps}
+        src={showFallback ? FALLBACK_IMAGE_URL : src}
+        alt={alt}
+        loading={loading}
+        decoding={decoding}
+        className={cn(fit, className)}
+        width={originWidth}
+        height={originHeight}
+        {...props}
+        style={{ ...focal, ...props.style }}
+        onError={(event) => {
+          if (!failed) setFailed(true)
+          onError?.(event)
+        }}
+        data-empty-image={empty || undefined}
       />
     )
   }

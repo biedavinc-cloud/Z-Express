@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Loader2 } from 'lucide-react';
 import { useI18n } from '@/components/LanguageProvider';
-import { base44 } from '@/api/base44Client';
+import { api } from '@/api/client';
 import { Button } from '@/components/ui/button';
 import { COUNTRIES, formatDate, formatMoney } from '@/lib/logistics';
 import { TRIAL_DAYS, quote } from '@/lib/pricing';
@@ -16,7 +16,7 @@ const COUNTRY_OPTIONS = COUNTRIES.map((country) => (typeof country === 'string' 
 const trialEndDate = () => new Date(Date.now() + TRIAL_DAYS * 86400000).toISOString().slice(0, 10);
 
 // The agency confirms its plan and billing details, then we redirect to the hosted
-// Base44 Payments checkout. The price is resolved again server-side there — the browser
+// payment page. The price is resolved again server-side there — the browser
 // never sends an amount — and the webhook activates the subscription while the agency pays.
 export default function CheckoutForm({ tenant, session, initial = {}, onDone, onClose }) {
   const { t } = useI18n();
@@ -59,7 +59,7 @@ export default function CheckoutForm({ tenant, session, initial = {}, onDone, on
 
     setBusy(true);
     try {
-      const response = await base44.functions.invoke('create-checkout', {
+      const response = await api.functions.invoke('create-checkout', {
         productId: planId,
         billing_cycle: cycle,
         start_mode: startMode === 'now' ? 'now' : 'trial',
@@ -82,8 +82,13 @@ export default function CheckoutForm({ tenant, session, initial = {}, onDone, on
         setBusy(false);
         return;
       }
-      // Redirect to the hosted Base44 Payments page. The webhook activates the
+      // Redirect to the hosted payment page. The webhook activates the
       // subscription while the agency is paying.
+      if (!result.redirectUrl) {
+        setError(t('checkout.failed'));
+        setBusy(false);
+        return;
+      }
       window.location.href = result.redirectUrl;
     } catch (err) {
       setError(err.message || t('checkout.failed'));

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { base44 } from '@/api/base44Client';
+import { api } from '@/api/client';
 import {
   ArrowLeft,
   Loader2,
@@ -46,7 +46,7 @@ export default function DriverStop() {
     let cancelled = false;
     const load = async () => {
       const resolved = await resolveSession();
-      const record = await base44.entities.Shipment.get(id).catch(() => null);
+      const record = await api.entities.Shipment.get(id).catch(() => null);
       if (cancelled) return;
       setSession(resolved);
       setShipment(record);
@@ -63,7 +63,7 @@ export default function DriverStop() {
     if (!file) return;
     setUploading(true);
     try {
-      const { file_uri } = await base44.integrations.Core.UploadPrivateFile({ file });
+      const { file_uri } = await api.integrations.Core.UploadPrivateFile({ file });
       setPhotoUri(file_uri);
     } catch (err) {
       setError(err.message || t('common.error'));
@@ -86,7 +86,7 @@ export default function DriverStop() {
   // Delivery and failed attempts are validated and written by the server, so the
   // code, the signature and the photo cannot be bypassed from this screen.
   const runOp = async (payload) => {
-    const response = await base44.functions
+    const response = await api.functions
       .invoke('shipmentOps', { shipment_id: shipment.id, ...payload })
       .catch(() => null);
     return response?.data || {};

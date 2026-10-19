@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useOutletContext } from 'react-router-dom';
-import { base44 } from '@/api/base44Client';
+import { api } from '@/api/client';
 import { Loader2, Plus, Trash2, Info } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
@@ -17,7 +17,7 @@ export default function PortalTeam() {
   const [error, setError] = useState('');
 
   const load = async () => {
-    const list = await base44.entities.TeamMember.filter({ tenant_id: tenant.id }, { sort: 'full_name', limit: 100 });
+    const list = await api.entities.TeamMember.filter({ tenant_id: tenant.id }, { sort: 'full_name', limit: 100 });
     setMembers(list.items || list);
     setLoading(false);
   };
@@ -32,7 +32,7 @@ export default function PortalTeam() {
     setBusy(true);
     setError('');
     try {
-      const response = await base44.functions.invoke('teamMember', { action: 'add', tenant_id: tenant.id, ...form });
+      const response = await api.functions.invoke('teamMember', { action: 'add', tenant_id: tenant.id, ...form });
       const result = response?.data || {};
       if (result.error) {
         // The plan pays for a number of users and extra ones are bought from the
@@ -57,7 +57,7 @@ export default function PortalTeam() {
 
   const remove = async (member) => {
     setBusy(true);
-    await base44.functions.invoke('teamMember', { action: 'remove', tenant_id: tenant.id, email: member.email });
+    await api.functions.invoke('teamMember', { action: 'remove', tenant_id: tenant.id, email: member.email });
     setBusy(false);
     load();
   };

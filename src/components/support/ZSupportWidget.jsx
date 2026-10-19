@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { base44 } from '@/api/base44Client';
+import { api } from '@/api/client';
 import { Sparkles, X } from 'lucide-react';
 import { useI18n } from '@/components/LanguageProvider';
 import ZSupportThread from '@/components/support/ZSupportThread';
@@ -31,7 +31,7 @@ export default function ZSupportWidget({ context }) {
     setSending(true);
     setFailed(false);
     try {
-      const response = await base44.functions.invoke('zSupport', {
+      const response = await api.functions.invoke('zSupport', {
         message: text,
         history,
         context,

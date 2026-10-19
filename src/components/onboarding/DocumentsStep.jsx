@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { base44 } from '@/api/base44Client';
+import { api } from '@/api/client';
 import { FileText, Loader2, Trash2 } from 'lucide-react';
 import { useI18n } from '@/components/LanguageProvider';
 import { DOC_KINDS, docKindKey, newDocument } from '@/lib/documents';
@@ -18,7 +18,7 @@ export default function DocumentsStep({ form, setForm }) {
     const file = event.target.files?.[0];
     if (!file) return;
     setBusy(true);
-    const { file_uri } = await base44.integrations.Core.UploadPrivateFile({ file });
+    const { file_uri } = await api.integrations.Core.UploadPrivateFile({ file });
     setForm((prev) => ({
       ...prev,
       documents: [...(prev.documents || []), newDocument({ label, kind, file_name: file.name, file_uri })],

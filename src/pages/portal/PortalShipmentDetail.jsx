@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useParams, useOutletContext } from 'react-router-dom';
-import { base44 } from '@/api/base44Client';
+import { api } from '@/api/client';
 import { ArrowLeft, Printer, Loader2, Plus, ImageIcon, PenLine, CheckCircle2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { formatMoney, formatDate, SHIPMENT_STATUS_CLASS, SHIPMENT_STATUS_ORDER } from '@/lib/logistics';
@@ -23,19 +23,19 @@ export default function PortalShipmentDetail() {
   useEffect(() => {
     let cancelled = false;
     const load = async () => {
-      const record = await base44.entities.Shipment.get(id).catch(() => null);
+      const record = await api.entities.Shipment.get(id).catch(() => null);
       if (cancelled) return;
       setShipment(record);
       if (record) {
         const [history, team] = await Promise.all([
-          base44.entities.ShipmentEvent.filter({ shipment_id: id }, { sort: '-occurred_at', limit: 60 }),
-          base44.entities.TeamMember.filter({ tenant_id: tenant.id, role: 'driver' }),
+          api.entities.ShipmentEvent.filter({ shipment_id: id }, { sort: '-occurred_at', limit: 60 }),
+          api.entities.TeamMember.filter({ tenant_id: tenant.id, role: 'driver' }),
         ]);
         if (cancelled) return;
         setEvents(history.items || history || []);
         setDrivers(team);
         if (record.pod_photo_uri) {
-          const signed = await base44.integrations.Core.CreateFileSignedUrl({
+          const signed = await api.integrations.Core.CreateFileSignedUrl({
             file_uri: record.pod_photo_uri,
           }).catch(() => null);
           if (!cancelled && signed?.signed_url) setPhotoUrl(signed.signed_url);
@@ -53,7 +53,7 @@ export default function PortalShipmentDetail() {
     const memberEmails = shipment.member_emails?.length
       ? shipment.member_emails
       : [tenant.owner_email, session?.user?.email].filter(Boolean);
-    await base44.entities.ShipmentEvent.create({
+    await api.entities.ShipmentEvent.create({
       tenant_id: tenant.id,
       shipment_id: shipment.id,
       tracking_number: shipment.tracking_number,
@@ -70,9 +70,9 @@ export default function PortalShipmentDetail() {
 
   const updateStatus = async (status) => {
     setBusy(true);
-    await base44.entities.Shipment.update(shipment.id, { status });
+    await api.entities.Shipment.update(shipment.id, { status });
     // Side channel: let the agency's own endpoints hear about the change.
-    base44.functions
+    api.functions
       .invoke('shipmentWebhook', {
         shipment_id: shipment.id,
         event: 'shipment.status_changed',
@@ -96,11 +96,11 @@ export default function PortalShipmentDetail() {
 
   const assignDriver = async (email) => {
     setBusy(true);
-    await base44.entities.Shipment.update(shipment.id, { assigned_driver_email: email });
+    await api.entities.Shipment.update(shipment.id, { assigned_driver_email: email });
     if (email) {
       const driver = drivers.find((d) => d.email === email);
       if (driver) {
-        await base44.entities.TeamMember.update(driver.id, { availability: 'on_delivery' });
+        await api.entities.TeamMember.update(driver.id, { availability: 'on_delivery' });
       }
       await addEvent(shipment.status, 'note', `${t('ship.assignDriver')}: ${email}`, { driver_email: email });
     }

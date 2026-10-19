@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useOutletContext } from 'react-router-dom';
 import { Loader2, UserPlus, ShieldCheck, Check } from 'lucide-react';
-import { base44 } from '@/api/base44Client';
+import { api } from '@/api/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -23,8 +23,8 @@ export default function PortalPermissions() {
 
   const load = async () => {
     const [memberList, hubList] = await Promise.all([
-      base44.entities.TeamMember.filter({ tenant_id: tenant.id }, { sort: 'full_name', limit: 100 }),
-      base44.entities.Hub.filter({ tenant_id: tenant.id, status: 'active' }, { sort: 'name', limit: 50 }),
+      api.entities.TeamMember.filter({ tenant_id: tenant.id }, { sort: 'full_name', limit: 100 }),
+      api.entities.Hub.filter({ tenant_id: tenant.id, status: 'active' }, { sort: 'name', limit: 50 }),
     ]);
     setMembers(memberList.items || []);
     setHubs(hubList.items || []);
@@ -38,7 +38,7 @@ export default function PortalPermissions() {
 
   const call = async (payload, message) => {
     setBusy(true);
-    await base44.functions.invoke('teamMember', { action: 'add', tenant_id: tenant.id, ...payload });
+    await api.functions.invoke('teamMember', { action: 'add', tenant_id: tenant.id, ...payload });
     setBusy(false);
     if (message) toast({ title: message });
     load();

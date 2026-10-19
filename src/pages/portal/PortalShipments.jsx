@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { Link, useOutletContext } from 'react-router-dom';
-import { base44 } from '@/api/base44Client';
+import { api, escapeRegExp } from '@/api/client';
 import { Search, Loader2, Filter } from 'lucide-react';
 import { formatMoney, SHIPMENT_STATUS_CLASS, SHIPMENT_STATUS_ORDER } from '@/lib/logistics';
 
@@ -19,10 +19,10 @@ export default function PortalShipments() {
     if (status !== 'all') query.status = status;
     if (search.trim()) {
       query.$or = [
-        { tracking_number: { $regex: search.trim(), $options: 'i' } },
-        { receiver_name: { $regex: search.trim(), $options: 'i' } },
-        { receiver_phone: { $regex: search.trim(), $options: 'i' } },
-        { receiver_city: { $regex: search.trim(), $options: 'i' } },
+        { tracking_number: { $regex: escapeRegExp(search.trim()), $options: 'i' } },
+        { receiver_name: { $regex: escapeRegExp(search.trim()), $options: 'i' } },
+        { receiver_phone: { $regex: escapeRegExp(search.trim()), $options: 'i' } },
+        { receiver_city: { $regex: escapeRegExp(search.trim()), $options: 'i' } },
       ];
     }
     return query;
@@ -30,7 +30,7 @@ export default function PortalShipments() {
 
   const load = useCallback(async () => {
     setLoading(true);
-    const page = await base44.entities.Shipment.filter(buildQuery(), { sort: '-created_date', limit: 25 });
+    const page = await api.entities.Shipment.filter(buildQuery(), { sort: '-created_date', limit: 25 });
     setItems(page.items || []);
     setCursor(page.next_cursor || null);
     setHasMore(Boolean(page.has_more));
@@ -45,7 +45,7 @@ export default function PortalShipments() {
   const loadMore = async () => {
     if (!cursor) return;
     setLoadingMore(true);
-    const page = await base44.entities.Shipment.filter(buildQuery(), {
+    const page = await api.entities.Shipment.filter(buildQuery(), {
       sort: '-created_date',
       limit: 25,
       cursor,

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link, NavLink, Navigate, Outlet, useLocation, useNavigate } from 'react-router-dom';
-import { base44 } from '@/api/base44Client';
+import { api } from '@/api/client';
 import {
   LayoutDashboard,
   Package,
@@ -125,7 +125,7 @@ export default function PortalLayout() {
   const items = NAV.filter((item) => role === 'super_admin' || item.roles.includes(role));
 
   const logout = async () => {
-    await base44.auth.logout();
+    await api.auth.logout();
     navigate('/');
   };
 

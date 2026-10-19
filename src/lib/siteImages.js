@@ -1,4 +1,4 @@
-const BASE = 'https://media.base44.com/images/public/6acf30b6a32b68be46e718aa';
+const BASE = '/images';
 
 // Shared logistics photography used behind the hero and the authentication screens.
 export const SITE_IMAGES = [

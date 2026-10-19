@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useOutletContext } from 'react-router-dom';
 import { Loader2, Plus, Webhook, Trash2, Zap, Copy } from 'lucide-react';
-import { base44 } from '@/api/base44Client';
+import { api } from '@/api/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -44,12 +44,12 @@ export default function PortalWebhooks() {
 
   const load = async () => {
     const [endpointPage, deliveryPage, shipmentPage] = await Promise.all([
-      base44.entities.WebhookEndpoint.filter({ tenant_id: tenant.id }, { sort: '-created_date', limit: 50 }),
-      base44.entities.WebhookDelivery.filter(
+      api.entities.WebhookEndpoint.filter({ tenant_id: tenant.id }, { sort: '-created_date', limit: 50 }),
+      api.entities.WebhookDelivery.filter(
         { tenant_id: tenant.id, ...(state === 'ok' ? { success: true } : state === 'failed' ? { success: false } : {}) },
         { sort: '-delivered_at', limit: 40 }
       ),
-      base44.entities.Shipment.filter(
+      api.entities.Shipment.filter(
         { tenant_id: tenant.id },
         { sort: '-created_date', limit: 1, fields: ['tracking_number'] }
       ),
@@ -75,9 +75,9 @@ export default function PortalWebhooks() {
       secret: draft.secret || randomSecret(),
       active: draft.active,
     };
-    if (draft.id) await base44.entities.WebhookEndpoint.update(draft.id, payload);
+    if (draft.id) await api.entities.WebhookEndpoint.update(draft.id, payload);
     else
-      await base44.entities.WebhookEndpoint.create({
+      await api.entities.WebhookEndpoint.create({
         ...payload,
         ...(await scopeForEntity(tenant, 'WebhookEndpoint', session?.user?.email)),
       });
@@ -88,14 +88,14 @@ export default function PortalWebhooks() {
   };
 
   const remove = async (endpoint) => {
-    await base44.entities.WebhookEndpoint.delete(endpoint.id);
+    await api.entities.WebhookEndpoint.delete(endpoint.id);
     toast({ title: t('wh.removed') });
     load();
   };
 
   const sendTest = async () => {
     if (!latestShipment) return;
-    const response = await base44.functions.invoke('shipmentWebhook', {
+    const response = await api.functions.invoke('shipmentWebhook', {
       shipment_id: latestShipment.id,
       event: 'shipment.status_changed',
     });

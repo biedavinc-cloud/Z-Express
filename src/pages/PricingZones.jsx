@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Plus, Loader2, Pencil, Trash2, MapPin } from 'lucide-react';
-import { base44 } from '@/api/base44Client';
+import { api } from '@/api/client';
 import { Button } from '@/components/ui/button';
 import { useI18n } from '@/components/LanguageProvider';
 import StaffPage from '@/components/portal/StaffPage';
@@ -34,7 +34,7 @@ export default function PricingZones() {
   const [busy, setBusy] = useState(false);
 
   const load = async (tenantId) => {
-    const page = await base44.entities.Zone.filter({ tenant_id: tenantId }, { sort: 'name', limit: 100 });
+    const page = await api.entities.Zone.filter({ tenant_id: tenantId }, { sort: 'name', limit: 100 });
     setZones(page.items || []);
     setLoading(false);
   };
@@ -59,9 +59,9 @@ export default function PricingZones() {
       eta_days: Number(draft.eta_days) || 1,
     };
     if (draft.id) {
-      await base44.entities.Zone.update(draft.id, payload);
+      await api.entities.Zone.update(draft.id, payload);
     } else {
-      await base44.entities.Zone.create({
+      await api.entities.Zone.create({
         ...payload,
         ...(await scopeForEntity(tenant, 'Zone', scope?.user?.email)),
       });
@@ -72,12 +72,12 @@ export default function PricingZones() {
   };
 
   const toggle = async (zone) => {
-    await base44.entities.Zone.update(zone.id, { active: !zone.active });
+    await api.entities.Zone.update(zone.id, { active: !zone.active });
     load(tenant.id);
   };
 
   const remove = async (zone) => {
-    await base44.entities.Zone.delete(zone.id);
+    await api.entities.Zone.delete(zone.id);
     load(tenant.id);
   };
 

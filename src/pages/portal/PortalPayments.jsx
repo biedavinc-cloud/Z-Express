@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useOutletContext } from 'react-router-dom';
-import { base44 } from '@/api/base44Client';
+import { api } from '@/api/client';
 import { Check, Loader2, Pencil, Plus, Smartphone, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import PaymentMethodForm from '@/components/portal/PaymentMethodForm';
@@ -17,8 +17,8 @@ export default function PortalPayments() {
 
   const load = async () => {
     const [rows, page] = await Promise.all([
-      base44.entities.PaymentMethod.filter({ tenant_id: tenant.id }, { sort: 'sort_order', limit: 40 }),
-      base44.entities.Shipment.filter(
+      api.entities.PaymentMethod.filter({ tenant_id: tenant.id }, { sort: 'sort_order', limit: 40 }),
+      api.entities.Shipment.filter(
         { tenant_id: tenant.id, payment_status: 'awaiting_verification' },
         { sort: '-created_date', limit: 25 }
       ),
@@ -35,7 +35,7 @@ export default function PortalPayments() {
 
   const confirmPaid = async (shipment) => {
     setBusy(true);
-    await base44.entities.Shipment.update(shipment.id, {
+    await api.entities.Shipment.update(shipment.id, {
       payment_status: 'paid',
       paid_at: new Date().toISOString(),
     });
@@ -45,7 +45,7 @@ export default function PortalPayments() {
 
   const remove = async (method) => {
     setBusy(true);
-    await base44.entities.PaymentMethod.delete(method.id);
+    await api.entities.PaymentMethod.delete(method.id);
     setBusy(false);
     load();
   };

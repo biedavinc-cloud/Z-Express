@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
-import { base44 } from '@/api/base44Client';
+import { api } from '@/api/client';
 import {
   ArrowRight,
   Banknote,
@@ -101,7 +101,7 @@ export default function CreateShipment() {
 
   // A signed-in sender is pre-filled so an individual books in a few seconds.
   useEffect(() => {
-    base44.auth
+    api.auth
       .me()
       .then((user) => {
         if (!user) return;
@@ -124,7 +124,7 @@ export default function CreateShipment() {
       return;
     }
     let cancelled = false;
-    base44.functions
+    api.functions
       .invoke('tenantPaymentMethods', { tenant_id: form.tenant_id })
       .then((response) => {
         if (cancelled) return;
@@ -159,7 +159,7 @@ export default function CreateShipment() {
     setError('');
     setLoading(true);
     try {
-      const response = await base44.functions.invoke('quoteRate', {
+      const response = await api.functions.invoke('quoteRate', {
         origin_country: form.origin_country,
         origin_city: form.origin_city,
         dest_country: form.dest_country,
@@ -190,7 +190,7 @@ export default function CreateShipment() {
     setError('');
     setSubmitting(true);
     try {
-      const response = await base44.functions.invoke('createShipment', {
+      const response = await api.functions.invoke('createShipment', {
         ...form,
         tenant_id: form.tenant_id,
         sender_lat: Number(form.sender_lat) || 0,

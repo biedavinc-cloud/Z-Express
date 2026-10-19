@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ImageIcon, PenLine, Loader2, MapPin } from 'lucide-react';
-import { base44 } from '@/api/base44Client';
+import { api } from '@/api/client';
 import { formatDate } from '@/lib/logistics';
 import { useI18n } from '@/components/LanguageProvider';
 
@@ -17,7 +17,7 @@ export default function PodCard({ shipment }) {
     setBusy(true);
     setFailed(false);
     try {
-      const { signed_url } = await base44.integrations.Core.CreateFileSignedUrl({
+      const { signed_url } = await api.integrations.Core.CreateFileSignedUrl({
         file_uri: shipment.pod_photo_uri,
       });
       setPhotoUrl(signed_url);

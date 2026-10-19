@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { base44 } from '@/api/base44Client';
+import { api } from '@/api/client';
 import { Loader2 } from 'lucide-react';
 import { formatDate, formatMoney } from '@/lib/logistics';
 
@@ -14,7 +14,7 @@ export default function BillingHistory({ tenantId, t }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    base44.entities.Invoice.filter({ tenant_id: tenantId }, { sort: '-issued_at', limit: 24 })
+    api.entities.Invoice.filter({ tenant_id: tenantId }, { sort: '-issued_at', limit: 24 })
       .then((page) => {
         setInvoices(page.items || []);
         setLoading(false);

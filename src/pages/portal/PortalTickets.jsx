@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useOutletContext } from 'react-router-dom';
-import { base44 } from '@/api/base44Client';
+import { api } from '@/api/client';
 import { Loader2, LifeBuoy, Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { scopeFor } from '@/lib/session';
@@ -48,7 +48,7 @@ export default function PortalTickets() {
   const load = async () => {
     const query = { tenant_id: tenant.id };
     if (filter !== 'all') query.status = filter;
-    const page = await base44.entities.SupportTicket.filter(query, { sort: '-opened_at', limit: 50 });
+    const page = await api.entities.SupportTicket.filter(query, { sort: '-opened_at', limit: 50 });
     setTickets(page.items || []);
     setLoading(false);
   };
@@ -62,13 +62,13 @@ export default function PortalTickets() {
     if (!form.subject) return;
     setBusy(true);
     const shipment = form.tracking_number
-      ? await base44.entities.Shipment.filter({
+      ? await api.entities.Shipment.filter({
           tenant_id: tenant.id,
           tracking_number: form.tracking_number.trim().toUpperCase(),
         })
       : [];
     const match = shipment.items?.[0] || shipment[0];
-    await base44.entities.SupportTicket.create({
+    await api.entities.SupportTicket.create({
       ...form,
       tracking_number: form.tracking_number.trim().toUpperCase(),
       shipment_id: match?.id || '',
@@ -85,7 +85,7 @@ export default function PortalTickets() {
   };
 
   const updateStatus = async (ticket, status) => {
-    await base44.entities.SupportTicket.update(ticket.id, {
+    await api.entities.SupportTicket.update(ticket.id, {
       status,
       resolution: notes[ticket.id] || ticket.resolution || '',
       resolved_at: status === 'resolved' || status === 'rejected' ? new Date().toISOString() : '',

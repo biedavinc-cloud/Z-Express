@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { base44 } from "@/api/base44Client";
+import { api } from '@/api/client';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -31,17 +31,45 @@ export default function Register() {
   const [country, setCountry] = useState(visitorCountry);
   const dialCode = dialFor(country);
 
+  const finish = () => {
+    // A private sender lands in their own space, a logistics company starts the
+    // company onboarding, unless they were sent here from a specific page.
+    const destination = safeReturnTo();
+    window.location.href =
+      destination !== "/"
+        ? destination
+        : accountType === "company"
+          ? "/portal/onboarding"
+          : "/my-shipments";
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
+    if (password.length < 8) {
+      setError(t("auth.passwordTooShort"));
+      return;
+    }
     if (password !== confirmPassword) {
       setError(t("auth.passwordMismatch"));
       return;
     }
     setLoading(true);
     try {
-      await base44.auth.register({ email, password });
-      setShowOtp(true);
+      const result = await api.auth.register({
+        email,
+        password,
+        profile: {
+          account_type: accountType,
+          country,
+          phone: withDialCode(country, phone),
+          display_name: fullName,
+          full_name: fullName,
+        },
+      });
+      // With email confirmation switched off the session already exists.
+      if (result.needsVerification) setShowOtp(true);
+      else finish();
     } catch (err) {
       setError(err.message || t("auth.registerFailed"));
     } finally {
@@ -53,30 +81,10 @@ export default function Register() {
     setError("");
     setLoading(true);
     try {
-      const result = await base44.auth.verifyOtp({ email, otpCode });
-      if (result?.access_token) {
-        base44.auth.setToken(result.access_token);
-      }
-      // Keep the profile and the chosen journey: a private sender lands in their
-      // own space, a logistics company starts the company onboarding.
-      await base44.auth
-        .updateMe({
-          account_type: accountType,
-          country,
-          phone: withDialCode(country, phone),
-          display_name: fullName,
-        })
-        .catch(() => null);
-      const destination = safeReturnTo();
-      window.location.href =
-        destination !== "/"
-          ? destination
-          : accountType === "company"
-            ? "/portal/onboarding"
-            : "/my-shipments";
+      await api.auth.verifyOtp({ email, otpCode });
+      finish();
     } catch (err) {
       setError(err.message || t("auth.invalidCode"));
-    } finally {
       setLoading(false);
     }
   };
@@ -84,7 +92,7 @@ export default function Register() {
   const handleResend = async () => {
     setError("");
     try {
-      await base44.auth.resendOtp(email);
+      await api.auth.resendOtp(email);
       toast({
         title: t("auth.codeSent"),
         description: t("auth.codeSentBody"),
@@ -94,8 +102,13 @@ export default function Register() {
     }
   };
 
-  const handleGoogle = () => {
-    base44.auth.loginWithProvider("google", safeReturnTo());
+  const handleGoogle = async () => {
+    setError("");
+    try {
+      await api.auth.loginWithProvider("google", safeReturnTo());
+    } catch (err) {
+      setError(err.message || t("auth.registerFailed"));
+    }
   };
 
   if (showOtp) {
@@ -144,7 +157,7 @@ export default function Register() {
         </Button>
         <p className="text-center text-sm text-muted-foreground mt-4">
           {t("auth.noCode")}{" "}
-          <button onClick={handleResend} className="text-primary font-medium hover:underline">
+          <button type="button" onClick={handleResend} className="text-primary font-medium hover:underline">
             {t("auth.resend")}
           </button>
         </p>

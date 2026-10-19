@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useOutletContext } from 'react-router-dom';
-import { base44 } from '@/api/base44Client';
+import { api } from '@/api/client';
 import { Loader2, Plus, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { scopeForEntity } from '@/lib/session';
@@ -46,8 +46,8 @@ export default function PortalPricing() {
 
   const load = async () => {
     const [z, s] = await Promise.all([
-      base44.entities.Zone.filter({ tenant_id: tenant.id }, { sort: 'name', limit: 100 }),
-      base44.entities.Surcharge.filter({ tenant_id: tenant.id }, { sort: 'name', limit: 100 }),
+      api.entities.Zone.filter({ tenant_id: tenant.id }, { sort: 'name', limit: 100 }),
+      api.entities.Surcharge.filter({ tenant_id: tenant.id }, { sort: 'name', limit: 100 }),
     ]);
     setZones(z.items || z);
     setSurcharges(s.items || s);
@@ -62,7 +62,7 @@ export default function PortalPricing() {
   const addZone = async () => {
     if (!zone.name) return;
     setBusy(true);
-    await base44.entities.Zone.create({
+    await api.entities.Zone.create({
       ...zone,
       cities: zone.cities
         .split(',')
@@ -84,7 +84,7 @@ export default function PortalPricing() {
   const addSurcharge = async () => {
     if (!surcharge.name) return;
     setBusy(true);
-    await base44.entities.Surcharge.create({
+    await api.entities.Surcharge.create({
       ...surcharge,
       amount: Number(surcharge.amount) || 0,
       threshold: Number(surcharge.threshold) || 0,
@@ -97,12 +97,12 @@ export default function PortalPricing() {
   };
 
   const toggle = async (entity, record, field) => {
-    await base44.entities[entity].update(record.id, { [field]: !record[field] });
+    await api.entities[entity].update(record.id, { [field]: !record[field] });
     load();
   };
 
   const remove = async (entity, record) => {
-    await base44.entities[entity].delete(record.id);
+    await api.entities[entity].delete(record.id);
     load();
   };
 

@@ -21,7 +21,7 @@ export function marketplaceName(id) {
 }
 
 export function marketplaceEndpoint(origin, token) {
-  return `${origin}/functions/marketplaceOrder?token=${token || ''}`;
+  return `${origin}/marketplaceOrder?token=${token || ''}`;
 }
 
 export function generateInboundToken() {

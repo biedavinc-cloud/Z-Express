@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useOutletContext } from 'react-router-dom';
-import { base44 } from '@/api/base44Client';
+import { api } from '@/api/client';
 import { Loader2, Plus, Truck, Bike, Car, Truck as TruckIcon, Pencil } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { scopeForEntity } from '@/lib/session';
@@ -30,14 +30,14 @@ export default function PortalFleet() {
 
   const load = async () => {
     const [v, d, h, delivered, failed] = await Promise.all([
-      base44.entities.Vehicle.filter({ tenant_id: tenant.id }, { limit: 200 }),
-      base44.entities.TeamMember.filter({ tenant_id: tenant.id }, { limit: 200 }),
-      base44.entities.Hub.filter({ tenant_id: tenant.id }, { limit: 200 }),
-      base44.entities.Shipment.aggregate({
+      api.entities.Vehicle.filter({ tenant_id: tenant.id }, { limit: 200 }),
+      api.entities.TeamMember.filter({ tenant_id: tenant.id }, { limit: 200 }),
+      api.entities.Hub.filter({ tenant_id: tenant.id }, { limit: 200 }),
+      api.entities.Shipment.aggregate({
         query: { tenant_id: tenant.id, status: 'delivered' },
         groupBy: 'assigned_driver_email',
       }),
-      base44.entities.Shipment.aggregate({
+      api.entities.Shipment.aggregate({
         query: { tenant_id: tenant.id, status: { $in: ['failed', 'returned'] } },
         groupBy: 'assigned_driver_email',
       }),
@@ -61,9 +61,9 @@ export default function PortalFleet() {
     setBusy(true);
     const payload = { ...vehicle, capacity_kg: Number(vehicle.capacity_kg) || 0 };
     if (editingId) {
-      await base44.entities.Vehicle.update(editingId, payload);
+      await api.entities.Vehicle.update(editingId, payload);
     } else {
-      await base44.entities.Vehicle.create({
+      await api.entities.Vehicle.create({
         ...payload,
         status: 'active',
         ...(await scopeForEntity(tenant, 'Vehicle', session?.user?.email)),
@@ -89,7 +89,7 @@ export default function PortalFleet() {
   };
 
   const toggleVehicle = async (record) => {
-    await base44.entities.Vehicle.update(record.id, {
+    await api.entities.Vehicle.update(record.id, {
       status: record.status === 'active' ? 'inactive' : 'active',
     });
     load();
@@ -98,7 +98,7 @@ export default function PortalFleet() {
   const addDriver = async () => {
     if (!driver.email) return;
     setBusy(true);
-    await base44.functions.invoke('teamMember', {
+    await api.functions.invoke('teamMember', {
       action: 'add',
       tenant_id: tenant.id,
       full_name: driver.full_name,
@@ -115,7 +115,7 @@ export default function PortalFleet() {
   };
 
   const setAvailability = async (member, availability) => {
-    await base44.entities.TeamMember.update(member.id, { availability });
+    await api.entities.TeamMember.update(member.id, { availability });
     setDrivers((prev) => prev.map((d) => (d.id === member.id ? { ...d, availability } : d)));
   };
 
