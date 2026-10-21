@@ -180,6 +180,8 @@ export const es = {
   'footer.terms': 'Condiciones de uso',
   'footer.rights': 'Todos los derechos reservados.',
   'footer.builtBy': 'Desarrollado por',
+  'footer.productOf': 'Un producto de',
+  'footer.poweredBy': 'Impulsado por',
   'footer.follow': 'Síguenos',
 
   'biz.title': 'Portal Empresarial y Corporativo',

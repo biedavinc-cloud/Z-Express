@@ -5,8 +5,11 @@ import { cn } from "../../lib/utils"
 const FALLBACK_IMAGE_URL =
   "data:image/svg+xml;utf8," +
   encodeURIComponent(
-    '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300"><rect width="400" height="300" fill="#f1ebe3"/>' +
-      '<path d="M120 200l55-70 40 50 25-30 40 50z" fill="#d8cdbf"/><circle cx="150" cy="105" r="18" fill="#d8cdbf"/></svg>'
+    '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300">' +
+      '<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#3D1E00"/>' +
+      '<stop offset=".6" stop-color="#7A3A06"/><stop offset="1" stop-color="#FF8E24"/></linearGradient></defs>' +
+      '<rect width="400" height="300" fill="url(#g)"/>' +
+      '<text x="200" y="185" text-anchor="middle" font-family="Poppins,Arial,sans-serif" font-size="150" font-weight="800" fill="#FFF9F0" fill-opacity=".16">Z.</text></svg>'
   )
 
 /**

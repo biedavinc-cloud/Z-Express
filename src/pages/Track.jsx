@@ -54,7 +54,7 @@ function Timeline({ events }) {
 function ExternalNumbers({ numbers }) {
   const { t, lang } = useI18n();
   return (
-    <div className="rounded-none border border-border bg-card p-6">
+    <div className="border border-border bg-card p-6">
       <h2 className="font-heading text-sm font-semibold uppercase tracking-wider text-primary">
         {t('track.externalTitle')}
       </h2>

@@ -63,7 +63,7 @@ export default function CompanyTable({
                 type="button"
                 disabled={busy}
                 onClick={() => onFilter({ ...query, status: status.id })}
-                className={`border px-3 py-1.5 text-xs font-medium transition ${
+                className={`rounded-full border px-3.5 py-1.5 text-xs font-medium transition ${
                   query.status === status.id
                     ? 'border-primary bg-primary text-primary-foreground'
                     : 'border-border text-muted-foreground hover:text-primary'

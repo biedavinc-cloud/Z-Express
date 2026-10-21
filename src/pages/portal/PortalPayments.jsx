@@ -70,7 +70,7 @@ export default function PortalPayments() {
           <Button
             type="button"
             onClick={() => setForm({ method: null })}
-            className="rounded-none bg-accent text-accent-foreground hover:bg-accent/90"
+            className="bg-accent text-accent-foreground hover:bg-accent/90"
           >
             <Plus className="mr-2 h-4 w-4" />
             {t('pay.add')}
@@ -94,12 +94,12 @@ export default function PortalPayments() {
 
       <div className="grid gap-3 lg:grid-cols-2">
         {methods.length === 0 && !form && (
-          <p className="rounded-none border border-dashed border-border bg-card px-6 py-10 text-sm text-muted-foreground lg:col-span-2">
+          <p className="border border-dashed border-border bg-card px-6 py-10 text-sm text-muted-foreground lg:col-span-2">
             {t('pay.none')}
           </p>
         )}
         {methods.map((method) => (
-          <div key={method.id} className="rounded-none border border-border bg-card p-5">
+          <div key={method.id} className="border border-border bg-card p-5">
             <div className="flex items-start justify-between gap-4">
               <div className="flex items-start gap-3">
                 <span className="grid h-10 w-10 shrink-0 place-items-center rounded-none bg-accent/12 text-accent">
@@ -132,7 +132,7 @@ export default function PortalPayments() {
                   type="button"
                   disabled={busy}
                   onClick={() => remove(method)}
-                  className="grid h-8 w-8 place-items-center rounded-none border border-border text-muted-foreground transition hover:text-destructive"
+                  className="grid h-8 w-8 place-items-center rounded-full border border-border text-muted-foreground transition hover:text-destructive"
                 >
                   <Trash2 className="h-3.5 w-3.5" />
                 </button>
@@ -142,7 +142,7 @@ export default function PortalPayments() {
         ))}
       </div>
 
-      <div className="rounded-none border border-border bg-card">
+      <div className="border border-border bg-card">
         <div className="border-b border-border px-6 py-5">
           <h2 className="font-heading text-sm font-semibold uppercase tracking-wider text-primary">
             {t('pay.pendingTitle')}
@@ -180,7 +180,7 @@ export default function PortalPayments() {
                   type="button"
                   disabled={busy}
                   onClick={() => confirmPaid(shipment)}
-                  className="rounded-none bg-primary text-primary-foreground hover:bg-primary/90"
+                  className="bg-primary text-primary-foreground hover:bg-primary/90"
                 >
                   <Check className="mr-2 h-4 w-4" />
                   {t('pay.markPaid')}

@@ -8,11 +8,19 @@
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
-  "display_override": ["standalone", "minimal-ui", "browser"],
+  "display_override": [
+    "standalone",
+    "minimal-ui",
+    "browser"
+  ],
   "orientation": "any",
   "background_color": "#FFFBF5",
   "theme_color": "#3D1E00",
-  "categories": ["business", "productivity", "navigation"],
+  "categories": [
+    "business",
+    "productivity",
+    "navigation"
+  ],
   "prefer_related_applications": false,
   "icons": [
     {

@@ -221,7 +221,7 @@ export default function Register() {
                   key={option.id}
                   type="button"
                   onClick={() => setAccountType(option.id)}
-                  className={`rounded-none border p-3 text-left transition ${
+                  className={`rounded-2xl border p-3 text-left transition ${
                     active ? "border-accent bg-accent/5" : "border-input hover:border-accent/40"
                   }`}
                 >

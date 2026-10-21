@@ -272,6 +272,8 @@ const en = {
   'footer.terms': 'Terms of Use',
   'footer.rights': 'All rights reserved.',
   'footer.builtBy': 'Developed by',
+  'footer.productOf': 'A product of',
+  'footer.poweredBy': 'Powered by',
   'footer.follow': 'Follow us',
 
   'biz.title': 'Business & Corporate Portal',
@@ -720,6 +722,8 @@ const fr = {
   'footer.terms': 'Conditions d’utilisation',
   'footer.rights': 'Tous droits réservés.',
   'footer.builtBy': 'Développé par',
+  'footer.productOf': 'Un produit de',
+  'footer.poweredBy': 'Propulsé par',
   'footer.follow': 'Suivez-nous',
 
   'biz.title': 'Portail Entreprise & Corporate',

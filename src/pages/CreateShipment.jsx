@@ -29,7 +29,7 @@ import { DEFAULT_GOODS, GOODS_CATEGORIES, goodsLabel } from '@/lib/goods';
 import { railLabel } from '@/lib/payments';
 
 const inputClass =
-  'w-full rounded-none border border-input bg-card px-3.5 py-2.5 text-sm outline-none transition placeholder:text-muted-foreground/60 focus:border-accent focus:ring-2 focus:ring-accent/20';
+  'w-full rounded-2xl border border-input bg-card px-3.5 py-2.5 text-sm outline-none transition placeholder:text-muted-foreground/60 focus:border-accent focus:ring-2 focus:ring-accent/20';
 
 const STEPS = ['ship.step1', 'ship.step2', 'ship.step3'];
 
@@ -223,7 +223,7 @@ export default function CreateShipment() {
     return (
       <SiteShell>
         <section className="mx-auto max-w-3xl px-4 py-16 sm:px-6">
-          <div className="rounded-none border border-border bg-card p-8 sm:p-10">
+          <div className="rounded-2xl border border-border bg-card p-8 sm:p-10">
             <span className="grid h-14 w-14 place-items-center rounded-none bg-accent/12 text-accent">
               <CheckCircle2 className="h-7 w-7" />
             </span>
@@ -262,7 +262,7 @@ export default function CreateShipment() {
             </div>
 
             {booked.payment_status === 'awaiting_verification' && selectedMethod && (
-              <div className="mt-6 rounded-none border border-border bg-secondary/40 p-6">
+              <div className="mt-6 rounded-2xl border border-border bg-secondary/40 p-6">
                 <div className="flex items-center gap-2">
                   <Wallet className="h-4 w-4 text-accent" />
                   <p className="font-heading text-sm font-semibold text-primary">{t('ship.paymentInstructions')}</p>
@@ -302,7 +302,7 @@ export default function CreateShipment() {
               </div>
             )}
 
-            <div className="mt-6 rounded-none border border-accent/40 bg-accent/5 p-5">
+            <div className="mt-6 rounded-2xl border border-accent/40 bg-accent/5 p-5">
               <div className="flex items-center gap-2">
                 <PackageCheck className="h-4 w-4 text-accent" />
                 <p className="font-heading text-sm font-semibold text-primary">{t('ship.otpTitle')}</p>
@@ -321,7 +321,7 @@ export default function CreateShipment() {
             )}
 
             <div className="mt-8 flex flex-wrap gap-3">
-              <Button asChild className="rounded-none bg-accent text-accent-foreground hover:bg-accent/90">
+              <Button asChild className="bg-accent text-accent-foreground hover:bg-accent/90">
                 <Link to={`/track?numbers=${booked.tracking_number}`}>
                   {t('ship.trackNow')}
                   <ArrowRight className="ml-2 h-4 w-4" />
@@ -329,7 +329,7 @@ export default function CreateShipment() {
               </Button>
               <Button
                 variant="outline"
-                className="rounded-none"
+               
                 onClick={() => {
                   setBooked(null);
                   setStep(0);
@@ -383,7 +383,7 @@ export default function CreateShipment() {
       <section className="mx-auto max-w-4xl px-4 py-12 sm:px-6">
         <form
           onSubmit={step === 0 ? getRates : (e) => e.preventDefault()}
-          className="rounded-none border border-border bg-card p-7 sm:p-9"
+          className="rounded-2xl border border-border bg-card p-7 sm:p-9"
         >
           {step === 0 && (
             <>
@@ -537,7 +537,7 @@ export default function CreateShipment() {
                         key={quote.tenant_id}
                         type="button"
                         onClick={() => setForm((prev) => ({ ...prev, tenant_id: quote.tenant_id }))}
-                        className={`flex w-full items-center justify-between gap-4 rounded-none border px-5 py-4 text-left transition ${
+                        className={`flex w-full items-center justify-between gap-4 rounded-2xl border px-5 py-4 text-left transition ${
                           form.tenant_id === quote.tenant_id
                             ? 'border-accent bg-accent/5'
                             : 'border-border hover:border-accent/50'
@@ -573,11 +573,11 @@ export default function CreateShipment() {
                   <input placeholder={t('ship.phone')} className={inputClass} value={form.sender_phone} onChange={update('sender_phone')} />
                   <input placeholder={t('ship.email')} className={inputClass} value={form.sender_email} onChange={update('sender_email')} />
                   <input placeholder={t('ship.address')} className={inputClass} value={form.sender_address} onChange={update('sender_address')} />
-                  <p className="rounded-none bg-secondary px-3.5 py-2.5 text-xs text-muted-foreground">
+                  <p className="bg-secondary px-3.5 py-2.5 text-xs text-muted-foreground">
                     {[form.origin_city, form.origin_country].filter(Boolean).join(', ')}
                   </p>
 
-                  <div className="rounded-none border border-dashed border-accent/45 bg-accent/5 p-4">
+                  <div className="rounded-2xl border border-dashed border-accent/45 bg-accent/5 p-4">
                     <div className="flex items-start gap-3">
                       <span className="grid h-10 w-10 shrink-0 place-items-center rounded-none bg-accent/12 text-accent">
                         <MapPin className="h-5 w-5" />
@@ -647,7 +647,7 @@ export default function CreateShipment() {
                   <input placeholder={t('ship.email')} className={inputClass} value={form.receiver_email} onChange={update('receiver_email')} />
                   <input placeholder={t('ship.address')} className={inputClass} value={form.receiver_address} onChange={update('receiver_address')} />
                   <input placeholder={t('ship.what3words')} className={inputClass} value={form.receiver_what3words} onChange={update('receiver_what3words')} />
-                  <p className="rounded-none bg-secondary px-3.5 py-2.5 text-xs text-muted-foreground">
+                  <p className="bg-secondary px-3.5 py-2.5 text-xs text-muted-foreground">
                     {[form.dest_city, form.dest_country].filter(Boolean).join(', ')}
                   </p>
                 </div>
@@ -661,7 +661,7 @@ export default function CreateShipment() {
                 {t('ship.selectPartner')}
               </h2>
               <div className="mt-4 space-y-3 text-sm">
-                <div className="rounded-none bg-secondary/60 p-5">
+                <div className="bg-secondary/60 p-5">
                   <p className="font-heading font-semibold text-primary">{selected?.tenant_name || '—'}</p>
                   <p className="mt-1 text-muted-foreground">
                     {[form.origin_city, form.dest_city].join(' → ')} · {form.pieces} × {form.weight_kg} kg ·{' '}
@@ -669,7 +669,7 @@ export default function CreateShipment() {
                   </p>
                 </div>
                 <div className="grid gap-4 sm:grid-cols-2">
-                  <div className="rounded-none border border-border p-5">
+                  <div className="rounded-2xl border border-border p-5">
                     <p className="text-xs uppercase tracking-wider text-muted-foreground">{t('ship.sender')}</p>
                     <p className="mt-1 font-medium text-primary">{form.sender_name || '—'}</p>
                     <p className="text-muted-foreground">{form.sender_phone}</p>
@@ -680,14 +680,14 @@ export default function CreateShipment() {
                       </p>
                     )}
                   </div>
-                  <div className="rounded-none border border-border p-5">
+                  <div className="rounded-2xl border border-border p-5">
                     <p className="text-xs uppercase tracking-wider text-muted-foreground">{t('ship.receiver')}</p>
                     <p className="mt-1 font-medium text-primary">{form.receiver_name || '—'}</p>
                     <p className="text-muted-foreground">{form.receiver_phone}</p>
                   </div>
                 </div>
 
-                <div className="rounded-none border border-border p-5">
+                <div className="rounded-2xl border border-border p-5">
                   <p className="text-xs uppercase tracking-wider text-muted-foreground">{t('ship.paymentMethods')}</p>
                   {form.payment_mode === 'cod' ? (
                     <p className="mt-2 text-sm text-muted-foreground">{t('ship.paymentCodNote')}</p>
@@ -700,7 +700,7 @@ export default function CreateShipment() {
                           key={method.id}
                           type="button"
                           onClick={() => chooseMethod(method)}
-                          className={`rounded-none border p-3 text-left transition ${
+                          className={`rounded-2xl border p-3 text-left transition ${
                             form.payment_method === method.type
                               ? 'border-accent bg-accent/5'
                               : 'border-border hover:border-accent/50'
@@ -751,14 +751,14 @@ export default function CreateShipment() {
 
           <div className="mt-8 flex flex-wrap gap-3">
             {step > 0 && (
-              <Button type="button" variant="outline" className="rounded-none" onClick={() => setStep((s) => s - 1)}>
+              <Button type="button" variant="outline" onClick={() => setStep((s) => s - 1)}>
                 {t('ship.back')}
               </Button>
             )}
             {step === 1 && (
               <Button
                 type="button"
-                className="rounded-none bg-primary text-primary-foreground hover:bg-primary/90"
+                className="bg-primary text-primary-foreground hover:bg-primary/90"
                 disabled={!form.sender_name || !form.sender_phone || !form.receiver_name || !form.receiver_phone || !form.receiver_address}
                 onClick={() => setStep(2)}
               >
@@ -770,7 +770,7 @@ export default function CreateShipment() {
                 type="button"
                 size="lg"
                 disabled={submitting || !form.tenant_id}
-                className="rounded-none bg-accent text-accent-foreground hover:bg-accent/90 sm:px-10"
+                className="bg-accent text-accent-foreground hover:bg-accent/90 sm:px-10"
                 onClick={submit}
               >
                 {submitting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
@@ -780,7 +780,7 @@ export default function CreateShipment() {
             {step === 0 && quotes.length > 0 && (
               <Button
                 type="button"
-                className="rounded-none bg-primary text-primary-foreground hover:bg-primary/90"
+                className="bg-primary text-primary-foreground hover:bg-primary/90"
                 disabled={!form.tenant_id}
                 onClick={() => setStep(1)}
               >

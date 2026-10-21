@@ -49,7 +49,7 @@ export default function PaymentMethodForm({ tenant, method, lang, t, onSaved, on
   };
 
   return (
-    <div className="rounded-none border border-border bg-card p-6">
+    <div className="border border-border bg-card p-6">
       <div className="grid gap-4 sm:grid-cols-2">
         <label className="block">
           <span className="text-xs font-medium text-muted-foreground">{t('pay.rail')}</span>
@@ -109,12 +109,12 @@ export default function PaymentMethodForm({ tenant, method, lang, t, onSaved, on
           type="button"
           disabled={busy}
           onClick={save}
-          className="rounded-none bg-accent text-accent-foreground hover:bg-accent/90"
+          className="bg-accent text-accent-foreground hover:bg-accent/90"
         >
           {busy && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
           {busy ? t('pay.saving') : t('pay.save')}
         </Button>
-        <Button type="button" variant="ghost" className="rounded-none" onClick={onCancel}>
+        <Button type="button" variant="ghost" onClick={onCancel}>
           {t('ship.back')}
         </Button>
       </div>

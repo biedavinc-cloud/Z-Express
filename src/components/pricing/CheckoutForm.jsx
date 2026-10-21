@@ -190,7 +190,7 @@ export default function CheckoutForm({ tenant, session, initial = {}, onDone, on
                   key={option.id}
                   type="button"
                   onClick={() => setStartMode(option.id)}
-                  className={`border px-4 py-3 text-left transition ${
+                  className={`rounded-2xl border px-4 py-3 text-left transition ${
                     startMode === option.id ? 'border-accent bg-accent/10' : 'border-border hover:border-accent/50'
                   }`}
                 >

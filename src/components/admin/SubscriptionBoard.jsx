@@ -31,7 +31,7 @@ export default function SubscriptionBoard({ subscriptions, invoices, busy, onSav
         {cards.map((card) => {
           const Icon = card.icon;
           return (
-            <div key={card.label} className="rounded-none border border-border bg-card p-6">
+            <div key={card.label} className="border border-border bg-card p-6">
               <span className="grid h-10 w-10 place-items-center rounded-full bg-accent/12 text-accent">
                 <Icon className="h-5 w-5" />
               </span>
@@ -82,7 +82,7 @@ export default function SubscriptionBoard({ subscriptions, invoices, busy, onSav
                       value={sub.plan || 'starter'}
                       disabled={busy}
                       onChange={(event) => onSave(sub, { plan: event.target.value })}
-                      className="rounded-none border border-input bg-card px-2.5 py-1.5 text-xs capitalize outline-none focus:border-accent"
+                      className="border border-input bg-card px-2.5 py-1.5 text-xs capitalize outline-none focus:border-accent"
                     >
                       {PLAN_IDS.map((plan) => (
                         <option key={plan} value={plan}>
@@ -96,7 +96,7 @@ export default function SubscriptionBoard({ subscriptions, invoices, busy, onSav
                       value={sub.billing_cycle || 'monthly'}
                       disabled={busy}
                       onChange={(event) => onSave(sub, { billing_cycle: event.target.value })}
-                      className="rounded-none border border-input bg-card px-2.5 py-1.5 text-xs outline-none focus:border-accent"
+                      className="border border-input bg-card px-2.5 py-1.5 text-xs outline-none focus:border-accent"
                     >
                       {CYCLES.map((cycle) => (
                         <option key={cycle} value={cycle}>
@@ -110,7 +110,7 @@ export default function SubscriptionBoard({ subscriptions, invoices, busy, onSav
                       value={sub.status || 'trialing'}
                       disabled={busy}
                       onChange={(event) => onSave(sub, { status: event.target.value })}
-                      className="rounded-none border border-input bg-card px-2.5 py-1.5 text-xs outline-none focus:border-accent"
+                      className="border border-input bg-card px-2.5 py-1.5 text-xs outline-none focus:border-accent"
                     >
                       {SUB_STATUS.map((status) => (
                         <option key={status} value={status}>

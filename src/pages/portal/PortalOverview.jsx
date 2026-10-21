@@ -169,7 +169,7 @@ export default function PortalOverview() {
                 <Link
                   key={action.key}
                   to={action.to}
-                  className="flex items-center gap-3 rounded-2xl border border-border px-4 py-3 text-sm font-medium text-primary transition hover:border-accent/60 hover:bg-accent/5"
+                  className="flex items-center gap-3 rounded-full border border-border px-4 py-3 text-sm font-medium text-primary transition hover:border-accent/60 hover:bg-accent/5"
                 >
                   <Icon className="h-4 w-4 text-accent" />
                   {t(action.key)}

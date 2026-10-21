@@ -129,7 +129,7 @@ export default function PartnerCms() {
         </p>
       )}
       {error && (
-        <p className="rounded-none border border-destructive/30 bg-destructive/10 px-4 py-2.5 text-sm text-destructive">
+        <p className="border border-destructive/30 bg-destructive/10 px-4 py-2.5 text-sm text-destructive">
           {error}
         </p>
       )}

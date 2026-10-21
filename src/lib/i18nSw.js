@@ -180,6 +180,8 @@ export const sw = {
   'footer.terms': 'Masharti ya Matumizi',
   'footer.rights': 'Haki zote zimehifadhiwa.',
   'footer.builtBy': 'Imeundwa na',
+  'footer.productOf': 'Bidhaa ya',
+  'footer.poweredBy': 'Inaendeshwa na',
   'footer.follow': 'Tufuate',
 
   'biz.title': 'Lango la Biashara na Makampuni',

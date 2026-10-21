@@ -5,6 +5,7 @@ import { useI18n } from '@/components/LanguageProvider';
 import BrandMark from '@/components/site/BrandMark';
 import { Image } from '@/components/ui/image';
 import { BUSINESS_HERO_IMAGE } from '@/lib/siteImages';
+import { LIAFRIK, ZANLDO } from '@/lib/branding';
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -144,16 +145,30 @@ export default function SiteFooter() {
         </div>
 
         <div className="mt-7 flex flex-col gap-2 border-t border-primary-foreground/12 pt-5 text-xs text-primary-foreground/55 sm:flex-row sm:items-center sm:justify-between">
-          <span>
-            © {new Date().getFullYear()} Z. Express. {t('footer.rights')} · {t('footer.builtBy')}{' '}
-            <a
-              href="https://liafrik.com"
-              target="_blank"
-              rel="noreferrer noopener"
-              className="font-medium text-accent transition hover:underline"
-            >
-              Liafrik
-            </a>
+          <span className="leading-relaxed">
+            © {new Date().getFullYear()} Z. Express. {t('footer.rights')}
+            <span className="block sm:inline">
+              <span className="hidden sm:inline"> · </span>
+              {t('footer.productOf')}{' '}
+              <a
+                href={ZANLDO.url}
+                target="_blank"
+                rel="noreferrer noopener"
+                className="font-medium text-accent transition hover:underline"
+              >
+                {ZANLDO.name}
+              </a>
+              {' · '}
+              {t('footer.poweredBy')}{' '}
+              <a
+                href={LIAFRIK.url}
+                target="_blank"
+                rel="noreferrer noopener"
+                className="font-medium text-accent transition hover:underline"
+              >
+                {LIAFRIK.name}
+              </a>
+            </span>
           </span>
           <div className="flex gap-4">
             <Link to="/legal/privacy" className="transition hover:text-primary-foreground">

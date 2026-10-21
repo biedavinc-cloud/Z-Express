@@ -133,13 +133,13 @@ export default function DriverHome() {
         <div className="mt-6 flex flex-wrap gap-3">
           <Link
             to="/portal"
-            className="rounded-2xl border border-border bg-card px-5 py-3 text-sm font-medium text-primary transition hover:border-accent"
+            className="rounded-full border border-border bg-card px-5 py-3 text-sm font-medium text-primary transition hover:border-accent"
           >
             {t('portal.overview')}
           </Link>
           <a
             href={`tel:${session?.member?.phone || ''}`}
-            className="flex items-center gap-2 rounded-2xl border border-border bg-card px-5 py-3 text-sm font-medium text-primary transition hover:border-accent"
+            className="flex items-center gap-2 rounded-full border border-border bg-card px-5 py-3 text-sm font-medium text-primary transition hover:border-accent"
           >
             <Phone className="h-4 w-4 text-accent" />
             {t('driver.call')}

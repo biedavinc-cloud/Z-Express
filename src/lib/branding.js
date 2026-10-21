@@ -1,7 +1,10 @@
 // Single source for the Z. Express mark so the header, the portal and the
 // onboarding stay in sync.
-export const BRAND_LOGO =
-  '/images/21f84e4ec_Express.jpg';
+export const BRAND_LOGO = '/images/z-express-logo.png';
+
+// Z. Express is a product of Zanldo and is powered by Liafrik Tech.
+export const ZANLDO = { name: 'Zanldo', url: 'https://zanldo.com' };
+export const LIAFRIK = { name: 'Liafrik Tech', url: 'https://liafrik.com' };
 
 // Wordmark shown next to the logo lockup.
 export const BRAND_NAME = 'Express';

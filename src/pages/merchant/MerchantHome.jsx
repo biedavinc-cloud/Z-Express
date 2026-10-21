@@ -106,13 +106,13 @@ export default function MerchantHome() {
             </p>
             <p className="mt-4 max-w-2xl text-sm leading-relaxed text-muted-foreground">{t('me.freeBody')}</p>
             <div className="mt-6 flex flex-wrap gap-3">
-              <Button asChild className="rounded-none bg-accent text-accent-foreground hover:bg-accent/90">
+              <Button asChild className="bg-accent text-accent-foreground hover:bg-accent/90">
                 <Link to="/send">
                   {t('me.send')}
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Link>
               </Button>
-              <Button asChild variant="outline" className="rounded-none">
+              <Button asChild variant="outline">
                 <Link to="/track">
                   <Search className="mr-2 h-4 w-4" />
                   {t('me.track')}
@@ -129,7 +129,7 @@ export default function MerchantHome() {
 
         <div className="mt-4 space-y-3">
           {shipments.length === 0 && (
-            <div className="rounded-none border border-dashed border-border bg-card px-6 py-14 text-center">
+            <div className="border border-dashed border-border bg-card px-6 py-14 text-center">
               <span className="mx-auto grid h-14 w-14 place-items-center rounded-none bg-secondary text-muted-foreground">
                 <Package className="h-7 w-7" />
               </span>

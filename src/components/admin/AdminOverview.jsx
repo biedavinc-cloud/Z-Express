@@ -72,7 +72,7 @@ export default function AdminOverview({ stats, tenants, invoices, canOpen, onOpe
                     <button
                       type="button"
                       onClick={() => onOpenCompany(tenant.id)}
-                      className="inline-flex items-center gap-1.5 border border-border px-3 py-1.5 text-xs font-medium text-primary transition hover:border-accent"
+                      className="inline-flex items-center gap-1.5 rounded-full border border-border px-3.5 py-1.5 text-xs font-medium text-primary transition hover:border-accent"
                     >
                       <FolderOpen className="h-3.5 w-3.5 text-accent" />
                       {t('admin.openFile')}

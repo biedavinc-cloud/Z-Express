@@ -2,7 +2,7 @@ import React from 'react';
 import { Check, ShieldCheck } from 'lucide-react';
 import { Image } from '@/components/ui/image';
 import { useI18n } from '@/components/LanguageProvider';
-import { BRAND_LOGO, BRAND_NAME } from '@/lib/branding';
+import BrandMark from '@/components/site/BrandMark';
 import { ONBOARD_IMAGES } from '@/lib/siteImages';
 
 const POINTS = ['onboard.brandPoint1', 'onboard.brandPoint2', 'onboard.brandPoint3'];
@@ -25,9 +25,7 @@ export default function BrandPanel() {
       </div>
 
       <div className="relative">
-        <span className="grid h-14 w-14 place-items-center rounded-2xl bg-background p-2">
-          <Image src={BRAND_LOGO} alt={BRAND_NAME} className="h-full w-full" fittingType="fit" />
-        </span>
+        <BrandMark variant="light" size="lg" />
 
         <p className="mt-9 inline-flex rounded-full border border-accent/40 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-accent">
           {t('onboard.trialBadge')}
