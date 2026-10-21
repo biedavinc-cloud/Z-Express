@@ -100,9 +100,35 @@ function entity(name: string) {
   };
 }
 
-const entities: Record<string, ReturnType<typeof entity>> = new Proxy({} as any, {
+// The user directory lives in `profiles` (not in the record store).
+const USER_FIELDS = ['full_name', 'display_name', 'role', 'platform_role', 'platform_role_name', 'account_type', 'country', 'phone'];
+const userEntity = {
+  async list() {
+    const { data, error } = await admin().from('profiles').select('*').order('created_date', { ascending: false }).limit(5000);
+    if (error) throw new Error(`profiles: ${error.message}`);
+    return withItems(data);
+  },
+  async filter(query: Record<string, unknown> = {}) {
+    const all = await userEntity.list();
+    const wanted = Object.entries(query || {});
+    return withItems(all.filter((row: any) => wanted.every(([key, value]) => row[key] === value)));
+  },
+  async get(id: string) {
+    const { data } = await admin().from('profiles').select('*').eq('id', String(id)).maybeSingle();
+    return data ?? null;
+  },
+  async update(id: string, patch: Record<string, unknown>) {
+    const clean = Object.fromEntries(Object.entries(patch || {}).filter(([key]) => USER_FIELDS.includes(key)));
+    const { data, error } = await admin().from('profiles').update(clean).eq('id', String(id)).select().maybeSingle();
+    if (error || !data) throw new Error(`User ${id} not found`);
+    return data;
+  },
+};
+
+const entities: Record<string, any> = new Proxy({} as any, {
   get(target: any, prop: string | symbol) {
     if (typeof prop !== 'string') return undefined;
+    if (prop === 'User') return userEntity;
     if (!target[prop]) target[prop] = entity(prop);
     return target[prop];
   },
@@ -157,13 +183,19 @@ export function createClientFromRequest(req: Request) {
   };
 }
 
-// Sends an invitation email. The role argument is accepted for compatibility but
-// never grants anything: administrators are only created with promote_admin().
-async function inviteUser(email: string, _role = 'user') {
-  const { error } = await admin().auth.admin.inviteUserByEmail(String(email).trim().toLowerCase(), {
+// Sends an invitation email. Only server-side handlers that already verified the
+// caller (platformAdmin, teamMember) reach this; the browser cannot call it, so the
+// role argument is honoured here and nowhere else.
+async function inviteUser(email: string, role = 'user') {
+  const address = String(email).trim().toLowerCase();
+  const { data, error } = await admin().auth.admin.inviteUserByEmail(address, {
     redirectTo: appUrl() ? `${appUrl()}/login` : undefined,
   });
   if (error && !/already|registered|exists/i.test(error.message)) throw new Error(error.message);
+  if (role === 'admin') {
+    const query = admin().from('profiles').update({ role: 'admin' });
+    await (data?.user?.id ? query.eq('id', data.user.id) : query.eq('email', address));
+  }
   return { ok: true };
 }
 
@@ -200,9 +232,12 @@ export function waitUntil(promise: Promise<unknown>) {
   if (runtime?.waitUntil) runtime.waitUntil(safe);
 }
 
+/** Default public address of the web app. The APP_URL secret overrides it (staging, custom domain). */
+const DEFAULT_APP_URL = 'https://express.zanldo.com';
+
 /** Public address of the web app, used to build links sent to customers. */
 export function appUrl(): string {
-  return (Deno.env.get('APP_URL') || '').replace(/\/+$/, '');
+  return (Deno.env.get('APP_URL') || DEFAULT_APP_URL).replace(/\/+$/, '');
 }
 
 // ---------------------------------------------------------------------------

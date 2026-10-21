@@ -9,6 +9,10 @@ const TENANT_STATUS = ['pending', 'active', 'suspended'];
 const SUB_STATUS = ['trialing', 'active', 'past_due', 'cancelled'];
 const CYCLES = ['monthly', 'yearly'];
 const APP_ROLES = ['admin', 'user'];
+// Permanent super administrators. They alone grant or revoke super-admin access,
+// and they can never be demoted or removed (the database enforces this too).
+const PROTECTED_ADMINS = ['vincentnogue2@gmail.com', 'vincentnogue@yahoo.com'];
+const isOwnerEmail = (email: unknown) => PROTECTED_ADMINS.includes(String(email || '').trim().toLowerCase());
 const MODULES = ['companies', 'subscriptions', 'invoices', 'staff'];
 const DOC_STATUS = ['pending', 'verified', 'rejected'];
 
@@ -222,6 +226,12 @@ async function handler(req: Request) {
       if (body.role !== undefined) {
         const role = oneOf(clean(body.role, 20), APP_ROLES);
         if (!role) return Response.json({ error: 'Unknown role' }, { status: 400 });
+        if (role !== target.role && !isOwnerEmail(user.email)) {
+          return Response.json({ error: 'Only a platform owner can grant or revoke super-admin access' }, { status: 403 });
+        }
+        if (isOwnerEmail(target.email) && role !== 'admin') {
+          return Response.json({ error: 'This account is a protected platform owner and cannot be demoted' }, { status: 400 });
+        }
         if (userId === user.id && role !== 'admin') {
           return Response.json({ error: 'You cannot remove your own admin access' }, { status: 400 });
         }
@@ -359,6 +369,9 @@ async function handler(req: Request) {
       const role = oneOf(clean(body.role, 20), APP_ROLES) || 'user';
       if (!email || !email.includes('@')) {
         return Response.json({ error: 'A valid email is required' }, { status: 400 });
+      }
+      if (role === 'admin' && !isOwnerEmail(user.email)) {
+        return Response.json({ error: 'Only a platform owner can invite a super administrator' }, { status: 403 });
       }
       await service.users.inviteUser(email, role);
       return Response.json({ ok: true, email, role });

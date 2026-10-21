@@ -3,9 +3,13 @@ import { Mail, ShieldCheck, UserPlus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useI18n } from '@/components/LanguageProvider';
 import { formatDate } from '@/lib/logistics';
+import { useAuth } from '@/lib/AuthContext';
+import { isPlatformOwner } from '@/lib/owners';
 
 export default function PlatformStaff({ users, roles, busy, onInvite, onRole, onPlatformRole }) {
   const { t } = useI18n();
+  const { user } = useAuth();
+  const viewerIsOwner = isPlatformOwner(user?.email);
   const [email, setEmail] = useState('');
   const [role, setRole] = useState('user');
   const admins = users.filter((member) => member.role === 'admin');
@@ -41,7 +45,7 @@ export default function PlatformStaff({ users, roles, busy, onInvite, onRole, on
             className="h-11 border border-input bg-card px-3 text-sm outline-none focus:border-accent"
           >
             <option value="user">{t('admin.roleUser')}</option>
-            <option value="admin">{t('admin.roleAdmin')}</option>
+            <option value="admin" disabled={!viewerIsOwner}>{t('admin.roleAdmin')}</option>
           </select>
           <Button disabled={busy || !email.includes('@')} onClick={invite}>
             {t('admin.sendInvite')}
@@ -95,7 +99,8 @@ export default function PlatformStaff({ users, roles, busy, onInvite, onRole, on
                   <td className="px-6 py-4">
                     <select
                       value={member.role || 'user'}
-                      disabled={busy}
+                      disabled={busy || !viewerIsOwner || isPlatformOwner(member.email)}
+                      title={isPlatformOwner(member.email) ? 'Protected platform owner' : undefined}
                       onChange={(event) => onRole(member, event.target.value)}
                       className="border border-input bg-card px-2.5 py-1.5 text-xs outline-none focus:border-accent"
                     >

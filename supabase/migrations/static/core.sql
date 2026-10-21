@@ -23,6 +23,15 @@ create table if not exists public.profiles (
 alter table public.profiles enable row level security;
 
 -- ============================================================================
+-- Platform owners: permanent super administrators. They are the only people who
+-- can grant or revoke super-admin access, and nobody can demote or delete them.
+-- ============================================================================
+create or replace function public.app_protected_admins() returns text[]
+language sql immutable as $$
+  select array['vincentnogue2@gmail.com', 'vincentnogue@yahoo.com']
+$$;
+
+-- ============================================================================
 -- Helpers used by every policy
 -- ============================================================================
 create or replace function public.app_is_admin() returns boolean
@@ -33,6 +42,11 @@ $$;
 create or replace function public.app_email() returns text
 language sql stable as $$
   select lower(coalesce(auth.jwt() ->> 'email', ''))
+$$;
+
+create or replace function public.app_is_owner() returns boolean
+language sql stable as $$
+  select public.app_email() = any (public.app_protected_admins())
 $$;
 
 -- True when the jsonb value (a string or an array of strings) contains the caller's email.
@@ -56,26 +70,48 @@ create or replace function public.profiles_guard() returns trigger
 language plpgsql security definer set search_path = public as $$
 begin
   new.updated_date := now();
-  if auth.uid() is not null and not public.app_is_admin() then
-    new.role := old.role;
-    new.platform_role := old.platform_role;
-    new.platform_role_name := old.platform_role_name;
+  if auth.uid() is not null then
+    if not public.app_is_admin() then
+      new.role := old.role;
+      new.platform_role := old.platform_role;
+      new.platform_role_name := old.platform_role_name;
+      new.email := old.email;
+      new.id := old.id;
+    elsif not public.app_is_owner() then
+      -- Administrators can manage staff, but only the owners grant or revoke super-admin.
+      new.role := old.role;
+    end if;
+  end if;
+  -- Owners are permanent super administrators, whoever (or whatever) tries to change that.
+  if lower(old.email) = any (public.app_protected_admins()) then
+    new.role := 'admin';
     new.email := old.email;
-    new.id := old.id;
   end if;
   return new;
 end $$;
 create trigger profiles_guard before update on public.profiles
   for each row execute function public.profiles_guard();
 
+create or replace function public.profiles_protect_delete() returns trigger
+language plpgsql security definer set search_path = public as $$
+begin
+  if lower(old.email) = any (public.app_protected_admins()) then
+    raise exception 'This account is a protected platform owner and cannot be deleted.';
+  end if;
+  return old;
+end $$;
+create trigger profiles_protect_delete before delete on public.profiles
+  for each row execute function public.profiles_protect_delete();
+
 create or replace function public.handle_new_user() returns trigger
 language plpgsql security definer set search_path = public as $$
 begin
   -- Only non-privileged fields are read from signup metadata; the role is never taken from it.
-  insert into public.profiles (id, email, full_name, display_name, account_type, country, phone)
+  insert into public.profiles (id, email, role, full_name, display_name, account_type, country, phone)
   values (
     new.id,
     lower(new.email),
+    case when lower(new.email) = any (public.app_protected_admins()) then 'admin' else 'user' end,
     coalesce(new.raw_user_meta_data ->> 'full_name', new.raw_user_meta_data ->> 'name'),
     new.raw_user_meta_data ->> 'display_name',
     case when new.raw_user_meta_data ->> 'account_type' in ('individual', 'company')
@@ -90,10 +126,11 @@ drop trigger if exists on_auth_user_created on auth.users;
 create trigger on_auth_user_created after insert on auth.users
   for each row execute function public.handle_new_user();
 
--- Backfill profiles for users that already exist.
+-- Backfill profiles for users that already exist, and make sure the owners are admins.
 insert into public.profiles (id, email)
 select id, lower(email) from auth.users
 on conflict (id) do nothing;
+update public.profiles set role = 'admin' where lower(email) = any (public.app_protected_admins());
 
 -- Run once from the SQL editor to create the first platform administrator:
 --   select public.promote_admin('you@example.com');

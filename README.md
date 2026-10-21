@@ -19,10 +19,9 @@ Built and maintained by **[liafrik.com](https://liafrik.com)**.
 
 1. **Environment** — copy `.env.example` to `.env.local` and fill in `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY`.
 2. **Database** — apply `supabase/migrations/0001_init.sql` (`supabase db push`, or paste it in the SQL editor). It creates the tables, the access rules and the file buckets.
-3. **First administrator** — create an account in the app, then run in the SQL editor:
-   `select public.promote_admin('you@example.com');`
+3. **Super administrators** — `vincentnogue2@gmail.com` and `vincentnogue@yahoo.com` are the platform owners: they become administrators automatically when they sign up, they are the only ones who can grant or revoke super-admin access, and they can never be demoted or deleted (enforced in the database, `supabase/migrations/static/core.sql`). To change that list, edit `app_protected_admins()` there and in `supabase/functions/platformAdmin/index.ts` and `src/lib/owners.js`.
 4. **Auth** — in *Authentication → Providers*, keep Email on with "Confirm email". In *Email Templates → Confirm signup*, make sure the message contains the 6-digit code `{{ .Token }}`. Set the Site URL to `https://express.zanldo.com` and add `https://express.zanldo.com/login` and `https://express.zanldo.com/reset-password` to the redirect URLs. Enable Google if you want Google sign-in.
-5. **Functions** — `supabase link --project-ref xoqhibsuyrvfjbmmvsma`, `supabase functions deploy`, then `supabase secrets set APP_URL=https://express.zanldo.com` (see `.env.example` for the optional payment and assistant keys).
+5. **Functions** — `supabase link --project-ref xoqhibsuyrvfjbmmvsma`, `supabase functions deploy`, (the app address defaults to `https://express.zanldo.com`; set the `APP_URL` secret only to override it) (see `.env.example` for the optional payment and assistant keys).
 6. **Images** — the marketing images are served from `public/images/`.
 
 ## Run locally
