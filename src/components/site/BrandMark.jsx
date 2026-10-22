@@ -8,7 +8,7 @@ import { BRAND_LOGO, BRAND_NAME } from '@/lib/branding';
 // readable; on light surfaces it is shown as is.
 const HEIGHTS = {
   sm: 'h-8',
-  md: 'h-10 sm:h-12',
+  md: 'h-11 sm:h-14',
   lg: 'h-16 sm:h-20',
   xl: 'h-20 sm:h-28',
 };

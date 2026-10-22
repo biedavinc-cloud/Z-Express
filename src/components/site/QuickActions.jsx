@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowUpRight } from 'lucide-react';
-import { Image } from '@/components/ui/image';
+import ProductIcon from '@/components/site/ProductIcon';
 import { useI18n } from '@/components/LanguageProvider';
 import {
   BUSINESS_ICON,
@@ -39,7 +39,7 @@ export default function QuickActions() {
           const inner = (
             <>
               {card.image ? (
-                <Image src={card.image} alt={t(card.title)} className="h-12 w-12 rounded-2xl" />
+                <ProductIcon src={card.image} alt={t(card.title)} className="h-12 w-12 rounded-2xl" onAccent={Boolean(card.primary)} />
               ) : (
                 <span
                   className={`grid h-12 w-12 place-items-center rounded-2xl transition ${

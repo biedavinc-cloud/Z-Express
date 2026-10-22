@@ -21,6 +21,7 @@ import { useI18n } from '@/components/LanguageProvider';
 import { Button } from '@/components/ui/button';
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from '@/components/ui/accordion';
 import { Image } from '@/components/ui/image';
+import ProductIcon from '@/components/site/ProductIcon';
 import {
   EXPRESS_ICON,
   FREIGHT_ICON,
@@ -166,7 +167,7 @@ export default function Solutions() {
                 className="group relative overflow-hidden rounded-3xl border border-border bg-card p-8 transition hover:border-accent/50"
               >
                 <div className="absolute -right-10 -top-10 h-32 w-32 rounded-full bg-accent/10 transition group-hover:bg-accent/20" />
-                <Image src={service.image} alt={t(service.name)} className="relative h-12 w-12 rounded-2xl" />
+                <ProductIcon src={service.image} alt={t(service.name)} className="relative h-12 w-12 rounded-2xl" />
                 <h3 className="relative mt-6 font-heading text-xl font-semibold text-primary">{t(service.name)}</h3>
                 <p className="relative mt-2 max-w-md text-sm leading-relaxed text-muted-foreground">
                   {t(service.desc)}

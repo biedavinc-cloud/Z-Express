@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
-import { Image } from '@/components/ui/image';
+import ProductIcon from '@/components/site/ProductIcon';
 import { useI18n } from '@/components/LanguageProvider';
 import {
   EXPRESS_ICON,
@@ -40,11 +40,7 @@ export default function SolutionsSection() {
               >
                 <div className="absolute -right-10 -top-10 h-32 w-32 rounded-full bg-accent/10 transition group-hover:bg-accent/20" />
                 {service.image ? (
-                  <Image
-                    src={service.image}
-                    alt={t(service.name)}
-                    className="relative h-12 w-12 rounded-2xl"
-                  />
+                  <ProductIcon src={service.image} alt={t(service.name)} className="relative h-12 w-12 rounded-2xl" />
                 ) : (
                   <span className="relative grid h-12 w-12 place-items-center rounded-2xl bg-accent/12 text-accent">
                     <Icon className="h-6 w-6" />

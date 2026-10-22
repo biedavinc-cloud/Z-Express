@@ -13,10 +13,34 @@ import { IMAGE_OPACITY, SITE_IMAGES } from '@/lib/siteImages';
  */
 export default function ImageBackdrop({ interval = 7000, overlayClassName = '', className = '' }) {
   const [failed, setFailed] = useState({});
+  const [available, setAvailable] = useState(null); // null while the files are being checked
   const [current, setCurrent] = useState(0);
   const [shown, setShown] = useState({});
 
-  const usable = useMemo(() => SITE_IMAGES.filter((src) => !failed[src]), [failed]);
+  // A missing file often comes back as an HTML page with status 200 (single-page-app
+  // fallback), which a browser does not always report as an image error. Check the
+  // content type up front so only real pictures are ever shown.
+  useEffect(() => {
+    let cancelled = false;
+    Promise.all(
+      SITE_IMAGES.map((src) =>
+        fetch(src, { method: 'HEAD' })
+          .then((response) => response.ok && /^image\//i.test(response.headers.get('content-type') || ''))
+          .catch(() => false)
+          .then((ok) => [src, ok])
+      )
+    ).then((entries) => {
+      if (!cancelled) setAvailable(Object.fromEntries(entries));
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const usable = useMemo(
+    () => (available ? SITE_IMAGES.filter((src) => available[src] && !failed[src]) : []),
+    [available, failed]
+  );
   const active = usable.length ? usable[current % usable.length] : null;
 
   useEffect(() => {
@@ -38,16 +62,6 @@ export default function ImageBackdrop({ interval = 7000, overlayClassName = '', 
       {/* Brand base: always painted, visible when photos are missing or still loading. */}
       <div className="absolute inset-0 bg-gradient-to-br from-primary via-[#5A2A06] to-accent/80" />
       <div className="absolute -right-24 -top-24 h-[28rem] w-[28rem] rounded-full bg-accent/30 blur-3xl" />
-      {!active ? (
-        <Image
-          src={BRAND_LOGO}
-          alt={BRAND_NAME}
-          fittingType="fit"
-          loading="eager"
-          className="absolute inset-x-0 bottom-[8%] mx-auto h-auto w-[min(92%,64rem)] opacity-95 drop-shadow-2xl"
-        />
-      ) : null}
-
       {SITE_IMAGES.map((src) =>
         shown[src] && !failed[src] ? (
           <Image
@@ -62,6 +76,16 @@ export default function ImageBackdrop({ interval = 7000, overlayClassName = '', 
         ) : null
       )}
       {overlayClassName ? <div className={`absolute inset-0 ${overlayClassName}`} /> : null}
+      {/* No photo available: the logo artwork carries the hero (above the overlay, so it stays vivid). */}
+      {!active ? (
+        <Image
+          src={BRAND_LOGO}
+          alt={BRAND_NAME}
+          fittingType="fit"
+          loading="eager"
+          className="absolute -bottom-2 right-[-4%] h-auto w-[84%] opacity-95 drop-shadow-[0_2rem_3rem_rgba(0,0,0,0.45)] sm:right-[2%] sm:w-[54%] lg:right-[1.5%] lg:top-1/2 lg:bottom-auto lg:w-[47%] lg:-translate-y-[46%]"
+        />
+      ) : null}
     </div>
   );
 }

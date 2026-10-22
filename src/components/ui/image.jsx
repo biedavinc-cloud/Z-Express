@@ -31,6 +31,7 @@ const Image = React.forwardRef(
       loading = "lazy",
       decoding = "async",
       onError,
+      fallback,
       alt = "",
       ...props
     },
@@ -41,6 +42,7 @@ const Image = React.forwardRef(
 
     const empty = !src
     const showFallback = empty || failed
+    if (showFallback && fallback) return fallback
     const hasObjectFit = /\bobject-(cover|contain|fill|none|scale-down)\b/.test(className || "")
     const fit = hasObjectFit ? "" : fittingType === "fit" ? "object-contain" : "object-cover"
     const focal =

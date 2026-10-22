@@ -3,6 +3,8 @@ import { Smartphone, Signature, Check } from 'lucide-react';
 import { useI18n } from '@/components/LanguageProvider';
 import { Image } from '@/components/ui/image';
 import StoreButton from '@/components/site/StoreButton';
+import PhoneMockup from '@/components/site/PhoneMockup';
+import { AppGalleryIcon, AppStoreIcon, GooglePlayIcon } from '@/components/site/StoreIcons';
 
 const IMG = '/images';
 
@@ -15,21 +17,19 @@ const STORES = [
     key: 'app.google',
     label: 'Google Play',
     eyebrow: 'Get it on',
-    logo: `${IMG}/59d41e04d_Google-play-nuevo-aspecto-01.jpg`,
+    Logo: GooglePlayIcon,
   },
   {
     key: 'app.apple',
     label: 'App Store',
     eyebrow: 'Download on the',
-    logo: `${IMG}/751d6dd20_AppStoreLogo-DownloadFreeVectorPNG.png`,
+    Logo: AppStoreIcon,
   },
   {
     key: 'app.huawei',
     label: 'AppGallery',
     eyebrow: 'Explore it on',
-    logo: `${IMG}/e3fc29be1_appgallery-2x.png`,
-    focalX: 0.15,
-    focalY: 0.5,
+    Logo: AppGalleryIcon,
   },
 ];
 
@@ -65,11 +65,9 @@ export default function AppPromo() {
             {STORES.map((store) => (
               <StoreButton
                 key={store.key}
-                logoSrc={store.logo}
+                Logo={store.Logo}
                 eyebrow={store.eyebrow}
                 label={store.label}
-                focalX={store.focalX}
-                focalY={store.focalY}
               />
             ))}
           </div>
@@ -82,9 +80,10 @@ export default function AppPromo() {
               alt="Z. Express driver app showing live map tracking and proof of delivery"
               className="h-[420px] w-full sm:h-[520px] lg:h-[680px]"
               fittingType="fill"
+              fallback={<PhoneMockup />}
             />
           </div>
-          <div className="absolute bottom-2 left-1/2 z-20 flex -translate-x-1/2 items-center gap-2.5 rounded-full border border-primary-foreground/20 bg-primary/70 px-3.5 py-2 backdrop-blur">
+          <div className="absolute bottom-[12%] left-0 z-20 flex items-center gap-2.5 sm:left-[4%] lg:left-0 rounded-full border border-primary-foreground/20 bg-primary/70 px-3.5 py-2 backdrop-blur">
             <Signature className="h-4 w-4 text-accent" />
             <span className="text-xs leading-snug text-primary-foreground/85">OTP · Signature · Photo POD</span>
           </div>
